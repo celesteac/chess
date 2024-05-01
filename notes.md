@@ -1,1 +1,1 @@
-hello cs240
+these are notes
