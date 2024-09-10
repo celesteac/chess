@@ -8,6 +8,9 @@ package chess;
  */
 public class ChessBoard {
 
+    private ChessPiece[][] squares = new ChessPiece[8][8]; //values are null
+
+
     public ChessBoard() {
         
     }
@@ -18,8 +21,8 @@ public class ChessBoard {
      * @param position where to add the piece to
      * @param piece    the piece to add
      */
-    public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+    public ChessPiece addPiece(ChessPosition position, ChessPiece piece) {
+        return squares[position.getRow()][position.getColumn()];
     }
 
     /**
