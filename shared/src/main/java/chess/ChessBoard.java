@@ -1,7 +1,5 @@
 package chess;
 
-import java.util.Arrays;
-
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -15,6 +13,7 @@ public class ChessBoard {
 
     public ChessBoard() {
         squares = new ChessPiece[8][8];
+        resetBoard();
     }
 
     /**
@@ -24,8 +23,6 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-//        System.out.println("blello2");
-//        System.out.println(position.getColumn() + " " + position.getRow());
         squares[position.getRow()][position.getColumn()] = piece;
     }
 
@@ -45,11 +42,9 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-//        System.out.println("blello");
         //clear board
         for(ChessPiece[] row : squares){
             for(ChessPiece piece : row){
-//                System.out.println(piece.toString());
                 piece = null;
             }
         }
@@ -95,8 +90,7 @@ public class ChessBoard {
                 if(square == null){
                     sb.append(" ");
                 }else {
-//                    sb.append("P");
-                    sb.append(square.toString());
+                    sb.append(square); //why is square.toString not necessary here?
                 }
                 sb.append("|");
             }
