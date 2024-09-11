@@ -58,9 +58,19 @@ public class ChessPiece {
 
     @Override
     public String toString() {
-        return "ChessPiece{" +
-                "type=" + type +
-                ", color=" + color +
-                '}';
+        String representation = switch (type) {
+            case KING -> "k";
+            case QUEEN -> "q";
+            case BISHOP -> "b";
+            case KNIGHT -> "n";
+            case ROOK -> "r";
+            case PAWN -> "p";
+        };
+
+        if(color == ChessGame.TeamColor.WHITE) {
+            representation = representation.toUpperCase();
+        }
+
+        return representation;
     }
 }
