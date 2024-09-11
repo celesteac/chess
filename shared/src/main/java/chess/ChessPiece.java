@@ -55,4 +55,12 @@ public class ChessPiece {
         Collection<ChessMove> moves = new ArrayList<>();
         return moves;
     }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "type=" + type +
+                ", color=" + color +
+                '}';
+    }
 }
