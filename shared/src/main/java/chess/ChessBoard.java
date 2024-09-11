@@ -21,8 +21,8 @@ public class ChessBoard {
      * @param position where to add the piece to
      * @param piece    the piece to add
      */
-    public ChessPiece addPiece(ChessPosition position, ChessPiece piece) {
-        return squares[position.getRow()][position.getColumn()];
+    public void addPiece(ChessPosition position, ChessPiece piece) {
+        squares[position.getRow()][position.getColumn()] = piece;
     }
 
     /**
@@ -33,7 +33,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return squares[position.getRow()][position.getColumn()];
     }
 
     /**
