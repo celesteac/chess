@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieceMovesCalculator.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -53,9 +55,11 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new PieceMovesCalculator(board, myPosition).getLegalMoves();
         return moves;
     }
+
+    /// Overrides
 
     @Override
     public String toString() {
