@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] squares; //values are null
+    private final ChessPiece[][] squares; //values are null
 
 
     public ChessBoard() {

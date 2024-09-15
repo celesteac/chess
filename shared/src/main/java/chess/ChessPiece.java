@@ -2,7 +2,6 @@ package chess;
 
 import chess.pieceMovesCalculator.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -13,8 +12,8 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private PieceType type;
-    private ChessGame.TeamColor color;
+    private final PieceType type;
+    private final ChessGame.TeamColor color;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.type = type;
@@ -55,8 +54,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new PieceMovesCalculator(board, myPosition).getLegalMoves();
-        return moves;
+        return new PieceMovesCalculator(board, myPosition).getLegalMoves();
     }
 
     /// Overrides
