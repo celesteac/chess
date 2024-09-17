@@ -35,6 +35,20 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
+//        int row = this.row + 1;
+//
+//        row = switch(row) {
+//            case 1 -> 8;
+//            case 2 -> 7;
+//            case 3 -> 6;
+//            case 4 -> 5;
+//            case 5 -> 4;
+//            case 6 -> 3;
+//            case 7 -> 2;
+//            case 8 -> 1;
+//            default -> 1;
+//        };
+
         return row;
     }
 
@@ -43,11 +57,25 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
+//        return col + 1;
         return col;
     }
 
     @Override
     public String toString() {
+        int col = this.col+1;
+        int row = this.row+1;
+        row = switch(row) {
+            case 1 -> 8;
+            case 2 -> 7;
+            case 3 -> 6;
+            case 4 -> 5;
+            case 5 -> 4;
+            case 6 -> 3;
+            case 7 -> 2;
+            case 8 -> 1;
+            default -> 1;
+        };
         return "[" + col + "," + row + "]";
     }
 

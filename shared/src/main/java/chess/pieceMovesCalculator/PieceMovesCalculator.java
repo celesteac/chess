@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public abstract class PieceMovesCalculator {
     ChessBoard board;
     ChessPosition position;
+    ArrayList<ChessMove> legalMoves = new ArrayList<>();
 
     public PieceMovesCalculator(ChessBoard board, ChessPosition position) {
         this.board = board;
