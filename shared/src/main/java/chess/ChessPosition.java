@@ -13,9 +13,27 @@ public class ChessPosition {
     private final int row;
 
     public ChessPosition(int row, int col) {
-        this.col = col-1;
 
-        row = switch (row) {
+        this.row = convertRow(row, true);
+        this.col = convertColumn(col, true);
+    }
+
+
+    //the convert functions take a row and column that use the chessboard indices
+    //and convert them to array indices
+
+    public int convertColumn(int inCol, boolean toArray){
+        int outCol;
+        if(toArray) outCol = inCol - 1;
+        else outCol = inCol + 1;
+        return outCol;
+    }
+
+    public int convertRow(int inRow, boolean toArray){
+        int outRow;
+
+        if(!toArray) outRow = inRow + 1;
+        outRow = switch (inRow) {
             case 1 -> 8;
             case 2 -> 7;
             case 3 -> 6;
@@ -27,7 +45,9 @@ public class ChessPosition {
             default -> 1;
         };
 
-        this.row = row -1;
+        if(toArray) outRow = outRow - 1;
+
+        return outRow;
     }
 
     /**
@@ -35,20 +55,6 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-//        int row = this.row + 1;
-//
-//        row = switch(row) {
-//            case 1 -> 8;
-//            case 2 -> 7;
-//            case 3 -> 6;
-//            case 4 -> 5;
-//            case 5 -> 4;
-//            case 6 -> 3;
-//            case 7 -> 2;
-//            case 8 -> 1;
-//            default -> 1;
-//        };
-
         return row;
     }
 
@@ -57,26 +63,15 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-//        return col + 1;
         return col;
     }
 
     @Override
     public String toString() {
-        int col = this.col+1;
-        int row = this.row+1;
-        row = switch(row) {
-            case 1 -> 8;
-            case 2 -> 7;
-            case 3 -> 6;
-            case 4 -> 5;
-            case 5 -> 4;
-            case 6 -> 3;
-            case 7 -> 2;
-            case 8 -> 1;
-            default -> 1;
-        };
-        return "[" + col + "," + row + "]";
+        int col = convertColumn(this.col, false);
+        int row = convertRow(this.row, false);
+
+        return "[" + row + "," + col + "]";
     }
 
     @Override

@@ -1,6 +1,7 @@
 package chess.pieceMovesCalculator;
 
 import chess.ChessBoard;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.ChessMove;
 
@@ -19,7 +20,16 @@ public class KingMovesCalculator extends PieceMovesCalculator {
         //write a loop that checks all the spaces around the king
             //if the space is empty, you can move into it
 
-//        legalMoves.add(new ChessMove(position, new ChessPosition(position.getColumn(), position.getRow()), null));
+        int row = position.getRow();
+        int col = position.getColumn();
+
+        int[] indeces = {-1,0,1};
+        for(int i : indeces){
+//            for(int j : indeces){
+                System.out.println(new ChessPosition(row , col ));
+//            }
+        }
+
         legalMoves.add(new ChessMove(position, position, null));
 
         return this.legalMoves;
