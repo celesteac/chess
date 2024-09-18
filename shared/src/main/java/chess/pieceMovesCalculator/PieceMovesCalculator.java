@@ -12,8 +12,8 @@ public abstract class PieceMovesCalculator {
     ArrayList<ChessMove> legalMoves = new ArrayList<>();
 
     public PieceMovesCalculator(ChessBoard board, ChessPosition position) {
-        this.board = board;
         this.position = position;
+        this.board = board;
     }
 
     public abstract ArrayList<ChessMove> calculateLegalMoves();

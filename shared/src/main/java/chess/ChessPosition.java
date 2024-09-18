@@ -13,41 +13,21 @@ public class ChessPosition {
     private final int row;
 
     public ChessPosition(int row, int col) {
-
-        this.row = convertRow(row, true);
-        this.col = convertColumn(col, true);
-    }
-
-
-    //the convert functions take a row and column that use the chessboard indices
-    //and convert them to array indices
-
-    public int convertColumn(int inCol, boolean toArray){
-        int outCol;
-        if(toArray) outCol = inCol - 1;
-        else outCol = inCol + 1;
-        return outCol;
-    }
-
-    public int convertRow(int inRow, boolean toArray){
-        int outRow;
-
-        if(!toArray) outRow = inRow + 1;
-        outRow = switch (inRow) {
-            case 1 -> 8;
-            case 2 -> 7;
-            case 3 -> 6;
-            case 4 -> 5;
-            case 5 -> 4;
-            case 6 -> 3;
-            case 7 -> 2;
-            case 8 -> 1;
+//        this.row = convertRow(row, true);
+//        this.col = convertColumn(col, true);
+        this.col = col-1;
+        this.row = switch (row){
+            case 1 -> 7;
+            case 2 -> 6;
+            case 3 -> 5;
+            case 4 -> 4;
+            case 5 -> 3;
+            case 6 -> 2;
+            case 7 -> 1;
+            case 8 -> 0;
             default -> 1;
         };
 
-        if(toArray) outRow = outRow - 1;
-
-        return outRow;
     }
 
     /**
@@ -68,9 +48,6 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        int col = convertColumn(this.col, false);
-        int row = convertRow(this.row, false);
-
         return "[" + row + "," + col + "]";
     }
 
