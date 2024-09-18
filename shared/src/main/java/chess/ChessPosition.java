@@ -13,10 +13,15 @@ public class ChessPosition {
     private final int row;
 
     public ChessPosition(int row, int col) {
-//        this.row = convertRow(row, true);
-//        this.col = convertColumn(col, true);
-        this.col = col-1;
-        this.row = switch (row){
+        this.col = convertColToArrayIndices(col);
+        this.row = convertRowToArrayIndices(row);
+
+    }
+
+    public int convertRowToChessIndices(int inRow) {
+        return switch(inRow){
+            case -1 -> 9;
+            case 0 -> 8;
             case 1 -> 7;
             case 2 -> 6;
             case 3 -> 5;
@@ -25,9 +30,34 @@ public class ChessPosition {
             case 6 -> 2;
             case 7 -> 1;
             case 8 -> 0;
+            case 9 -> -1;
+            default -> -1;
+        };
+    }
+
+    public int convertColToChessIndices(int inCol){
+        return inCol +1;
+    }
+
+    private int convertRowToArrayIndices(int inRow) {
+        return switch(inRow){
+            case -1 -> 9;
+            case 0 -> 8;
+            case 1 -> 7;
+            case 2 -> 6;
+            case 3 -> 5;
+            case 4 -> 4;
+            case 5 -> 3;
+            case 6 -> 2;
+            case 7 -> 1;
+            case 8 -> 0;
+            case 9 -> -1;
             default -> 1;
         };
+    }
 
+    private int convertColToArrayIndices(int inCol){
+        return inCol -1;
     }
 
     /**
@@ -48,7 +78,11 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        return "[" + row + "," + col + "]";
+
+        int colPrint = convertColToChessIndices(this.col);
+        int rowPrint = convertRowToArrayIndices(this.row);
+
+        return "[" + rowPrint + "," + colPrint + "]";
     }
 
     @Override
