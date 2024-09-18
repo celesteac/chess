@@ -31,7 +31,7 @@ public class ChessPosition {
             case 7 -> 1;
             case 8 -> 0;
             case 9 -> -1;
-            default -> -1;
+            default -> -10; //error
         };
     }
 
@@ -52,7 +52,7 @@ public class ChessPosition {
             case 7 -> 1;
             case 8 -> 0;
             case 9 -> -1;
-            default -> 1;
+            default -> -10; //error
         };
     }
 

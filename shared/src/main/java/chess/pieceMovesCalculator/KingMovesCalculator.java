@@ -23,22 +23,28 @@ public class KingMovesCalculator extends PieceMovesCalculator {
         int row = position.getRow();     //is in array indices
         int col = position.getColumn(); //is in array indices
 
-//        row = convertRowToChessIndices(row);  //to convert to chess indices
-//        col = convertColToChessIndices(col); //so that we can make a new position variable
-
-//        System.out.println(position);
-//        System.out.println(new ChessPosition(row, col));
-
         int[] indices = {-1,0,1};
         for(int i : indices){
             for(int j : indices){
-                int tempRow = position.convertRowToChessIndices(row+i);
-                int tempCol = position.convertColToChessIndices(col+j);
-                System.out.println(new ChessPosition(tempRow, tempCol));
+//                System.out.println("i = " + i + ", j = " + j);
+                if(!(i == 0 && j == 0)){
+
+                    int tempRow = position.convertRowToChessIndices(row+i);
+                    int tempCol = position.convertColToChessIndices(col+j);
+                    ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
+                    System.out.println(new ChessPosition(tempRow, tempCol));
+
+                    if(tempRow < 9 && tempRow > 0 && tempCol < 9 && tempCol > 0){
+                        if(board.getPiece(tempPosition) == null) {
+                            legalMoves.add(new ChessMove(position, tempPosition, null));
+                        }
+                    }
+
+                }
             }
         }
 
-        legalMoves.add(new ChessMove(position, position, null));
+//        legalMoves.add(new ChessMove(position, position, null));
 
         return this.legalMoves;
     }
