@@ -10,6 +10,7 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
     }
 
     public Collection<ChessMove> calculateLegalMoves(){
+        System.out.println("pawn");
         return this.legalMoves;
     }
 }

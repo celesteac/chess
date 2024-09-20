@@ -10,6 +10,7 @@ public class BishopMovesCalculator extends PieceMovesCalculator {
     }
 
     public Collection<ChessMove> calculateLegalMoves(){
+        System.out.println("bishop");
         return this.legalMoves;
     }
 }

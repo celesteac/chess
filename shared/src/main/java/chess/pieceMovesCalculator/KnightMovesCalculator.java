@@ -11,6 +11,7 @@ public class KnightMovesCalculator extends PieceMovesCalculator {
     }
 
     public Collection<ChessMove> calculateLegalMoves(){
+        System.out.println("knight");
         return this.legalMoves;
     }
 }
