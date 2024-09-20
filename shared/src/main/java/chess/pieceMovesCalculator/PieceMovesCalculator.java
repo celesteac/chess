@@ -5,17 +5,18 @@ import chess.ChessPosition;
 import chess.ChessMove;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public abstract class PieceMovesCalculator {
     ChessBoard board;
     ChessPosition position;
-    ArrayList<ChessMove> legalMoves = new ArrayList<>();
+    Collection<ChessMove> legalMoves = new ArrayList<>();
 
     public PieceMovesCalculator(ChessBoard board, ChessPosition position) {
         this.position = position;
         this.board = board;
     }
 
-    public abstract ArrayList<ChessMove> calculateLegalMoves();
+    public abstract Collection<ChessMove> calculateLegalMoves();
 
 }
