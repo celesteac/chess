@@ -4,9 +4,8 @@ import chess.*;
 
 import java.util.Collection;
 
-public class QueenMovesCalculator extends PieceMovesCalculator {
-
-    public QueenMovesCalculator(ChessBoard board, ChessPosition position) {
+public class BishopMovesCalculator extends PieceMovesCalculator {
+    public BishopMovesCalculator(ChessBoard board, ChessPosition position) {
         super(board, position);
     }
 
