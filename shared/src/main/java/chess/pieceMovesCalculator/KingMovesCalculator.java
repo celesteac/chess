@@ -20,18 +20,7 @@ public class KingMovesCalculator extends PieceMovesCalculator {
             for(int j : indices){
                 if(!(i == 0 && j == 0)){  //don't check the original position
 
-                    int tempRow = position.convertRowToChessIndices(row+i);
-                    int tempCol = position.convertColToChessIndices(col+j);
-                    ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
-
-                    if(checkBounds(tempRow,tempCol)){
-                        if(checkEmpty(tempPosition)) {
-                            addMove(tempPosition);
-                        }
-                        else if(checkEnemy(tempPosition)){
-                            addMove(tempPosition);
-                        }
-                    }
+                    orderOfOps(row+i, col+j);
 
                 }
             }

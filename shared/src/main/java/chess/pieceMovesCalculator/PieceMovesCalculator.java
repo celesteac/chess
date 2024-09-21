@@ -22,7 +22,6 @@ public abstract class PieceMovesCalculator {
 
     public abstract Collection<ChessMove> calculateLegalMoves();
 
-
     public boolean checkBounds(int row, int col) {
         return (row > 0 && row < 9 && col > 0 && col < 9);
     }
@@ -36,4 +35,33 @@ public abstract class PieceMovesCalculator {
     public void addMove(ChessPosition endPosition){
         legalMoves.add(new ChessMove(position, endPosition, null));
     }
+
+
+    //the boolean in this function will trigger a break in the for loops
+    //of the Rook, Bishop, and Queen
+    //while the Knight and King ignore the boolean
+    public boolean orderOfOps(int inRow, int inCol) {
+        int tempRow = position.convertRowToChessIndices(inRow);
+        int tempCol = position.convertColToChessIndices(inCol);
+        ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
+
+        if (checkBounds(tempRow, tempCol)) {
+            if (checkEmpty(tempPosition)) {
+                addMove(tempPosition);
+            }
+            else if (checkEnemy(tempPosition)) {
+                addMove(tempPosition);
+                return true;
+            }
+            else{
+                return true;
+            };
+        }
+        else {
+            return true;
+        }
+        return false;
+    }
+
+
 }

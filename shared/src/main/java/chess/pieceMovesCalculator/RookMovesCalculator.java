@@ -29,18 +29,7 @@ public class RookMovesCalculator extends PieceMovesCalculator {
                     default -> col;
                 };
 
-                tempRow = position.convertRowToChessIndices(tempRow);
-                tempCol = position.convertColToChessIndices(tempCol);
-                ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
-
-                if (checkBounds(tempRow, tempCol)) {
-                    if (checkEmpty(tempPosition)) {
-                        addMove(tempPosition);
-                    } else if (checkEnemy(tempPosition)) {
-                        addMove(tempPosition);
-                        break;
-                    } else break;
-                } else break;
+                if(orderOfOps(tempRow,tempCol)) break;
 
             }
         }
