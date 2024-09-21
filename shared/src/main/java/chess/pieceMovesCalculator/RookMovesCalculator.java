@@ -14,22 +14,35 @@ public class RookMovesCalculator extends PieceMovesCalculator {
         int row = position.getRow();     //is in array indices
         int col = position.getColumn(); //is in array indices
 
-        for(int i = 1; i < 8; i++){
+        for(int j = 1; j < 5; j++) {
+            for (int i = 1; i < 8; i++) {
 
-            int tempRow = position.convertRowToChessIndices(row+i);
-            int tempCol = position.convertColToChessIndices(col);
-            ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
+                int tempRow = switch(j){
+                    case 1 -> row + i;
+                    case 2 -> row - i;
+                    default -> row;
+                };
 
-            if(checkBounds(tempRow,tempCol)){
-                if(checkEmpty(tempPosition)){
-                    addMove(tempPosition);
-                }
-                else if(checkEnemy(tempPosition)){
-                    addMove(tempPosition);
-                }
+                int tempCol = switch (j){
+                    case 3 -> col + i;
+                    case 4 -> col - i;
+                    default -> col;
+                };
+
+                tempRow = position.convertRowToChessIndices(tempRow);
+                tempCol = position.convertColToChessIndices(tempCol);
+                ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
+
+                if (checkBounds(tempRow, tempCol)) {
+                    if (checkEmpty(tempPosition)) {
+                        addMove(tempPosition);
+                    } else if (checkEnemy(tempPosition)) {
+                        addMove(tempPosition);
+                        break;
+                    } else break;
+                } else break;
+
             }
-            else break;
-
         }
 
         return this.legalMoves;

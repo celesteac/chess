@@ -24,8 +24,6 @@ public class KingMovesCalculator extends PieceMovesCalculator {
                     int tempCol = position.convertColToChessIndices(col+j);
                     ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
 
-                    System.out.println(new ChessPosition(tempRow, tempCol));
-
                     if(checkBounds(tempRow,tempCol)){
                         if(checkEmpty(tempPosition)) {
                             addMove(tempPosition);
