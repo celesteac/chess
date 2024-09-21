@@ -82,7 +82,8 @@ public class ChessPosition {
         int colPrint = convertColToChessIndices(this.col);
         int rowPrint = convertRowToArrayIndices(this.row);
 
-        return "[" + rowPrint + "," + colPrint + "]";
+        return rowPrint + "," + colPrint;
+//        return "[" + rowPrint + "," + colPrint + "]";
     }
 
     @Override

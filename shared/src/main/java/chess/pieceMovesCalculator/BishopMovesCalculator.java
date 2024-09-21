@@ -11,8 +11,8 @@ public class BishopMovesCalculator extends PieceMovesCalculator {
 
     public Collection<ChessMove> calculateLegalMoves(){
 
-        for(int j = 1; j < 5; j++) {
-            for (int i = 1; i < 8; i++) {
+        for(int j = 1; j < 5; j++) { //4 movement directions
+            for (int i = 1; i < 8; i++) {  //so it doesn't go off the board
 
                 int tempRow = switch(j){
                     case 1 -> row + i;
