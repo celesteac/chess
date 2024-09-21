@@ -11,9 +11,6 @@ public class BishopMovesCalculator extends PieceMovesCalculator {
 
     public Collection<ChessMove> calculateLegalMoves(){
 
-        int row = position.getRow();     //is in array indices
-        int col = position.getColumn(); //is in array indices
-
         for(int j = 1; j < 5; j++) {
             for (int i = 1; i < 8; i++) {
 
@@ -33,24 +30,10 @@ public class BishopMovesCalculator extends PieceMovesCalculator {
                     default -> col;
                 };
 
-                tempRow = position.convertRowToChessIndices(tempRow);
-                tempCol = position.convertColToChessIndices(tempCol);
-                ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
-
-                if (checkBounds(tempRow, tempCol)) {
-                    if (checkEmpty(tempPosition)) {
-                        addMove(tempPosition);
-                    } else if (checkEnemy(tempPosition)) {
-                        addMove(tempPosition);
-                        break;
-                    } else break;
-                } else break;
+                if(orderOfOps(tempRow,tempCol)) break;
 
             }
         }
-
-
-
 
         return this.legalMoves;
     }

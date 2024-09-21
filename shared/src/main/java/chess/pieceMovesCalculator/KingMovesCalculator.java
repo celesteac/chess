@@ -12,9 +12,6 @@ public class KingMovesCalculator extends PieceMovesCalculator {
 
     public Collection<ChessMove> calculateLegalMoves(){
 
-        int row = position.getRow();     //is in array indices
-        int col = position.getColumn(); //is in array indices
-
         int[] indices = {-1,0,1};  //loop through all the spaces around the king
         for(int i : indices){
             for(int j : indices){

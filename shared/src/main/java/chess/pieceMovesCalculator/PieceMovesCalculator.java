@@ -11,6 +11,8 @@ import java.util.Collection;
 public abstract class PieceMovesCalculator {
     ChessBoard board;
     ChessPosition position;
+    int row;
+    int col;
     ChessGame.TeamColor color;
     Collection<ChessMove> legalMoves = new ArrayList<>();
 
@@ -18,6 +20,8 @@ public abstract class PieceMovesCalculator {
         this.position = position;
         this.board = board;
         this.color = color;
+        this.row = position.getRow();    //are in array indices, not chess indices
+        this.col = position.getColumn(); //see order of ops function for conversion to chess indices
     }
 
     public abstract Collection<ChessMove> calculateLegalMoves();
@@ -41,6 +45,7 @@ public abstract class PieceMovesCalculator {
     //of the Rook, Bishop, and Queen
     //while the Knight and King ignore the boolean
     public boolean orderOfOps(int inRow, int inCol) {
+
         int tempRow = position.convertRowToChessIndices(inRow);
         int tempCol = position.convertColToChessIndices(inCol);
         ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
