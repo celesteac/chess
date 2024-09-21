@@ -6,8 +6,8 @@ import java.util.Collection;
 
 public class KingMovesCalculator extends PieceMovesCalculator {
 
-    public KingMovesCalculator(ChessBoard board, ChessPosition position) {
-        super(board, position);
+    public KingMovesCalculator(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
+        super(board, position, color);
     }
 
     public Collection<ChessMove> calculateLegalMoves(){
@@ -23,22 +23,15 @@ public class KingMovesCalculator extends PieceMovesCalculator {
                     int tempRow = position.convertRowToChessIndices(row+i);
                     int tempCol = position.convertColToChessIndices(col+j);
                     ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
-                    ChessGame.TeamColor pieceColor = board.getPiece(position).getTeamColor();
+
                     System.out.println(new ChessPosition(tempRow, tempCol));
 
-
-                    if(tempRow < 9 && tempRow > 0 && tempCol < 9 && tempCol > 0){ //within bounds?
-//                        System.out.println("within bounds");
-                        if(board.getPiece(tempPosition) == null) { //square empty?
-//                            System.out.println("empty");
-                            legalMoves.add(new ChessMove(position, tempPosition, null));
+                    if(checkBounds(tempRow,tempCol)){
+                        if(checkEmpty(tempPosition)) {
+                            addMove(tempPosition);
                         }
-                        else{ //square occupied by enemy?
-                            ChessGame.TeamColor tempColor = board.getPiece(tempPosition).getTeamColor();
-                            if(tempColor != pieceColor){
-//                                System.out.println(board.getPiece(tempPosition));
-                                legalMoves.add(new ChessMove(position, tempPosition, null));
-                            }
+                        else if(checkEnemy(tempPosition)){
+                            addMove(tempPosition);
                         }
                     }
 

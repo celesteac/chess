@@ -11,11 +11,13 @@ import java.util.Collection;
 public abstract class PieceMovesCalculator {
     ChessBoard board;
     ChessPosition position;
+    ChessGame.TeamColor color;
     Collection<ChessMove> legalMoves = new ArrayList<>();
 
-    public PieceMovesCalculator(ChessBoard board, ChessPosition position) {
+    public PieceMovesCalculator(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
         this.position = position;
         this.board = board;
+        this.color = color;
     }
 
     public abstract Collection<ChessMove> calculateLegalMoves();
@@ -27,7 +29,11 @@ public abstract class PieceMovesCalculator {
     public boolean checkEmpty(ChessPosition testPosition) {
         return board.getPiece(testPosition) == null;
     }
-    public boolean checkEnemy(ChessPosition testPosition, ChessGame.TeamColor color) {
-        return !board.getPiece(position).getTeamColor().equals(color);
+    public boolean checkEnemy(ChessPosition testPosition) {
+        return !board.getPiece(testPosition).getTeamColor().equals(color);
+    }
+
+    public void addMove(ChessPosition endPosition){
+        legalMoves.add(new ChessMove(position, endPosition, null));
     }
 }

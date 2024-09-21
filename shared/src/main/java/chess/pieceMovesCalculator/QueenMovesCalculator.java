@@ -6,8 +6,8 @@ import java.util.Collection;
 
 public class QueenMovesCalculator extends PieceMovesCalculator {
 
-    public QueenMovesCalculator(ChessBoard board, ChessPosition position) {
-        super(board, position);
+    public QueenMovesCalculator(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
+        super(board, position, color);
     }
 
     public Collection<ChessMove> calculateLegalMoves(){
