@@ -60,7 +60,7 @@ public abstract class PieceMovesCalculator {
             }
             else{
                 return true;
-            };
+            }
         }
         else {
             return true;
