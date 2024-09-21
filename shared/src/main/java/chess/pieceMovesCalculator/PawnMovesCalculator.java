@@ -39,6 +39,27 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
         };
     }
 
+//    @Override
+    private void addMove(ChessPosition tempPosition, ChessPiece.PieceType promotion){
+        legalMoves.add(new ChessMove(position, tempPosition, promotion));
+    }
+
+    private void addPromotions(ChessPosition chessPosition){
+        addMove(chessPosition, ChessPiece.PieceType.QUEEN);
+        addMove(chessPosition, ChessPiece.PieceType.KNIGHT);
+        addMove(chessPosition, ChessPiece.PieceType.ROOK);
+        addMove(chessPosition, ChessPiece.PieceType.BISHOP);
+    }
+
+//    private ChessPiece.PieceType checkPromotion(int tempRow){
+////        ChessPiece.PieceType promotion = null;
+////        return (tempRow == 1 || tempRow == 8) ? ChessPiece.PieceType.QUEEN : null;
+//    }
+
+    private boolean isPromotion(int tempRow){
+        return (tempRow == 1 || tempRow == 8);
+    }
+
     public Collection<ChessMove> calculateLegalMoves(){
 
         int possibleMoves =
@@ -54,18 +75,27 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
             tempRow = position.convertRowToChessIndices(tempRow);
             tempCol = position.convertColToChessIndices(tempCol);
             ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
+//            ChessPiece.PieceType promotion = checkPromotion(tempRow);
 
 
             if (checkBounds(tempRow, tempCol)) {
+
                 if (j > 1) { //cases forward 1 or 2 spaces
                     if (checkEmpty(tempPosition)) {
-                        addMove(tempPosition);
+
+                        //to change in later phase
+                        if(isPromotion(tempRow)) addPromotions(tempPosition);
+                        else addMove(tempPosition);
+
                     }
                     else if(j == 2) break; //piece blocking move 2 action
                 }
                 else { //diagonals
                     if (!checkEmpty(tempPosition) && checkEnemy(tempPosition)) {
-                        addMove(tempPosition);
+
+                        //to change in later phase
+                        if(isPromotion(tempRow)) addPromotions(tempPosition);
+                        else addMove(tempPosition);
                     }
                 }
             }

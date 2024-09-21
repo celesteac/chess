@@ -46,7 +46,7 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return "[" + start + ">" + end + "]";
+        return "[" + start + ">" + end + "]" + promotion.toString();
     }
 
     @Override
