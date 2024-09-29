@@ -1,49 +1,51 @@
 package chess.pieceMovesCalculator;
 
-import chess.*;
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
-public class QueenMovesCalculator extends PieceMovesCalculator {
+public class QueenMovesCalculator extends PieceMovesCalculator{
 
-    public QueenMovesCalculator(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
-        super(board, position, color);
+    public QueenMovesCalculator(ChessBoard board, ChessPosition position){
+        super(board, position);
     }
 
-    public Collection<ChessMove> calculateLegalMoves(){
+    public ArrayList<ChessMove> calculateMoves(){
 
-        for(int j = 1; j < 9; j++) { //8 movement directions
-            for (int i = 1; i < 8; i++) { //so it doesn't go off the board
+        for(int j = 0; j < 8; j++){ // 8 movement directions
+            for(int i = 1; i < 8; i ++){ //not go off the board
 
-                int tempRow = switch(j){ //moving around the original position, top left to counterclockwise
-                    case 1 -> row + i;
-                    case 2 -> row + i;
-                    case 3 -> row + i;
-                    case 4 -> row;
-                    case 5 -> row - i;
-                    case 6 -> row - i;
-                    case 7 -> row - i;
-                    case 8 -> row;
-                    default -> row;
+                int rowMod = switch (j){
+                    case 0 -> i;  //up right
+                    case 1 -> 0; //right
+                    case 2 -> -i; //down right
+                    case 3 -> -i;  //down
+                    case 4 -> -i;  //down left
+                    case 5 -> 0;  //left
+                    case 6 -> i;  //up left
+                    case 7 -> i;  //up
+                    default -> 0;
                 };
 
-                int tempCol = switch (j){ //moving around the original position, top left to counterclockwise
-                    case 1 -> col - i;
-                    case 2 -> col;
-                    case 3 -> col + i;
-                    case 4 -> col + i;
-                    case 5 -> col + i;
-                    case 6 -> col;
-                    case 7 -> col - i;
-                    case 8 -> col - i;
-                    default -> col;
+                int colMod = switch (j){
+                    case 0 -> i;  //up right
+                    case 1 -> i; //right
+                    case 2 -> i; //down right
+                    case 3 -> 0;  //down
+                    case 4 -> -i;  //down left
+                    case 5 -> -i;  //left
+                    case 6 -> -i;  //up left
+                    case 7 -> 0;  //up
+                    default -> 0;
                 };
 
-                if(orderOfOps(tempRow,tempCol)) break;
+                if(orderOfOperations(rowMod, colMod)) break;
 
             }
         }
 
-        return this.legalMoves;
+        return legalMoves;
     }
 }

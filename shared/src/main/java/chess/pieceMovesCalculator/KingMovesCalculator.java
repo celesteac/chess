@@ -1,29 +1,31 @@
 package chess.pieceMovesCalculator;
 
-import chess.*;
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
-public class KingMovesCalculator extends PieceMovesCalculator {
+public class KingMovesCalculator extends chess.pieceMovesCalculator.PieceMovesCalculator {
 
-    public KingMovesCalculator(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
-        super(board, position, color);
+    public KingMovesCalculator(ChessBoard board, ChessPosition position){
+        super(board, position);
     }
 
-    public Collection<ChessMove> calculateLegalMoves(){
+    public ArrayList<ChessMove> calculateMoves(){
 
-        int[] indices = {-1,0,1};  //loop through all the spaces around the king
-        for(int i : indices){
+        int[] indices = {-1,0,1};
+
+        for(int i : indices){  //checking every space around the king
             for(int j : indices){
-                if(!(i == 0 && j == 0)){  //don't check the original position
+                if(!(i == 0 && j == 0)){
 
-                    orderOfOps(row+i, col+j);
+                    orderOfOperations(i,j);
 
                 }
             }
         }
 
-        return this.legalMoves;
+        return legalMoves;
     }
-
 }

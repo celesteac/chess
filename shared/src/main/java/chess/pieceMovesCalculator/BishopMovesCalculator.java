@@ -1,40 +1,43 @@
 package chess.pieceMovesCalculator;
 
-import chess.*;
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
-public class BishopMovesCalculator extends PieceMovesCalculator {
-    public BishopMovesCalculator(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
-        super(board, position, color);
+public class BishopMovesCalculator extends PieceMovesCalculator{
+
+    public BishopMovesCalculator(ChessBoard board, ChessPosition position){
+        super(board, position);
     }
 
-    public Collection<ChessMove> calculateLegalMoves(){
+    public ArrayList<ChessMove> calculateMoves(){
 
-        for(int j = 1; j < 5; j++) { //4 movement directions
-            for (int i = 1; i < 8; i++) {  //so it doesn't go off the board
+        for(int j = 0; j < 4; j++){ // 4 movement directions
+            for(int i = 1; i < 8; i ++){ //not go off the board
 
-                int tempRow = switch(j){
-                    case 1 -> row + i;
-                    case 2 -> row + i;
-                    case 3 -> row - i;
-                    case 4 -> row - i;
-                    default -> row;
+                int rowMod = switch (j){
+                    case 0 -> i; //up right
+                    case 1 -> -i; //down right
+                    case 2 -> -i; //down left
+                    case 3 -> i; //up left
+                    default -> 0;
                 };
 
-                int tempCol = switch (j){
-                    case 1 -> col + i;
-                    case 2 -> col - i;
-                    case 3 -> col + i;
-                    case 4 -> col - i;
-                    default -> col;
+                int colMod = switch (j){
+                    case 0 -> i; //up right
+                    case 1 -> i; //down right
+                    case 2 -> -i; //down left
+                    case 3 -> -i; //up left
+                    default -> 0;
                 };
 
-                if(orderOfOps(tempRow,tempCol)) break;
+                if(orderOfOperations(rowMod, colMod)) break;
 
             }
         }
 
-        return this.legalMoves;
+        return legalMoves;
     }
 }
