@@ -9,8 +9,13 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    private ChessBoard board;
+    private TeamColor teamTurn;
 
     public ChessGame() {
+        this.board = new ChessBoard(); // don't know if I should set this here in
+        board.resetBoard();
+        teamTurn = TeamColor.WHITE;
 
     }
 
@@ -18,7 +23,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return teamTurn;
     }
 
     /**
@@ -27,7 +32,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        this.teamTurn = team;
     }
 
     /**
@@ -46,7 +51,15 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        //gets the list from pieceMoves
+        //checks that the team color is correct
+        //checks that is not check or checkmate or stalemate
+        if(board.getPiece(startPosition)==null){
+            return null;
+        }
+        else {
+            throw new RuntimeException("Not implemented");
+        }
     }
 
     /**
@@ -56,6 +69,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        //calls the board functions ro make a move
         throw new RuntimeException("Not implemented");
     }
 
@@ -66,6 +80,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        //checks if the king has any nearby pieces that could capture it
         throw new RuntimeException("Not implemented");
     }
 
@@ -76,6 +91,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+        //if the king is in danger, checks where he could move to step out of danger (will call the check function again)
+        //use some kind of cool little function to calculate that in check and pass it here? Or to calculate that can be used here
         throw new RuntimeException("Not implemented");
     }
 
@@ -87,6 +104,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        //checks that valid moves is empty but that check and check mate are false
         throw new RuntimeException("Not implemented");
     }
 
@@ -96,7 +114,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -105,6 +123,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
 }
