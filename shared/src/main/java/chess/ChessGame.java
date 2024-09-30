@@ -51,7 +51,7 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+    public Collection<ChessMove> validMoves(ChessPosition startPosition) throws InvalidMoveException {
         //gets the list from pieceMoves
         //checks that the team color is correct
         //checks that is not check or checkmate
@@ -68,8 +68,8 @@ public class ChessGame {
             valids = piece.pieceMoves(board, startPosition);
         }
         else {
-            //throw exception??
-            System.out.println("Error: wrong color, return empty");
+//            throw new InvalidMoveException("Tried to move out of turn");
+            System.out.println("tried to move out of turn");
         }
 
         return valids;
@@ -82,14 +82,17 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        Collection<ChessMove> valids = validMoves(move.getStartPosition());
-        if(valids.contains(move)){
-            executeMove(move);
-            changeTeamColor();
+        try {
+            Collection<ChessMove> valids = validMoves(move.getStartPosition());
+            if (valids.contains(move)) {
+                executeMove(move);
+                changeTeamColor();
+            } else {
+                throw new InvalidMoveException("invalid move");
+            }
         }
-        else{
-            //THROW EXCEPTION
-            System.out.println("ERROR: invalid move");
+        catch (InvalidMoveException ex){
+            System.out.println("invalid exception");
         }
 
     }

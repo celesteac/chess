@@ -60,7 +60,7 @@ public class PawnMovesCalculator extends PieceMovesCalculator{
             int tempCol = position.convertColToChessIndices(col + colMod);
             ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
 
-            System.out.println(tempPosition);
+//            System.out.println(tempPosition);
 
             if(checkBounds(tempRow, tempCol)){
                 if(j < 2){ //diagonals
