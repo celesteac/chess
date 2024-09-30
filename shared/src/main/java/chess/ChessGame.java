@@ -51,7 +51,7 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) throws InvalidMoveException {
+    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //gets the list from pieceMoves
         //checks that the team color is correct
         //checks that is not check or checkmate
@@ -82,18 +82,19 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        try {
+//        try {
             Collection<ChessMove> valids = validMoves(move.getStartPosition());
             if (valids.contains(move)) {
                 executeMove(move);
                 changeTeamColor();
             } else {
-                throw new InvalidMoveException("invalid move");
+                throw new InvalidMoveException("invalid move"); //WHY DOES THIS WORK??  
             }
-        }
-        catch (InvalidMoveException ex){
-            System.out.println("invalid exception");
-        }
+//        }
+//        catch (InvalidMoveException ex){
+//            System.out.println("invalid exception");
+//            throw new InvalidMoveException("this is weird");
+//        }
 
     }
 
