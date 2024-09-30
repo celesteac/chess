@@ -63,7 +63,6 @@ public class ChessPiece {
                 case PAWN -> new PawnMovesCalculator(board, myPosition).calculateMoves();
                 default -> null;
             };
-//        return new KingMovesCalculator(board, myPosition).calculateLegalMoves();
     }
 
     /// Overrides

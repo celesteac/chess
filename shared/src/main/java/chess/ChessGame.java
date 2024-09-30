@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -53,13 +54,25 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //gets the list from pieceMoves
         //checks that the team color is correct
-        //checks that is not check or checkmate or stalemate
-        if(board.getPiece(startPosition)==null){
+        //checks that is not check or checkmate
+
+        ChessPiece piece = board.getPiece(startPosition);
+
+        if( piece ==null ){
             return null;
         }
-        else {
-            throw new RuntimeException("Not implemented");
+
+        Collection<ChessMove> valids = new ArrayList<>();
+
+        if(teamTurn == piece.getTeamColor()){
+            valids = piece.pieceMoves(board, startPosition);
         }
+        else {
+            //throw exception??
+            System.out.println("Error: wrong color, return empty");
+        }
+
+        return valids;
     }
 
     /**
@@ -69,8 +82,29 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        //calls the board functions ro make a move
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> valids = validMoves(move.getStartPosition());
+        if(valids.contains(move)){
+            executeMove(move);
+            changeTeamColor();
+        }
+        else{
+            //THROW EXCEPTION
+            System.out.println("ERROR: invalid move");
+        }
+
+    }
+
+    private void executeMove(ChessMove move){
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        board.addPiece(start, null);
+        board.addPiece(end, piece);
+    }
+
+    private void changeTeamColor(){
+        this.teamTurn = this.teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
     }
 
     /**
