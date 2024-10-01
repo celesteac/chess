@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ChessMove {
     private final ChessPosition start;
     private final ChessPosition end;
-    private ChessPiece.PieceType promotion;
+    private final ChessPiece.PieceType promotion;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
@@ -46,7 +46,9 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return "[" + start + ">" + end + "]" + promotion.toString();
+        String move = "[" + start + ">" + end + "]";
+        move = promotion == null ? move : move + promotion.toString();
+        return move;
     }
 
     @Override

@@ -112,11 +112,26 @@ public class ChessGame {
         this.teamTurn = this.teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
     }
 
-//    private ChessPosition findTeamKing(TeamColor color){
-//        for(ChessPiece squares[] : board){
-//
-//        }
-//    }
+    private ChessPosition findTeamKing(TeamColor color){
+        for(int i = 1; i<9 ; i++){
+            for(int j = 1; j<9; j++){
+                ChessPosition tempPosition = new ChessPosition(i, j);
+                ChessPiece tempPiece = board.getPiece(tempPosition);
+                if(tempPiece != null){
+                    if(tempPiece.getTeamColor() == color){
+                        if(tempPiece.getPieceType() == ChessPiece.PieceType.KING){
+                            return tempPosition;
+                        }
+                    }
+                }
+            }
+        }
+        return null; //this would be a big problem. Throw a custom exception?
+    }
+
+    private boolean assessCheck(ChessPosition kingPosition){
+        return false;
+    }
 
     /**
      * Determines if the given team is in check
@@ -126,7 +141,8 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         //checks if the king has any nearby pieces that could capture it
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = findTeamKing(teamColor);
+        return assessCheck(kingPosition);
     }
 
     /**
