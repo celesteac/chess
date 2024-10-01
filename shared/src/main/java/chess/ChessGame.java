@@ -120,6 +120,7 @@ public class ChessGame {
                 if(tempPiece != null){
                     if(tempPiece.getTeamColor() == color){
                         if(tempPiece.getPieceType() == ChessPiece.PieceType.KING){
+                            System.out.println("king at: " + tempPosition.toString());
                             return tempPosition;
                         }
                     }
@@ -129,7 +130,32 @@ public class ChessGame {
         return null; //this would be a big problem. Throw a custom exception?
     }
 
-    private boolean assessCheck(ChessPosition kingPosition){
+    private Collection<ChessPosition> findAllTeamPieces(TeamColor color){
+        ArrayList<ChessPosition> allPieces = new ArrayList<>();
+        for(int i = 1; i<9 ; i++){
+            for(int j = 1; j<9; j++){
+                ChessPosition tempPosition = new ChessPosition(i, j);
+                ChessPiece tempPiece = board.getPiece(tempPosition);
+                if(tempPiece != null){
+                    if(tempPiece.getTeamColor() == color){
+                        allPieces.add(tempPosition);
+                    }
+                }
+            }
+        }
+        System.out.println("all pieces: " + allPieces.toString());
+        return allPieces;
+    }
+
+    private boolean assessCheck(ChessPosition kingPosition, TeamColor otherTeamColor){
+//        if(board.getPiece(kingPosition).getPieceType() != ChessPiece.PieceType.KING){
+//            //do something
+//        }
+        Collection<ChessPosition> allPiecesOtherTeam = findAllTeamPieces(otherTeamColor);
+        for(ChessPosition piecePos : allPiecesOtherTeam){
+            Collection<ChessMove> possibleMoves = validMoves(piecePos);
+        }
+        ///THIS IS GOING TO CAUSE A LOOP -> do something else!
         return false;
     }
 
@@ -142,7 +168,8 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         //checks if the king has any nearby pieces that could capture it
         ChessPosition kingPosition = findTeamKing(teamColor);
-        return assessCheck(kingPosition);
+        TeamColor otherTeamColor = teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+        return assessCheck(kingPosition, otherTeamColor);
     }
 
     /**
