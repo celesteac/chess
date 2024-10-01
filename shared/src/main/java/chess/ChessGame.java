@@ -57,7 +57,6 @@ public class ChessGame {
         //checks that is not check or checkmate
 
         ChessPiece piece = board.getPiece(startPosition);
-
         if( piece ==null ){
             return null;
         }
@@ -68,7 +67,6 @@ public class ChessGame {
             valids = piece.pieceMoves(board, startPosition);
         }
         else {
-//            throw new InvalidMoveException("Tried to move out of turn");
             System.out.println("tried to move out of turn");
         }
 
@@ -82,19 +80,14 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-//        try {
             Collection<ChessMove> valids = validMoves(move.getStartPosition());
-            if (valids.contains(move)) {
+
+            if (valids != null && valids.contains(move)) {
                 executeMove(move);
                 changeTeamColor();
             } else {
-                throw new InvalidMoveException("invalid move"); //WHY DOES THIS WORK??  
+                throw new InvalidMoveException("invalid move"); //WHY DOES THIS WORK?? Where is the exception handled?
             }
-//        }
-//        catch (InvalidMoveException ex){
-//            System.out.println("invalid exception");
-//            throw new InvalidMoveException("this is weird");
-//        }
 
     }
 
@@ -102,14 +95,28 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
 
+        ChessPiece.PieceType promo = move.getPromotionPiece();
         ChessPiece piece = board.getPiece(move.getStartPosition());
+
         board.addPiece(start, null);
-        board.addPiece(end, piece);
+
+        if(promo == null) {
+            board.addPiece(end, piece);
+        }
+        else {
+            board.addPiece(end, new ChessPiece(teamTurn, promo));
+        }
     }
 
     private void changeTeamColor(){
         this.teamTurn = this.teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
     }
+
+//    private ChessPosition findTeamKing(TeamColor color){
+//        for(ChessPiece squares[] : board){
+//
+//        }
+//    }
 
     /**
      * Determines if the given team is in check
