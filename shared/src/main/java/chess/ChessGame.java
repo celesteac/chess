@@ -3,8 +3,6 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import chess.AssessCheck;
-
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -63,16 +61,18 @@ public class ChessGame {
         }
 
         Collection<ChessMove> valids = piece.pieceMoves(board, startPosition);
-        Collection<ChessMove> toRemove = new ArrayList<ChessMove>();
+        Collection<ChessMove> toRemove = new ArrayList<>();
+        TeamColor movingTeam = piece.getTeamColor();
 
         for(ChessMove move: valids){
             System.out.println("checking move: " + move);
             //examine whether there would be check after the move
             ChessBoard hypotheticalBoard = getHypotheticalBoard(board, move);
-            ChessPosition kingPosition = findTeamKing(teamTurn, hypotheticalBoard);
+            ChessPosition kingPosition = findTeamKing(movingTeam, hypotheticalBoard);
 
             if(kingPosition != null) {
                 if (new AssessCheck(kingPosition, hypotheticalBoard).assessCheckAll()) {
+                    System.out.println("adding to toRemove: " + move);
                     toRemove.add(move);
                 }
             }
@@ -109,6 +109,7 @@ public class ChessGame {
 
 
         if (valids != null && valids.contains(move)) {
+
             ChessPiece movingPiece = board.getPiece(move.getStartPosition());
             if(movingPiece.getTeamColor() != teamTurn){
                 throw new InvalidMoveException( movingPiece.getTeamColor().toString() + movingPiece + "tried to move out of turn");
@@ -153,6 +154,7 @@ public class ChessGame {
 //    }
 
     private ChessPosition findTeamKing(TeamColor color, ChessBoard board){
+        System.out.println("finding king " + color.toString());
         for(int i = 1; i<9 ; i++){
             for(int j = 1; j<9; j++){
                 ChessPosition tempPosition = new ChessPosition(i, j);
@@ -160,7 +162,7 @@ public class ChessGame {
                 if(tempPiece != null){
                     if(tempPiece.getTeamColor() == color){
                         if(tempPiece.getPieceType() == ChessPiece.PieceType.KING){
-                            System.out.println("king at: " + tempPosition.toString());
+                            System.out.println("king at: " + tempPosition);
                             return tempPosition;
                         }
                     }
@@ -170,22 +172,22 @@ public class ChessGame {
         return null; //this would be a big problem. Throw a custom exception?
     }
 
-    private Collection<ChessPosition> findAllTeamPieces(TeamColor color){
-        ArrayList<ChessPosition> allPieces = new ArrayList<>();
-        for(int i = 1; i<9 ; i++){
-            for(int j = 1; j<9; j++){
-                ChessPosition tempPosition = new ChessPosition(i, j);
-                ChessPiece tempPiece = board.getPiece(tempPosition);
-                if(tempPiece != null){
-                    if(tempPiece.getTeamColor() == color){
-                        allPieces.add(tempPosition);
-                    }
-                }
-            }
-        }
-        System.out.println("all pieces: " + allPieces.toString());
-        return allPieces;
-    }
+//    private Collection<ChessPosition> findAllTeamPieces(TeamColor color){
+//        ArrayList<ChessPosition> allPieces = new ArrayList<>();
+//        for(int i = 1; i<9 ; i++){
+//            for(int j = 1; j<9; j++){
+//                ChessPosition tempPosition = new ChessPosition(i, j);
+//                ChessPiece tempPiece = board.getPiece(tempPosition);
+//                if(tempPiece != null){
+//                    if(tempPiece.getTeamColor() == color){
+//                        allPieces.add(tempPosition);
+//                    }
+//                }
+//            }
+//        }
+//        System.out.println("all pieces: " + allPieces);
+//        return allPieces;
+//    }
 
 //    private boolean isInDanger(ChessPosition activePiecePos, TeamColor otherTeamColor){
 //

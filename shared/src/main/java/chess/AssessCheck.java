@@ -1,7 +1,5 @@
 package chess;
 
-import java.util.Collection;
-
 public class AssessCheck {
     ChessPosition king;
     ChessBoard board;
