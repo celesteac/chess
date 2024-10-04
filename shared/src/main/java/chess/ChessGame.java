@@ -65,19 +65,39 @@ public class ChessGame {
 
         Collection<ChessMove> valids = new ArrayList<>();
 
-        if(teamTurn == piece.getTeamColor()){
+        if(teamTurn == piece.getTeamColor()){ //check that they are moving on their turn
+
             valids = piece.pieceMoves(board, startPosition);
+
+            for(ChessMove move: valids){
+                //examine whether there would be check after the move
+                ChessBoard hypotheticalBoard = getHypotheticalBoard(board, move);
+                ChessPosition kingPosition = findTeamKing(teamTurn, hypotheticalBoard);
+
+                if(new AssessCheck(kingPosition, hypotheticalBoard).assessCheckAll()){
+                    valids.remove(move);
+                }
+            }
+
         }
         else {
+            System.out.println("teamTurn: " + teamTurn + " pieceColor: " + piece.getTeamColor() + piece.getPieceType());
             System.out.println("tried to move out of turn");
         }
 
         return valids;
     }
 
-//    private ChessBoard getHypotheticalBoard(ChessBoard startingBoard, ChessMove move){
-//        ChessBoard hypotheticalBoard = startingBoard.
-//    }
+    private ChessBoard getHypotheticalBoard(ChessBoard startingBoard, ChessMove move){
+
+        ChessBoard hypotheticalBoard = startingBoard.clone();
+        executeMove(move, hypotheticalBoard);
+
+        System.out.println("old board: " + board);
+        System.out.println("hypothetical w/ move: " + hypotheticalBoard);
+
+        return hypotheticalBoard;
+    }
 
     /**
      * Makes a move in a chess game
@@ -89,7 +109,7 @@ public class ChessGame {
             Collection<ChessMove> valids = validMoves(move.getStartPosition());
 
             if (valids != null && valids.contains(move)) {
-                executeMove(move);
+                executeMove(move, board);
                 changeTeamColor();
             } else {
                 throw new InvalidMoveException("invalid move"); //WHY DOES THIS WORK?? Where is the exception handled?
@@ -97,7 +117,7 @@ public class ChessGame {
 
     }
 
-    private void executeMove(ChessMove move){
+    private void executeMove(ChessMove move, ChessBoard board){
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
 
@@ -118,7 +138,7 @@ public class ChessGame {
         this.teamTurn = this.teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
     }
 
-    private ChessPosition findTeamKing(TeamColor color){
+    private ChessPosition findTeamKing(TeamColor color, ChessBoard board){
         for(int i = 1; i<9 ; i++){
             for(int j = 1; j<9; j++){
                 ChessPosition tempPosition = new ChessPosition(i, j);
@@ -179,7 +199,7 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         System.out.println(board);
         System.out.println("checking status " + teamColor.toString());
-        ChessPosition kingPosition = findTeamKing(teamColor);
+        ChessPosition kingPosition = findTeamKing(teamColor, board);
         return new AssessCheck(kingPosition, board).assessCheckAll();
     }
 
