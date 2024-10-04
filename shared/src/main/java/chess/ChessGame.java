@@ -146,12 +146,6 @@ public class ChessGame {
         setTeamTurn(nextTeam);
     }
 
-//    private void changeTeamColor(TeamColor justMoved){
-////        TeamColor otherTeam = justMoved == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
-////        teamTurn = otherTeam;
-//
-//        teamTurn = justMoved == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
-//    }
 
     private ChessPosition findTeamKing(TeamColor color, ChessBoard board){
         System.out.println("finding king " + color.toString());
@@ -172,39 +166,35 @@ public class ChessGame {
         return null; //this would be a big problem. Throw a custom exception?
     }
 
-//    private Collection<ChessPosition> findAllTeamPieces(TeamColor color){
-//        ArrayList<ChessPosition> allPieces = new ArrayList<>();
-//        for(int i = 1; i<9 ; i++){
-//            for(int j = 1; j<9; j++){
-//                ChessPosition tempPosition = new ChessPosition(i, j);
-//                ChessPiece tempPiece = board.getPiece(tempPosition);
-//                if(tempPiece != null){
-//                    if(tempPiece.getTeamColor() == color){
-//                        allPieces.add(tempPosition);
-//                    }
-//                }
-//            }
-//        }
-//        System.out.println("all pieces: " + allPieces);
-//        return allPieces;
-//    }
+    private Collection<ChessPosition> findAllTeamPieces(TeamColor color){
+        ArrayList<ChessPosition> allPieces = new ArrayList<>();
+        for(int i = 1; i<9 ; i++){
+            for(int j = 1; j<9; j++){
+                ChessPosition tempPosition = new ChessPosition(i, j);
+                ChessPiece tempPiece = board.getPiece(tempPosition);
+                if(tempPiece != null){
+                    if(tempPiece.getTeamColor() == color){
+                        allPieces.add(tempPosition);
+                    }
+                }
+            }
+        }
+        System.out.println("all pieces: " + allPieces);
+        return allPieces;
+    }
 
-//    private boolean isInDanger(ChessPosition activePiecePos, TeamColor otherTeamColor){
-//
-//        Collection<ChessPosition> allPiecesOtherTeam = findAllTeamPieces(otherTeamColor);
-//
-//        //loops through every other piece to see if they can attack the active piece's position
-//        for(ChessPosition piecePos : allPiecesOtherTeam){
-//            Collection<ChessMove> possibleMoves = board.getPiece(piecePos).pieceMoves(board, piecePos);
-//            for(ChessMove possibleMove : possibleMoves){
-//                if(possibleMove.getEndPosition() == activePiecePos){
-//                    return true;
-//                }
-//            }
-//        }
-//
-//        return false;
-//    }
+    private boolean allTeamPiecesStuck(TeamColor teamColor){
+        Collection<ChessPosition> allPiecePositions = findAllTeamPieces(teamColor);
+        boolean noPiecesCanMove = true;
+        for(ChessPosition piecePos : allPiecePositions){
+            Collection<ChessMove> pieceMoves = validMoves(piecePos);
+            if(!pieceMoves.isEmpty()){
+                noPiecesCanMove = false;
+                break;
+            }
+        }
+        return noPiecesCanMove;
+    }
 
     /**
      * Determines if the given team is in check
@@ -226,9 +216,13 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        //if the king is in danger, checks where he could move to step out of danger (will call the check function again)
-        //use some kind of cool little function to calculate that in check and pass it here? Or to calculate that can be used here
-        throw new RuntimeException("Not implemented");
+        //check if the king is currently in check
+        //and all the team's pieces have empty valid moves
+        if(isInCheck(teamColor)){
+            return allTeamPiecesStuck(teamColor);
+        }
+
+        return false;
     }
 
     /**
@@ -239,8 +233,12 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        //checks that valid moves is empty but that check and check mate are false
-        throw new RuntimeException("Not implemented");
+        //if not in check and not in checkmate, but valid moves empty for all pieces
+        if(!isInCheck(teamColor) && !isInCheckmate(teamColor)){
+            return allTeamPiecesStuck(teamColor);
+        }
+
+        return false;
     }
 
     /**
