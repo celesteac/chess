@@ -74,8 +74,10 @@ public class ChessGame {
                 ChessBoard hypotheticalBoard = getHypotheticalBoard(board, move);
                 ChessPosition kingPosition = findTeamKing(teamTurn, hypotheticalBoard);
 
-                if(new AssessCheck(kingPosition, hypotheticalBoard).assessCheckAll()){
-                    valids.remove(move);
+                if(kingPosition != null) {
+                    if (new AssessCheck(kingPosition, hypotheticalBoard).assessCheckAll()) {
+                        valids.remove(move);
+                    }
                 }
             }
 
