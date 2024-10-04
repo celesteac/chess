@@ -3,6 +3,8 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import chess.AssessCheck;
+
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -147,22 +149,22 @@ public class ChessGame {
         return allPieces;
     }
 
-    private boolean isInDanger(ChessPosition activePiecePos, TeamColor otherTeamColor){
-
-        Collection<ChessPosition> allPiecesOtherTeam = findAllTeamPieces(otherTeamColor);
-
-        //loops through every other piece to see if they can attack the active piece's position
-        for(ChessPosition piecePos : allPiecesOtherTeam){
-            Collection<ChessMove> possibleMoves = board.getPiece(piecePos).pieceMoves(board, piecePos);
-            for(ChessMove possibleMove : possibleMoves){
-                if(possibleMove.getEndPosition() == activePiecePos){
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
+//    private boolean isInDanger(ChessPosition activePiecePos, TeamColor otherTeamColor){
+//
+//        Collection<ChessPosition> allPiecesOtherTeam = findAllTeamPieces(otherTeamColor);
+//
+//        //loops through every other piece to see if they can attack the active piece's position
+//        for(ChessPosition piecePos : allPiecesOtherTeam){
+//            Collection<ChessMove> possibleMoves = board.getPiece(piecePos).pieceMoves(board, piecePos);
+//            for(ChessMove possibleMove : possibleMoves){
+//                if(possibleMove.getEndPosition() == activePiecePos){
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
 
     /**
      * Determines if the given team is in check
@@ -171,10 +173,10 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        //checks if the king has any nearby pieces that could capture it
+        System.out.println(board);
+        System.out.println("checking status " + teamColor.toString());
         ChessPosition kingPosition = findTeamKing(teamColor);
-        TeamColor otherTeamColor = teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
-        return isInDanger(kingPosition, otherTeamColor);
+        return new AssessCheck(kingPosition, board).assessCheckAll();
     }
 
     /**

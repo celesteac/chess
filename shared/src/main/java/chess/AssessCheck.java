@@ -19,6 +19,10 @@ public class AssessCheck {
         this.col = kingPosition.getColumn();
     }
 
+    public boolean assessCheckAll(){
+        return (checkBishopQueen() || checkRookQueen() || checkKnight() || checkPawn());
+    }
+
     private boolean checkBounds(int tempRow, int tempCol){
         return (tempRow < 9 && tempCol < 9 && tempRow > 0 && tempCol > 0);
     }
@@ -40,21 +44,28 @@ public class AssessCheck {
 
                 int rowMod = direction[0];
                 int colMod = direction[1];
-                int tempRow = row + rowMod;
-                int tempCol = col + colMod;
+                int tempRow = king.convertRowIndices(row + rowMod);
+                int tempCol = king.convertColToChessIndices(col + colMod);
                 ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
 
+
                 if (checkBounds(tempRow, tempCol)){
+                    System.out.println(tempPosition);
                     ChessPiece tempPiece = board.getPiece(tempPosition);
                     if(tempPiece != null){
+                        System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
                         contLoop = false;
                         if(tempPiece.getTeamColor() != kingColor){
                             if(tempPiece.getPieceType() == ChessPiece.PieceType.BISHOP
                                          || tempPiece.getPieceType() == ChessPiece.PieceType.QUEEN){
+                                System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
                                 return true;
                             }
                         }
                     }
+                }
+                else{
+                    contLoop = false;
                 }
                 if(!contLoop){
                     break;
@@ -64,6 +75,10 @@ public class AssessCheck {
 
         return false;
     }
+
+
+
+
 
     private boolean checkRookQueen(){
         return false;
@@ -76,42 +91,6 @@ public class AssessCheck {
     private boolean checkPawn(){
         return false;
     }
-
-
-
-
-
-//    private int[][] pieceDirections(ChessPiece.PieceType pieceType){
-//        int[] up = {1,0};
-//        int[] down = {-1,0};
-//        int[] right = {0,1};
-//        int[] left = {0,-1};
-//        int[] diagUpRight = {1,1};
-//        int[] diagUpLeft = {1,-1};
-//        int[] diagDownRight = {-1,1};
-//        int[] diagDownLeft = {-1,-1};
-//
-//        int[][] test = {up, right};
-//
-//        return switch(pieceType) {
-//            case QUEEN -> {up, down, left, right, diagUpLeft, diagDownLeft, diagDownRight, diagUpRight};
-//            case KNIGHT -> {up};
-////            case BISHOP -> {down};
-////            case ROOK -> {};
-////            case PAWN -> {};
-//            default -> null;
-//        };
-//    }
-//
-//    private boolean checkAttack(int[][] directions, ChessPiece.PieceType type){
-//        //for loop 7 times
-//            //check at the position row + rowDir * i and col same
-//
-//
-//        return false;
-//    }
-
-//    private Collection<ChessPosition> check
 
 
 }
