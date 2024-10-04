@@ -20,7 +20,7 @@ public class AssessCheck {
     }
 
     public boolean assessCheckAll(){
-//        return checkKnight();
+//        return (checkBishopQueen() || checkRookQueen() || checkKnight() || checkKing() || checkPawn());
         return (checkBishopQueen() || checkRookQueen() || checkKnight() || checkPawn());
     }
 
@@ -129,7 +129,41 @@ public class AssessCheck {
         return false;
     }
 
+    private boolean checkKing(){
 
+        for(int j = 1; j < 9; j++){ //check 8 different spots
+            int[] direction = switch (j) {
+                case 1 -> new int[] {1,0};
+                case 2 -> new int[] {1,1};
+                case 3 -> new int[] {0,1};
+                case 4 -> new int[] {-1,1};
+                case 5 -> new int[] {-1,0};
+                case 6 -> new int[] {-1,-1};
+                case 7 -> new int[] {0,-1};
+                case 8 -> new int[] {1,-1};
+                default -> new int[] {0,0};
+            };
+
+            int tempRow = king.convertRowIndices(row + direction[0]);
+            int tempCol = king.convertColToChessIndices(col + direction[1]);
+            ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
+
+            if (checkBounds(tempRow, tempCol)){
+                System.out.println(tempPosition);
+                ChessPiece tempPiece = board.getPiece(tempPosition);
+                if(tempPiece != null){
+                    System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
+                    if(tempPiece.getTeamColor() != kingColor){
+                        if(tempPiece.getPieceType() == ChessPiece.PieceType.KING){
+                            System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     private boolean checkKnight(){
 

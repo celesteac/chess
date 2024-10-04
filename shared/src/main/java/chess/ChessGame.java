@@ -16,7 +16,7 @@ public class ChessGame {
     private TeamColor teamTurn;
 
     public ChessGame() {
-        this.board = new ChessBoard(); // don't know if I should set this here in
+        this.board = new ChessBoard();
         board.resetBoard();
         teamTurn = TeamColor.WHITE;
 
@@ -55,36 +55,25 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //gets the list from pieceMoves
-        //checks that the team color is correct
-        //checks that does not check or checkmate
+        //checks that each move does not cause check
 
         ChessPiece piece = board.getPiece(startPosition); //checks
         if( piece ==null ){
             return null;
         }
 
-        Collection<ChessMove> valids = new ArrayList<>();
+        Collection<ChessMove> valids = piece.pieceMoves(board, startPosition);
 
-        if(teamTurn == piece.getTeamColor()){ //check that they are moving on their turn
+        for(ChessMove move: valids){
+            //examine whether there would be check after the move
+            ChessBoard hypotheticalBoard = getHypotheticalBoard(board, move);
+            ChessPosition kingPosition = findTeamKing(teamTurn, hypotheticalBoard);
 
-            valids = piece.pieceMoves(board, startPosition);
-
-            for(ChessMove move: valids){
-                //examine whether there would be check after the move
-                ChessBoard hypotheticalBoard = getHypotheticalBoard(board, move);
-                ChessPosition kingPosition = findTeamKing(teamTurn, hypotheticalBoard);
-
-                if(kingPosition != null) {
-                    if (new AssessCheck(kingPosition, hypotheticalBoard).assessCheckAll()) {
-                        valids.remove(move);
-                    }
+            if(kingPosition != null) {
+                if (new AssessCheck(kingPosition, hypotheticalBoard).assessCheckAll()) {
+                    valids.remove(move);
                 }
             }
-
-        }
-        else {
-            System.out.println("teamTurn: " + teamTurn + " pieceColor: " + piece.getTeamColor() + piece.getPieceType());
-            System.out.println("tried to move out of turn");
         }
 
         return valids;
@@ -108,14 +97,20 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-            Collection<ChessMove> valids = validMoves(move.getStartPosition());
+        Collection<ChessMove> valids = validMoves(move.getStartPosition());
 
-            if (valids != null && valids.contains(move)) {
-                executeMove(move, board);
-                changeTeamColor();
-            } else {
-                throw new InvalidMoveException("invalid move"); //WHY DOES THIS WORK?? Where is the exception handled?
+
+        if (valids != null && valids.contains(move)) {
+            ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+            if(movingPiece.getTeamColor() != teamTurn){
+                throw new InvalidMoveException( movingPiece.getTeamColor().toString() + movingPiece + "tried to move out of turn");
             }
+
+            executeMove(move, board);
+            changeTeamColor();
+        } else {
+            throw new InvalidMoveException("invalid move"); //WHY DOES THIS WORK?? Where is the exception handled?
+        }
 
     }
 
@@ -137,8 +132,17 @@ public class ChessGame {
     }
 
     private void changeTeamColor(){
-        this.teamTurn = this.teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+
+        TeamColor nextTeam = teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+        setTeamTurn(nextTeam);
     }
+
+//    private void changeTeamColor(TeamColor justMoved){
+////        TeamColor otherTeam = justMoved == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+////        teamTurn = otherTeam;
+//
+//        teamTurn = justMoved == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+//    }
 
     private ChessPosition findTeamKing(TeamColor color, ChessBoard board){
         for(int i = 1; i<9 ; i++){
