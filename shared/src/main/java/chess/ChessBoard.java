@@ -19,6 +19,11 @@ public class ChessBoard {
 //        resetBoard();
     }
 
+//    //Copy Constructor
+//    public ChessBoard(ChessBoard another){
+//        this.squares = another.squares;
+//    }
+
     /**
      * Adds a chess piece to the chessboard
      *

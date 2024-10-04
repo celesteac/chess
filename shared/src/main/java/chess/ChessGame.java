@@ -56,7 +56,7 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //gets the list from pieceMoves
         //checks that the team color is correct
-        //checks that is not check or checkmate
+        //checks that does not check or checkmate
 
         ChessPiece piece = board.getPiece(startPosition); //checks
         if( piece ==null ){
@@ -74,6 +74,10 @@ public class ChessGame {
 
         return valids;
     }
+
+//    private ChessBoard getHypotheticalBoard(ChessBoard startingBoard, ChessMove move){
+//        ChessBoard hypotheticalBoard = startingBoard.
+//    }
 
     /**
      * Makes a move in a chess game
