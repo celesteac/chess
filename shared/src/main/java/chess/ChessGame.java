@@ -56,7 +56,7 @@ public class ChessGame {
         //checks that the team color is correct
         //checks that is not check or checkmate
 
-        ChessPiece piece = board.getPiece(startPosition);
+        ChessPiece piece = board.getPiece(startPosition); //checks
         if( piece ==null ){
             return null;
         }
@@ -147,15 +147,20 @@ public class ChessGame {
         return allPieces;
     }
 
-    private boolean assessCheck(ChessPosition kingPosition, TeamColor otherTeamColor){
-//        if(board.getPiece(kingPosition).getPieceType() != ChessPiece.PieceType.KING){
-//            //do something
-//        }
+    private boolean isInDanger(ChessPosition activePiecePos, TeamColor otherTeamColor){
+
         Collection<ChessPosition> allPiecesOtherTeam = findAllTeamPieces(otherTeamColor);
+
+        //loops through every other piece to see if they can attack the active piece's position
         for(ChessPosition piecePos : allPiecesOtherTeam){
-            Collection<ChessMove> possibleMoves = validMoves(piecePos);
+            Collection<ChessMove> possibleMoves = board.getPiece(piecePos).pieceMoves(board, piecePos);
+            for(ChessMove possibleMove : possibleMoves){
+                if(possibleMove.getEndPosition() == activePiecePos){
+                    return true;
+                }
+            }
         }
-        ///THIS IS GOING TO CAUSE A LOOP -> do something else!
+
         return false;
     }
 
@@ -169,7 +174,7 @@ public class ChessGame {
         //checks if the king has any nearby pieces that could capture it
         ChessPosition kingPosition = findTeamKing(teamColor);
         TeamColor otherTeamColor = teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
-        return assessCheck(kingPosition, otherTeamColor);
+        return isInDanger(kingPosition, otherTeamColor);
     }
 
     /**
