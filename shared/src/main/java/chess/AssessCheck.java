@@ -20,8 +20,8 @@ public class AssessCheck {
     }
 
     public boolean assessCheckAll(){
-//        return (checkBishopQueen() || checkRookQueen() || checkKnight() || checkKing() || checkPawn());
-        return (checkBishopQueen() || checkRookQueen() || checkKnight() || checkPawn());
+        return (checkBishopQueen() || checkRookQueen() || checkKnight() || checkKing() || checkPawn());
+//        return (checkBishopQueen() || checkRookQueen() || checkKnight() || checkPawn());
     }
 
     private boolean checkBounds(int tempRow, int tempCol){

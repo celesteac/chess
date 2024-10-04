@@ -63,19 +63,27 @@ public class ChessGame {
         }
 
         Collection<ChessMove> valids = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> toRemove = new ArrayList<ChessMove>();
 
         for(ChessMove move: valids){
+            System.out.println("checking move: " + move);
             //examine whether there would be check after the move
             ChessBoard hypotheticalBoard = getHypotheticalBoard(board, move);
             ChessPosition kingPosition = findTeamKing(teamTurn, hypotheticalBoard);
 
             if(kingPosition != null) {
                 if (new AssessCheck(kingPosition, hypotheticalBoard).assessCheckAll()) {
-                    valids.remove(move);
+                    toRemove.add(move);
                 }
             }
         }
+        if(!toRemove.isEmpty()) {
+            for (ChessMove move : toRemove) {
+                valids.remove(move);
+            }
+        }
 
+        System.out.println("valid moves: " + valids);
         return valids;
     }
 
