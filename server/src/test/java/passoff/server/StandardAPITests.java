@@ -1,9 +1,8 @@
-package java.passoff.server;
+package passoff.server;
 
 import chess.ChessGame;
 import org.junit.jupiter.api.*;
 import passoff.model.*;
-import passoff.server.TestServerFacade;
 import server.Server;
 
 import java.net.HttpURLConnection;
@@ -13,7 +12,7 @@ import java.util.HashSet;
 import java.util.Locale;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class StandardAPITests {
+public class  StandardAPITests {
 
     private static TestUser existingUser;
 
@@ -25,6 +24,8 @@ public class StandardAPITests {
     private static Server server;
 
     private String existingAuth;
+
+
 
     @AfterAll
     static void stopServer() {
