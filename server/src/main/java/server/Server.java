@@ -1,5 +1,7 @@
 package server;
 
+import com.google.gson.Gson;
+import model.UserData;
 import service.Service;
 import spark.*;
 
@@ -16,9 +18,6 @@ public class Server {
 
         Spark.post("/user", (req, res) -> registerUser(req, res));
 
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
-
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -29,9 +28,11 @@ public class Server {
     //convert inputs to JSON with GSON before passing them on?
 
     private String registerUser(Request req, Response res){
-        return """
+        UserData newUser = new Gson().fromJson(req.body(), UserData.class);
+        System.out.println(newUser);
+        return s.registerUserHardcode("""
                 {"username": "john", "password":"piano", "email":"mail@mail.com"}
-                """;
+                """);
     }
 
     public void stop() {

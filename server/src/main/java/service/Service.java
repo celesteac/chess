@@ -10,4 +10,8 @@ public class Service {
         //return register result
         return newUser;
     }
+
+    public String registerUserHardcode(String user){
+        return user + " yay";
+    }
 }
