@@ -6,7 +6,7 @@ import service.Service;
 import spark.*;
 
 public class Server {
-    private Service s = new Service();
+    private final Service s = new Service();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -27,12 +27,11 @@ public class Server {
     //they use the Service methods
     //convert inputs to JSON with GSON before passing them on?
 
-    private String registerUser(Request req, Response res){
+    private UserData registerUser(Request req, Response res){
         UserData newUser = new Gson().fromJson(req.body(), UserData.class);
-        System.out.println(newUser);
-        return s.registerUserHardcode("""
-                {"username": "john", "password":"piano", "email":"mail@mail.com"}
-                """);
+
+
+        return s.registerUser(newUser);
     }
 
     public void stop() {
