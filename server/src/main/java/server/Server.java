@@ -29,6 +29,7 @@ public class Server {
 
     private UserData registerUser(Request req, Response res){
         UserData newUser = new Gson().fromJson(req.body(), UserData.class);
+        //throw error here if bad request? helper function
 
 
         return s.registerUser(newUser);
