@@ -2,7 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 import service.Service;
+import service.ServiceException;
 import spark.*;
 
 public class Server {
@@ -27,12 +29,21 @@ public class Server {
     //they use the Service methods
     //convert inputs to JSON with GSON before passing them on?
 
-    private UserData registerUser(Request req, Response res){
-        UserData newUser = new Gson().fromJson(req.body(), UserData.class);
+    private Object registerUser(Request req, Response res) {
+        var g = new Gson();
+        UserData newUser = g.fromJson(req.body(), UserData.class);
         //throw error here if bad request? helper function
 
+        UserData a = new UserData(null, null, null);
 
-        return s.registerUser(newUser);
+        try {
+             a = s.registerUser(newUser);
+        }
+        catch(ServiceException s){
+            return g.toJson(s.getMessage());
+        }
+
+        return g.toJson(a);
     }
 
     public void stop() {
