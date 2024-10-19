@@ -15,8 +15,6 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        // Register your endpoints and handle exceptions here.
-        //this is where the Spark.post("/path", function) and other go
 
         Spark.post("/user", (req, res) -> registerUser(req, res));
 
@@ -24,7 +22,7 @@ public class Server {
         return Spark.port();
     }
 
-    //this is where handler function go
+    //this is where handler functions go
     //they will be called from the endpoints
     //they use the Service methods
     //convert inputs to JSON with GSON before passing them on?
@@ -40,10 +38,21 @@ public class Server {
              a = s.registerUser(newUser);
         }
         catch(ServiceException s){
-            return g.toJson(s.getMessage());
+            //403 = if user existed, forbidden
+            return createErrorMessage(403, s.getMessage(), res);
+
         }
 
         return g.toJson(a);
+    }
+
+    private String createErrorMessage(Integer status, String message, Response res){
+        var gson = new Gson();
+        ErrorResponse messageObj = new ErrorResponse(message);
+        res.status(status);
+        res.body(gson.toJson(messageObj));
+        res.type("application/json");
+        return res.body();
     }
 
     public void stop() {
