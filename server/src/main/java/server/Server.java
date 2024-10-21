@@ -8,7 +8,7 @@ import service.ServiceException;
 import spark.*;
 
 public class Server {
-    private final Service s = new Service();
+    private final Service service = new Service();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -34,7 +34,7 @@ public class Server {
             //throw error here if bad request? helper function
 
             UserData a = new UserData(null, null, null);
-            a = s.registerUser(newUser);
+            a = service.registerUser(newUser);
             return g.toJson(a);
         }
         catch(ServiceException s){

@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.UserDAOMemory;
+import model.AuthData;
 import model.UserData;
 import java.util.UUID;
 
@@ -18,6 +19,9 @@ public class Service {
         }
 
         userDAO.addUser(newUser);
+        AuthData newAuthData = new AuthData(generateAuthToken(), newUser.username());
+
+
         return newUser;
 
     }
