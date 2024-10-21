@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.UserDAOMemory;
 import model.UserData;
+import java.util.UUID;
 
 public class Service {
     UserDAOMemory userDAO = new UserDAOMemory();
@@ -21,7 +22,7 @@ public class Service {
 
     }
 
-    public String registerUserHardcode(String user){
-        return user + " yay";
+    public String generateAuthToken(){
+        return UUID.randomUUID().toString();
     }
 }

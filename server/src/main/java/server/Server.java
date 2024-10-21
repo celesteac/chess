@@ -28,25 +28,22 @@ public class Server {
     //convert inputs to JSON with GSON before passing them on?
 
     private Object registerUser(Request req, Response res) {
-        var g = new Gson();
-        UserData newUser = g.fromJson(req.body(), UserData.class);
-        //throw error here if bad request? helper function
-
-        UserData a = new UserData(null, null, null);
-
         try {
-             a = s.registerUser(newUser);
+            var g = new Gson();
+            UserData newUser = g.fromJson(req.body(), UserData.class);
+            //throw error here if bad request? helper function
+
+            UserData a = new UserData(null, null, null);
+            a = s.registerUser(newUser);
+            return g.toJson(a);
         }
         catch(ServiceException s){
             //403 = if user existed, forbidden
-            return createErrorMessage(403, s.getMessage(), res);
-
+            return createErrorResponse(403, s.getMessage(), res);
         }
-
-        return g.toJson(a);
     }
 
-    private String createErrorMessage(Integer status, String message, Response res){
+    private String createErrorResponse(Integer status, String message, Response res){
         var gson = new Gson();
         ErrorResponse messageObj = new ErrorResponse(message);
         res.status(status);
