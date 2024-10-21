@@ -19,22 +19,22 @@ public class Server {
 
         Spark.post("/user", (req, res) -> registerUser(req, res));
 //        Spark.post("/test", (req, res) -> testPrintReq(req, res));
+        Spark.delete("/db", (req, res) -> );
 
         Spark.awaitInitialization();
         return Spark.port();
     }
 
-    //this is where handler functions go
-    //they will be called from the endpoints
-    //they use the Service methods
-    //convert inputs to JSON with GSON before passing them on?
+    private void clearDB(Request req, Response res){
+        //call service layer
+    }
 
     private Object registerUser(Request req, Response res) {
         try {
             var g = new Gson();
             UserData newUser = g.fromJson(req.body(), UserData.class);
             if(!checkValidRegisterRequest(newUser)) {
-                throw new ServerException("bad request");
+                throw new ServerException("bad request"); //should this be thrown from the service layer?
             }
 
             AuthData auth = service.registerUser(newUser);
