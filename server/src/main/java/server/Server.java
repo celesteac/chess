@@ -18,6 +18,7 @@ public class Server {
 
 
         Spark.post("/user", (req, res) -> registerUser(req, res));
+//        Spark.post("/test", (req, res) -> testPrintReq(req, res));
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -32,14 +33,20 @@ public class Server {
         try {
             var g = new Gson();
             UserData newUser = g.fromJson(req.body(), UserData.class);
-            //throw error here if bad request? helper function
+            if(!checkValidRegisterRequest(newUser)) {
+                throw new ServerException("bad request");
+            }
 
-            AuthData a = service.registerUser(newUser);
-            return g.toJson(a);
+            AuthData auth = service.registerUser(newUser);
+            return g.toJson(auth);
         }
-        catch(ServiceException s){
+        catch(ServiceException e){
             //403 = if user existed, forbidden
-            return createErrorResponse(403, s.getMessage(), res);
+            return createErrorResponse(403, e.getMessage(), res);
+        }
+        catch (ServerException e){
+            //400 = bad request
+            return createErrorResponse(400, e.getMessage(), res);
         }
     }
 
@@ -50,6 +57,19 @@ public class Server {
         res.body(gson.toJson(messageObj));
         res.type("application/json");
         return res.body();
+    }
+
+//    private UserData testPrintReq(Request req, Response res){
+//        var g = new Gson();
+//        UserData newUser = g.fromJson(req.body(), UserData.class);
+//        res.type("application/json");
+//        return newUser;
+//    }
+
+    private boolean checkValidRegisterRequest(UserData user) {
+        return (user.username() != null
+                && user.password() != null
+                && user.email() != null);
     }
 
     public void stop() {

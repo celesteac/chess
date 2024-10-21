@@ -27,6 +27,16 @@ public class ServiceTest {
         assertEquals(36, auth.authToken().length());
     }
 
+    @Disabled("need to clear the memory before running the test")
+    void registerUserAlreadyTaken() throws ServiceException{
+        //check that adding a user twice returns null (or throws exception?)🤔
+        UserData user = new UserData("miguel", "cute", "the cutest");
+        service.registerUser(user);
+        assertThrows(ServiceException.class, ()->{
+           service.registerUser(user);
+        });
+    }
+
     @Test
     void getNewAuthToken(){
 //        Service s = new Service();
