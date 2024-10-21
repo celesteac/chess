@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import model.AuthData;
 import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 import service.Service;
@@ -33,8 +34,7 @@ public class Server {
             UserData newUser = g.fromJson(req.body(), UserData.class);
             //throw error here if bad request? helper function
 
-            UserData a = new UserData(null, null, null);
-            a = service.registerUser(newUser);
+            AuthData a = service.registerUser(newUser);
             return g.toJson(a);
         }
         catch(ServiceException s){
