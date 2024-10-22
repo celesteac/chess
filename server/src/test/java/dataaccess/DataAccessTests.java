@@ -9,11 +9,13 @@ import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import service.Service;
+import service.ServiceException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DataAccessTests {
+    private static Service service;
     private static UserData testUser;
     private static UserData testUser_2;
     private static AuthData testAuth;
@@ -23,7 +25,7 @@ public class DataAccessTests {
 
     @BeforeAll
     public static void init(){
-        Service service = new Service();
+        service = new Service();
         testUser = new UserData("carl", "balloons", "cliff@mail");
         testUser_2 = new UserData("russell", "balloons", "birds@mail");
         testAuth = new AuthData(service.generateAuthToken(), "Ellie");
@@ -36,6 +38,11 @@ public class DataAccessTests {
                 new ChessGame(), null, null,
                 "adventure", 5678
         );
+    }
+
+    @BeforeEach
+    public void setup() throws ServiceException {
+        service.clearDB();
     }
 
     @Test

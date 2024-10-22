@@ -79,13 +79,13 @@ public class Service {
         return newGame.gameID();
     }
 
-    public Object listGames(String authToken) throws ServiceException{
+    public Map<Integer, GameData> listGames(String authToken) throws ServiceException{
         if(authDAO.getAuthData(authToken) == null){
             throw new ServiceException("Error: unauthorized", 401);
         }
-//        Map<>
+//        Map<Integer, GameData> games = gameDAO.getAllGames();
 
-        return "";
+        return gameDAO.getAllGames();
     }
 
     public void clearDB() throws ServiceException{
@@ -127,8 +127,8 @@ public class Service {
     }
 
     private boolean checkValidCreateRequest(CreateRequest createReq){
-        System.out.println(createReq.gameName());
-        System.out.println(createReq.authToken());
+//        System.out.println(createReq.gameName());
+//        System.out.println(createReq.authToken());
         return (createReq.gameName() != null && !createReq.gameName().isEmpty()
                 && createReq.authToken() != null && !createReq.authToken().isEmpty());
     }

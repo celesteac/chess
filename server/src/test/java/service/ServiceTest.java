@@ -11,6 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 import server.CreateRequest;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class ServiceTest {
@@ -65,7 +68,7 @@ public class ServiceTest {
     @Test
     void getNewAuthToken(){
         String uuid = service.generateAuthToken();
-        System.out.println(uuid);
+//        System.out.println(uuid);
         Assertions.assertEquals(36, uuid.length());
     }
 
@@ -98,7 +101,7 @@ public class ServiceTest {
         CreateRequest createReq = new CreateRequest(testGame.gameName(), userAuth.authToken());
         int gameID = service.createGame(createReq);
         String gameIDStr = Integer.toString(gameID);
-        System.out.println(gameIDStr);
+//        System.out.println(gameIDStr);
         assertTrue(gameID > 999 && gameID <10000);
         assertEquals(4, gameIDStr.length());
     }
@@ -144,5 +147,24 @@ public class ServiceTest {
         assertEquals(401, ex.getStatus());
     }
 
+    @Test
+        //not a robust test
+    void listGames() throws ServiceException{
+        AuthData userAuth = service.registerUser(testUser);
+        CreateRequest createReq_1 = new CreateRequest("game 1", userAuth.authToken());
+        CreateRequest createReq_2 = new CreateRequest("game 2", userAuth.authToken());
+        int gameID_1 = service.createGame(createReq_1);
+        int gameID_2 = service.createGame(createReq_2);
+        Map<Integer, GameData> games = service.listGames(userAuth.authToken());
+        assertEquals(2, games.size());
+    }
 
+    @Test
+    void listGamesUnauthorized(){
+        ServiceException ex = assertThrows(ServiceException.class, ()->{
+            service.listGames(testAuth.authToken());
+            //throws 401 unauthorized
+        });
+        assertEquals(401, ex.getStatus());
+    }
 }
