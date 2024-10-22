@@ -1,13 +1,18 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.AuthDAOMemory;
+import dataaccess.GameDAO;
 import dataaccess.GameDAOMemory;
 import dataaccess.UserDAOMemory;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.eclipse.jetty.server.Authentication;
+import server.CreateRequest;
 
 import java.util.Objects;
+import java.util.Random;
 import java.util.UUID;
 
 public class Service {
@@ -58,6 +63,20 @@ public class Service {
         }
     }
 
+
+    public int createGame(CreateRequest createReq) throws ServiceException{
+        if(!checkValidCreateRequest(createReq)){
+            throw new ServiceException("Error: bad request", 400);
+        }
+        if(authDAO.getAuthData(createReq.authToken()) == null){
+            throw new ServiceException("Error: unauthorized", 401);
+        }
+        GameData newGame = newGameData(createReq.gameName());
+        gameDAO.addGame(newGame);
+        return newGame.gameID();
+    }
+
+
     public void clearDB() throws ServiceException{
         //clear each of the thingies
         //is this void
@@ -69,7 +88,18 @@ public class Service {
         }
     }
 
+    private GameData newGameData(String gameName){
+        int gameID = new Random().nextInt(9000) + 1000;
+        //write a check that the gameID is unique
+        return new GameData(new ChessGame(),
+                null, null,
+                gameName, gameID );
+    }
 
+    private boolean checkValidCreateRequest(CreateRequest createReq){
+        return (createReq.gameName() != null
+                && createReq.authToken() != null);
+    }
 
     //make this an internal class??
     private boolean checkValidRegisterRequest(UserData user) {

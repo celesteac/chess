@@ -20,6 +20,7 @@ public class Server {
         Spark.post("/user", this::registerUser);
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
+        Spark.post("/game", this::createGame);
         Spark.delete("/db", this::clearDB);
         Spark.exception(ServiceException.class, this::exceptionHandler);
 
@@ -66,6 +67,13 @@ public class Server {
         String authToken = req.headers("Authorization");
         service.logout(authToken);
         res.status(200);
+        return "";
+    }
+
+    private Object createGame(Request req, Response res) throws ServiceException {
+        String authToken = req.headers("Authorization");
+        CreateRequest createReq = new CreateRequest(req.body(), authToken);
+        int gameID = service.createGame(createReq);
         return "";
     }
 
