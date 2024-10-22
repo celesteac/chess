@@ -18,6 +18,7 @@ public class Server {
 
 
         Spark.post("/user", this::registerUser);
+        Spark.post("/session", this::login);
         Spark.delete("/db", this::clearDB);
         Spark.exception(ServiceException.class, this::exceptionHandler);
 
@@ -41,6 +42,10 @@ public class Server {
             service.clearDB();
             res.status(200);
             return "";
+    }
+
+    private Object login(Request req, Response res) throws ServiceException {
+        return "";
     }
 
     private Object registerUser(Request req, Response res) throws ServiceException {

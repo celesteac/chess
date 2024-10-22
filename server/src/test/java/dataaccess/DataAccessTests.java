@@ -36,11 +36,6 @@ public class DataAccessTests {
         assertEquals(expected,actual);
     }
 
-    @Disabled
-    void addDuplicateAuthThrowsError(){
-        //later
-    }
-
     @Test
     void addAndGetGamaData(){
         GameDAOMemory gameDAO = new GameDAOMemory();

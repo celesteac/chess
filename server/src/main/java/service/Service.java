@@ -5,6 +5,7 @@ import dataaccess.GameDAOMemory;
 import dataaccess.UserDAOMemory;
 import model.AuthData;
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 
 import java.util.UUID;
 
@@ -30,6 +31,16 @@ public class Service {
         return auth;
     }
 
+    public AuthData login(UserData user) throws ServiceException{
+        if (userDAO.getUser(user.username()) == null){
+            throw new  ServiceException("Error: unauthorized", 401);
+        }
+
+        String authToken = generateAuthToken();
+        return new AuthData(authToken, user.username());
+    }
+
+
 
     public void clearDB() throws ServiceException{
         //clear each of the thingies
@@ -43,14 +54,16 @@ public class Service {
     }
 
 
-    public String generateAuthToken(){
-        return UUID.randomUUID().toString();
-    }
 
-
+    //make this an internal class??
     private boolean checkValidRegisterRequest(UserData user) {
         return (user.username() != null
                 && user.password() != null
                 && user.email() != null);
+    }
+
+    //not this one
+    public String generateAuthToken(){
+        return UUID.randomUUID().toString();
     }
 }
