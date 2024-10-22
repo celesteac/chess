@@ -53,9 +53,9 @@ public class Service {
         if(foundAuth == null){
             throw new ServiceException("Error: unauthorized", 401);
         }
-
-
-
+        if(!authDAO.deleteAuth(foundAuth)){
+            throw new ServiceException("Error: internal server error. Try logout again", 500);
+        }
     }
 
     public void clearDB() throws ServiceException{

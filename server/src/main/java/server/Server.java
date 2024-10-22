@@ -63,7 +63,9 @@ public class Server {
     }
 
     private Object logout(Request req, Response res) throws ServiceException {
-        //put authtoken into object and pass it along
+        String authToken = req.headers("Authorization");
+        service.logout(authToken);
+        res.status(200);
         return "";
     }
 
