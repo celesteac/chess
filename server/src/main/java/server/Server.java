@@ -85,8 +85,10 @@ public class Server {
         String authToken = req.headers("Authorization");
         JoinRequest joinReq = new Gson().fromJson(req.body(), JoinRequest.class);
         JoinRequest joinReqWithAuth = joinReq.assignAuth(authToken);
-        service.joinGame(joinReqWithAuth);
-        return joinReqWithAuth;
+        int gameID = service.joinGame(joinReqWithAuth);
+        JoinResponse joinRes = new JoinResponse(gameID);
+
+        return new Gson().toJson(joinRes);
     }
 
     private Object listGames(Request req, Response res) throws ServiceException {

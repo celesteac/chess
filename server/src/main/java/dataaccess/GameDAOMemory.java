@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 
@@ -10,6 +11,11 @@ public class GameDAOMemory implements GameDAO{
     Map<Integer, GameData> games = new HashMap<>();
 
     public void addGame(GameData gameData){
+        games.put(gameData.gameID(), gameData);
+    }
+
+    public void updateGame(GameData gameData){
+        games.remove(gameData.gameID());
         games.put(gameData.gameID(), gameData);
     }
 

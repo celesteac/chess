@@ -78,11 +78,13 @@ public class Service {
         return newGame.gameID();
     }
 
-    public void joinGame(JoinRequest joinReq) throws ServiceException{
+    public int joinGame(JoinRequest joinReq) throws ServiceException{
         if(!checkValidJoinRequest(joinReq)){
             throw new ServiceException("Error: bad request", 400);
         }
-        if(authDAO.getAuthData(joinReq.authToken()) == null){
+
+        AuthData foundAuth = authDAO.getAuthData(joinReq.authToken());
+        if(foundAuth == null){
             throw new ServiceException("Error: unauthorized", 401);
         }
 
@@ -96,7 +98,9 @@ public class Service {
             throw new ServiceException("Error: color already taken", 403);
         }
 
-
+        GameData newGame = foundGame.updateGame(joinReq.playerColor(), foundAuth.username());
+        gameDAO.updateGame(newGame);
+        return newGame.gameID();
 
     }
 
