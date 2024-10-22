@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 import server.CreateRequest;
 import server.JoinRequest;
+import server.JoinResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -169,10 +170,13 @@ public class ServiceTest {
         assertEquals(401, ex.getStatus());
     }
 
-    @Disabled
+    @Test
     void joinGame() throws ServiceException{
         AuthData userAuth = service.registerUser(testUser);
-        service.createGame(new CreateRequest("cool game", userAuth.authToken()));
+        int gameID = service.createGame(new CreateRequest("cool game", userAuth.authToken()));
+        JoinRequest joinReq = new JoinRequest(ChessGame.TeamColor.WHITE, gameID, userAuth.authToken());
+        int gameIDRes = service.joinGame(joinReq);
+        assertEquals(gameID, gameIDRes);
     }
 
     @Disabled

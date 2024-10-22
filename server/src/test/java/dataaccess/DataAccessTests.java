@@ -97,6 +97,26 @@ public class DataAccessTests {
         assertNull(authDAO.getAuthData(testAuth.authToken()));
     }
 
+    @Test
+    void updateGameRecord(){
+        GameData updatedGame = testGame.updateGame(ChessGame.TeamColor.WHITE, "bob");
+        System.out.println(updatedGame);
+        //should do some equals method here
+    }
+
+    @Test
+    void updateGameDataAccessLayer(){
+        GameDAOMemory gameDAO = new GameDAOMemory();
+        gameDAO.addGame(testGame);
+        String expectedUserName = "bob";
+
+        GameData updatedGame = testGame.updateGame(ChessGame.TeamColor.WHITE, expectedUserName);
+        gameDAO.updateGame(updatedGame);
+
+        String actualUserName = gameDAO.getGame(testGame.gameID()).whiteUsername();
+        assertEquals(expectedUserName, actualUserName);
+    }
+
 
     @Test
     void clearDB(){
