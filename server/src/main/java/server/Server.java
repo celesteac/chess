@@ -19,14 +19,19 @@ public class Server {
 
         Spark.post("/user", (req, res) -> registerUser(req, res));
 //        Spark.post("/test", (req, res) -> testPrintReq(req, res));
-        Spark.delete("/db", (req, res) -> );
+        Spark.delete("/db", (req, res) -> clearDB(req, res));
 
         Spark.awaitInitialization();
         return Spark.port();
     }
 
-    private void clearDB(Request req, Response res){
-        //call service layer
+    private Object clearDB(Request req, Response res){
+        try {
+            service.clearDB();
+            return new Gson().toJson("");
+        } catch (ServiceException e) {
+            return createErrorResponse(500, e.getMessage(), res);
+        }
     }
 
     private Object registerUser(Request req, Response res) {

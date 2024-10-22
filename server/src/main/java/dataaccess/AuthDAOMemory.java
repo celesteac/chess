@@ -15,4 +15,12 @@ public class AuthDAOMemory implements AuthDOA {
     public AuthData getAuthData(String authToken){
         return authDataStorage.get(authToken);
     }
+
+    public void clear(){
+        authDataStorage.clear();
+    }
+
+    public int getNumAuths(){
+        return authDataStorage.size();
+    }
 }

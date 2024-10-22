@@ -14,4 +14,12 @@ public class UserDAOMemory implements UserDAO {
     public void addUser(UserData newUser){
         users.put(newUser.username(), newUser);
     }
+
+    public void clear(){
+        users.clear();
+    }
+
+    public int getNumUsers(){
+        return users.size();
+    }
 }
