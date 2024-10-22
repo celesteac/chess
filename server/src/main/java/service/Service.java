@@ -10,6 +10,7 @@ import model.GameData;
 import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 import server.CreateRequest;
+import server.JoinRequest;
 
 import java.util.Map;
 import java.util.Objects;
@@ -79,11 +80,22 @@ public class Service {
         return newGame.gameID();
     }
 
+    public void joinGame(JoinRequest joinReq) throws ServiceException{
+        if(!checkValidJoinRequest(joinReq)){
+            throw new ServiceException("Error: bad request", 400);
+        }
+        if(authDAO.getAuthData(joinReq.authToken()) == null){
+            throw new ServiceException("Error: unauthorized", 401);
+        }
+
+        int gameID = joinReq.gameID();
+
+    }
+
     public Map<Integer, GameData> listGames(String authToken) throws ServiceException{
         if(authDAO.getAuthData(authToken) == null){
             throw new ServiceException("Error: unauthorized", 401);
         }
-//        Map<Integer, GameData> games = gameDAO.getAllGames();
 
         return gameDAO.getAllGames();
     }
@@ -138,6 +150,12 @@ public class Service {
         return (user.username() != null
                 && user.password() != null
                 && user.email() != null);
+    }
+
+    private boolean checkValidJoinRequest(JoinRequest joinReq){
+        return (joinReq.authToken() != null
+                && joinReq.playerColor() != null
+                && joinReq.gameID() != null);
     }
 
     //not this one

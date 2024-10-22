@@ -10,6 +10,7 @@ import org.eclipse.jetty.server.Authentication;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 import server.CreateRequest;
+import server.JoinRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -166,5 +167,23 @@ public class ServiceTest {
             //throws 401 unauthorized
         });
         assertEquals(401, ex.getStatus());
+    }
+
+    @Test
+    void joinGameUnauthorized(){
+        JoinRequest joinReq = new JoinRequest(ChessGame.TeamColor.WHITE, 1234, testAuth.authToken());
+        ServiceException ex = assertThrows(ServiceException.class, ()->{
+            service.joinGame(joinReq);
+        });
+        assertEquals(401, ex.getStatus());
+    }
+
+    @Test
+    void joinGameBadRequest(){
+        JoinRequest joinReq = new JoinRequest(ChessGame.TeamColor.WHITE, null, testAuth.authToken());
+        ServiceException ex = assertThrows(ServiceException.class, ()->{
+            service.joinGame(joinReq);
+        });
+        assertEquals(400, ex.getStatus());
     }
 }

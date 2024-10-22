@@ -2,11 +2,14 @@ package server;
 
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 import service.Service;
 import service.ServiceException;
 import spark.*;
+
+import java.util.Map;
 
 public class Server {
     private final Service service = new Service();
@@ -21,9 +24,9 @@ public class Server {
         Spark.delete("/session", this::logout);
         Spark.post("/game", this::createGame);
         Spark.get("/game", this::listGames);
+        Spark.put("/game", this::joinGame);
         Spark.delete("/db", this::clearDB);
         Spark.exception(ServiceException.class, this::exceptionHandler);
-
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -78,10 +81,18 @@ public class Server {
         return new Gson().toJson(createRes);
     }
 
+    private Object joinGame(Request req, Response res) throws ServiceException {
+        String authToken = req.headers("Authorization");
+        JoinRequest joinReq = new Gson().fromJson(req.body(), JoinRequest.class);
+        JoinRequest joinReqWithAuth = joinReq.assignAuth(authToken);
+        service.joinGame(joinReqWithAuth);
+        return joinReqWithAuth;
+    }
+
     private Object listGames(Request req, Response res) throws ServiceException {
         String authToken = req.headers("Authorization");
-        Object o = service.listGames(authToken);
-        return "";
+        Map<Integer, GameData> games = service.listGames(authToken);
+        return new Gson().toJson(games);
     }
 
     public void stop() {
