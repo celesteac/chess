@@ -74,7 +74,8 @@ public class Server {
         String authToken = req.headers("Authorization");
         CreateRequest createReq = new CreateRequest(req.body(), authToken);
         int gameID = service.createGame(createReq);
-        return "";
+        CreateResponse createRes = new CreateResponse(gameID);
+        return new Gson().toJson(createRes);
     }
 
     public void stop() {

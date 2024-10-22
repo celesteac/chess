@@ -88,13 +88,31 @@ public class Service {
         }
     }
 
+    //write tests for all of these?? 😥 (the createGame helpers)
     private GameData newGameData(String gameName){
-        int gameID = new Random().nextInt(9000) + 1000;
-        //write a check that the gameID is unique
+        int gameID;
+
+        boolean isUnique = false;
+        do {
+            gameID = generateGameID();
+            isUnique = checkGameIDUnique(gameID);
+        }
+        while (!isUnique);
+
         return new GameData(new ChessGame(),
                 null, null,
                 gameName, gameID );
     }
+
+    private int generateGameID(){
+        return new Random().nextInt(9000) + 1000;
+    }
+
+    private boolean checkGameIDUnique(int gameID){
+        return gameDAO.getGame(gameID) == null;
+    }
+
+
 
     private boolean checkValidCreateRequest(CreateRequest createReq){
         return (createReq.gameName() != null
