@@ -121,6 +121,7 @@ public class  StandardAPITests {
         //submit register request trying to register existing user
         TestAuthResult registerResult = serverFacade.register(existingUser);
 
+        System.out.println(registerResult.getMessage());
         assertHttpForbidden(registerResult);
         assertAuthFieldsMissing(registerResult);
     }

@@ -17,65 +17,38 @@ public class Server {
         Spark.staticFiles.location("web");
 
 
-        Spark.post("/user", (req, res) -> registerUser(req, res));
-//        Spark.post("/test", (req, res) -> testPrintReq(req, res));
-        Spark.delete("/db", (req, res) -> clearDB(req, res));
+        Spark.post("/user", this::registerUser);
+        Spark.delete("/db", this::clearDB);
+        Spark.exception(ServiceException.class, this::exceptionHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
     }
 
-    private Object clearDB(Request req, Response res){
-        try {
+
+    /// Handler Functions /////////
+
+    private void exceptionHandler(ServiceException ex, Request req, Response res){
+        var gson = new Gson();
+        ErrorResponse messageObj = new ErrorResponse(ex.getMessage());
+        res.status(ex.getStatus());
+        res.body(gson.toJson(messageObj));
+        res.type("application/json");
+    }
+
+
+    private Object clearDB(Request req, Response res) throws ServiceException{
             service.clearDB();
             res.status(200);
             return "";
-        } catch (ServiceException e) {
-            return createErrorResponse(500, e.getMessage(), res);
-        }
     }
 
-    private Object registerUser(Request req, Response res) {
-        try {
+    private Object registerUser(Request req, Response res) throws ServiceException {
             var g = new Gson();
             UserData newUser = g.fromJson(req.body(), UserData.class);
-            if(!checkValidRegisterRequest(newUser)) {
-                throw new ServerException("bad request"); //should this be thrown from the service layer?
-            }
 
             AuthData auth = service.registerUser(newUser);
             return g.toJson(auth);
-        }
-        catch(ServiceException e){
-            //403 = if user existed, forbidden
-            return createErrorResponse(403, e.getMessage(), res);
-        }
-        catch (ServerException e){
-            //400 = bad request
-            return createErrorResponse(400, e.getMessage(), res);
-        }
-    }
-
-    private String createErrorResponse(Integer status, String message, Response res){
-        var gson = new Gson();
-        ErrorResponse messageObj = new ErrorResponse(message);
-        res.status(status);
-        res.body(gson.toJson(messageObj));
-        res.type("application/json");
-        return res.body();
-    }
-
-//    private UserData testPrintReq(Request req, Response res){
-//        var g = new Gson();
-//        UserData newUser = g.fromJson(req.body(), UserData.class);
-//        res.type("application/json");
-//        return newUser;
-//    }
-
-    private boolean checkValidRegisterRequest(UserData user) {
-        return (user.username() != null
-                && user.password() != null
-                && user.email() != null);
     }
 
     public void stop() {
@@ -83,3 +56,10 @@ public class Server {
         Spark.awaitStop();
     }
 }
+
+
+
+
+
+
+

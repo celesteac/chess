@@ -5,6 +5,7 @@ import dataaccess.GameDAOMemory;
 import dataaccess.UserDAOMemory;
 import model.AuthData;
 import model.UserData;
+
 import java.util.UUID;
 
 public class Service {
@@ -14,9 +15,13 @@ public class Service {
 
     public AuthData registerUser(UserData newUser) throws ServiceException {
 
-        if( userDAO.getUser(newUser.username()) != null ){
-            throw new ServiceException("user already exists");
+        if(!checkValidRegisterRequest(newUser)) {
+            throw new ServiceException("Error: bad request", 400);
         }
+        if( userDAO.getUser(newUser.username()) != null ){
+            throw new ServiceException("Error: user already exists", 403);
+        }
+
         userDAO.addUser(newUser);
         AuthData auth = new AuthData(generateAuthToken(), newUser.username());
         authDAO.addAuthData(auth);
@@ -25,6 +30,7 @@ public class Service {
         return auth;
     }
 
+
     public void clearDB() throws ServiceException{
         //clear each of the thingies
         //is this void
@@ -32,11 +38,19 @@ public class Service {
         authDAO.clear();
         gameDAO.clear();
         if(gameDAO.getNumGames() > 0 || authDAO.getNumAuths() > 0 || userDAO.getNumUsers() >0){
-            throw new ServiceException("Database failed to clear");
+            throw new ServiceException("Error: Database failed to clear", 500);
         }
     }
 
+
     public String generateAuthToken(){
         return UUID.randomUUID().toString();
+    }
+
+
+    private boolean checkValidRegisterRequest(UserData user) {
+        return (user.username() != null
+                && user.password() != null
+                && user.email() != null);
     }
 }
