@@ -106,19 +106,43 @@ public class ServiceTest {
     @Test
     void createGameNotAuthorized() throws ServiceException{
         CreateRequest createReq = new CreateRequest(testGame.gameName(), testAuth.authToken());
-        assertThrows(ServiceException.class, ()->{
+        ServiceException ex = assertThrows(ServiceException.class, ()->{
             int gameID = service.createGame(createReq);
+            //throws 401 unauthorized
         });
-        //check which status code it's throwing
+        assertEquals(401, ex.getStatus());
     }
 
     @Test
     void createGameBadRequest() throws ServiceException{
         CreateRequest createReq = new CreateRequest(testGame.gameName(), "");
-        assertThrows(ServiceException.class, ()->{
+        ServiceException ex = assertThrows(ServiceException.class, ()->{
             int gameID = service.createGame(createReq);
+            //throws 400 bad request
         });
-        //check which status code it's throwing
+        assertEquals(400, ex.getStatus());
     }
+
+    @Test
+    void logout() throws ServiceException{
+        AuthData userAuth = service.registerUser(testUser);
+        service.logout(userAuth.authToken());
+        ServiceException ex = assertThrows(ServiceException.class, ()->{
+            CreateRequest createReq = new CreateRequest("cool game", userAuth.authToken());
+            service.createGame(createReq);
+            //throws 401 unauthorized
+        });
+        assertEquals(401, ex.getStatus());
+    }
+
+    @Test
+    void logoutUnauthorized(){
+        ServiceException ex = assertThrows(ServiceException.class, ()->{
+            service.logout(testAuth.authToken());
+            //throws 401 unauthorized
+        });
+        assertEquals(401, ex.getStatus());
+    }
+
 
 }

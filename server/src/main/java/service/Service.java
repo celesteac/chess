@@ -113,8 +113,10 @@ public class Service {
     }
 
     private boolean checkValidCreateRequest(CreateRequest createReq){
-        return (createReq.gameName() != null
-                && createReq.authToken() != null);
+        System.out.println(createReq.gameName());
+        System.out.println(createReq.authToken());
+        return (createReq.gameName() != null && !createReq.gameName().isEmpty()
+                && createReq.authToken() != null && !createReq.authToken().isEmpty());
     }
 
     //make this an internal class??
