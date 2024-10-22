@@ -10,19 +10,31 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import service.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DataAccessTests {
     private static UserData testUser;
+    private static UserData testUser_2;
     private static AuthData testAuth;
+    private static AuthData testAuth_2;
     private static GameData testGame;
+    private static GameData testGame_2;
 
     @BeforeAll
     public static void init(){
         Service service = new Service();
         testUser = new UserData("carl", "balloons", "cliff@mail");
-        testAuth = new AuthData(service.generateAuthToken(), "ellie");
+        testUser_2 = new UserData("russell", "balloons", "birds@mail");
+        testAuth = new AuthData(service.generateAuthToken(), "Ellie");
+        testAuth_2 = new AuthData(service.generateAuthToken(), "Kevin" );
         testGame = new GameData(
                 new ChessGame(), null, null,
                 "best game", 1234
+        );
+        testGame_2 = new GameData(
+                new ChessGame(), null, null,
+                "adventure", 5678
         );
     }
 
@@ -57,6 +69,20 @@ public class DataAccessTests {
     }
 
     @Test
+    void getAllGames(){
+        GameDAOMemory gameDAO = new GameDAOMemory();
+        gameDAO.addGame(testGame);
+        gameDAO.addGame(testGame_2);
+        Map<Integer, GameData> actual = gameDAO.getAllGames();
+
+        Map<Integer, GameData> expected = new HashMap<>();
+        expected.put(testGame.gameID(), testGame);
+        expected.put(testGame_2.gameID(), testGame_2);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void deleteAuthData(){
         AuthDAOMemory authDAO = new AuthDAOMemory();
         authDAO.addAuthData(testAuth);
@@ -64,29 +90,19 @@ public class DataAccessTests {
         assertNull(authDAO.getAuthData(testAuth.authToken()));
     }
 
+
     @Test
     void clearDB(){
-        UserData user = new UserData(
-                "russell", "balloons", "birds@mail"
-        );
-        AuthData auth = new AuthData(
-                "98765", "Kevin"
-        );
-        GameData game = new GameData(
-                new ChessGame(), null, null,
-                "adventure", 5678
-        );
-
         UserDAOMemory userDAO = new UserDAOMemory();
         AuthDAOMemory authDAO = new AuthDAOMemory();
         GameDAOMemory gameDAO = new GameDAOMemory();
 
-        userDAO.addUser(user);
         userDAO.addUser(testUser);
-        authDAO.addAuthData(auth);
+        userDAO.addUser(testUser_2);
         authDAO.addAuthData(testAuth);
-        gameDAO.addGame(game);
+        authDAO.addAuthData(testAuth_2);
         gameDAO.addGame(testGame);
+        gameDAO.addGame(testGame_2);
 
         gameDAO.clear();
         authDAO.clear();

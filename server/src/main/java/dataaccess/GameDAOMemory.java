@@ -17,6 +17,10 @@ public class GameDAOMemory implements GameDAO{
         return games.get(gameID);
     }
 
+    public Map<Integer, GameData> getAllGames(){
+        return games;
+    }
+
     public void clear(){
         games.clear();
     }

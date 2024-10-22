@@ -11,6 +11,7 @@ import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 import server.CreateRequest;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -19,6 +20,8 @@ public class Service {
     UserDAOMemory userDAO = new UserDAOMemory();
     AuthDAOMemory authDAO = new AuthDAOMemory();
     GameDAOMemory gameDAO = new GameDAOMemory();
+
+    /// DIRECT IMPLEMENTATION FUNCTIONS ////////////////
 
     public AuthData registerUser(UserData newUser) throws ServiceException {
 
@@ -76,6 +79,14 @@ public class Service {
         return newGame.gameID();
     }
 
+    public Object listGames(String authToken) throws ServiceException{
+        if(authDAO.getAuthData(authToken) == null){
+            throw new ServiceException("Error: unauthorized", 401);
+        }
+//        Map<>
+
+        return "";
+    }
 
     public void clearDB() throws ServiceException{
         //clear each of the thingies
@@ -87,6 +98,9 @@ public class Service {
             throw new ServiceException("Error: Database failed to clear", 500);
         }
     }
+
+
+    /// HELPER FUNCTIONS //////////
 
     //write tests for all of these?? 😥 (the createGame helpers)
     private GameData newGameData(String gameName){

@@ -16,11 +16,11 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-
         Spark.post("/user", this::registerUser);
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
         Spark.post("/game", this::createGame);
+        Spark.get("/game", this::listGames);
         Spark.delete("/db", this::clearDB);
         Spark.exception(ServiceException.class, this::exceptionHandler);
 
@@ -76,6 +76,12 @@ public class Server {
         int gameID = service.createGame(createReq);
         CreateResponse createRes = new CreateResponse(gameID);
         return new Gson().toJson(createRes);
+    }
+
+    private Object listGames(Request req, Response res) throws ServiceException {
+        String authToken = req.headers("Authorization");
+        Object o = service.listGames(authToken);
+        return "";
     }
 
     public void stop() {
