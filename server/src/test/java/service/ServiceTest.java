@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.GameDAO;
 import dataaccess.UserDAOMemory;
 import model.AuthData;
@@ -8,6 +9,7 @@ import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
+import server.CreateRequest;
 
 import java.util.UUID;
 
@@ -20,7 +22,12 @@ public class ServiceTest {
     @BeforeAll
     public static void init(){
         service = new Service();
+        testAuth = new AuthData(service.generateAuthToken(), "ellie");
         testUser = new UserData("miguel", "cute", "the cutest");
+        testGame = new GameData(
+                new ChessGame(), null, null,
+                "best game", 1234
+        );
     }
 
     @BeforeEach
@@ -83,6 +90,35 @@ public class ServiceTest {
         assertThrows(ServiceException.class, ()->{
             service.login(badUser);
         });
+    }
+
+    @Test
+    void createGame() throws ServiceException{
+        AuthData userAuth = service.registerUser(testUser);
+        CreateRequest createReq = new CreateRequest(testGame.gameName(), userAuth.authToken());
+        int gameID = service.createGame(createReq);
+        String gameIDStr = Integer.toString(gameID);
+        System.out.println(gameIDStr);
+        assertTrue(gameID > 999 && gameID <10000);
+        assertEquals(4, gameIDStr.length());
+    }
+
+    @Test
+    void createGameNotAuthorized() throws ServiceException{
+        CreateRequest createReq = new CreateRequest(testGame.gameName(), testAuth.authToken());
+        assertThrows(ServiceException.class, ()->{
+            int gameID = service.createGame(createReq);
+        });
+        //check which status code it's throwing
+    }
+
+    @Test
+    void createGameBadRequest() throws ServiceException{
+        CreateRequest createReq = new CreateRequest(testGame.gameName(), "");
+        assertThrows(ServiceException.class, ()->{
+            int gameID = service.createGame(createReq);
+        });
+        //check which status code it's throwing
     }
 
 }

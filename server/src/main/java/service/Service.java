@@ -112,8 +112,6 @@ public class Service {
         return gameDAO.getGame(gameID) == null;
     }
 
-
-
     private boolean checkValidCreateRequest(CreateRequest createReq){
         return (createReq.gameName() != null
                 && createReq.authToken() != null);
