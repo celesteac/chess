@@ -28,7 +28,8 @@ public class Server {
     private Object clearDB(Request req, Response res){
         try {
             service.clearDB();
-            return new Gson().toJson("");
+            res.status(200);
+            return "";
         } catch (ServiceException e) {
             return createErrorResponse(500, e.getMessage(), res);
         }
