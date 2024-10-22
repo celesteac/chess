@@ -49,7 +49,10 @@ public class ServiceTest {
 
     @Test
     void registerUserBadRequest() throws ServiceException{
-
+        UserData badUser = new UserData("car", "balloons", null);
+        assertThrows(ServiceException.class, ()->{
+            service.registerUser(badUser);
+        });
     }
 
     @Test
@@ -64,6 +67,22 @@ public class ServiceTest {
         service.registerUser(testUser);
         AuthData expected = service.login(testUser);
         assertNotNull(expected);
+    }
+
+    @Test
+    void loginUnauthorized() throws ServiceException{
+        assertThrows(ServiceException.class, ()->{
+            service.login(testUser);
+        });
+    }
+
+    @Test
+    void loginBadPassword() throws ServiceException{
+        service.registerUser(testUser);
+        UserData badUser = new UserData(testUser.username(), "wrong", null);
+        assertThrows(ServiceException.class, ()->{
+            service.login(badUser);
+        });
     }
 
 }

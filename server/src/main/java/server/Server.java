@@ -19,6 +19,7 @@ public class Server {
 
         Spark.post("/user", this::registerUser);
         Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
         Spark.delete("/db", this::clearDB);
         Spark.exception(ServiceException.class, this::exceptionHandler);
 
@@ -44,8 +45,13 @@ public class Server {
             return "";
     }
 
+    //maybe combine the login and register or make an interface
     private Object login(Request req, Response res) throws ServiceException {
-        return "";
+        var g = new Gson();
+        UserData newUser = g.fromJson(req.body(), UserData.class);
+
+        AuthData auth = service.login(newUser);
+        return g.toJson(auth);
     }
 
     private Object registerUser(Request req, Response res) throws ServiceException {
@@ -54,6 +60,11 @@ public class Server {
 
             AuthData auth = service.registerUser(newUser);
             return g.toJson(auth);
+    }
+
+    private Object logout(Request req, Response res) throws ServiceException {
+        //put authtoken into object and pass it along
+        return "";
     }
 
     public void stop() {

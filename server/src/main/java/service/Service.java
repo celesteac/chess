@@ -7,6 +7,7 @@ import model.AuthData;
 import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Service {
@@ -31,16 +32,31 @@ public class Service {
         return auth;
     }
 
+
     public AuthData login(UserData user) throws ServiceException{
-        if (userDAO.getUser(user.username()) == null){
+        UserData foundUser = userDAO.getUser(user.username());
+        if (foundUser == null){
             throw new  ServiceException("Error: unauthorized", 401);
+        }
+        if(!Objects.equals(user.password(), foundUser.password())){
+            throw new ServiceException("Error: wrong password", 401);
         }
 
         String authToken = generateAuthToken();
-        return new AuthData(authToken, user.username());
+        AuthData auth = new AuthData(authToken, user.username());
+        authDAO.addAuthData(auth);
+        return auth;
     }
 
+    public void logout(String authToken) throws ServiceException{
+        AuthData foundAuth = authDAO.getAuthData(authToken);
+        if(foundAuth == null){
+            throw new ServiceException("Error: unauthorized", 401);
+        }
 
+
+
+    }
 
     public void clearDB() throws ServiceException{
         //clear each of the thingies

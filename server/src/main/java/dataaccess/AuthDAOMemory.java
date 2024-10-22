@@ -16,6 +16,10 @@ public class AuthDAOMemory implements AuthDOA {
         return authDataStorage.get(authToken);
     }
 
+    public boolean deleteAuth(AuthData auth){
+        return authDataStorage.remove(auth.authToken(), auth);
+    }
+
     public void clear(){
         authDataStorage.clear();
     }
