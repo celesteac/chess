@@ -1,10 +1,8 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.AuthDAOMemory;
-import dataaccess.GameDAO;
-import dataaccess.GameDAOMemory;
-import dataaccess.UserDAOMemory;
+import chess.ChessPiece;
+import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -88,7 +86,17 @@ public class Service {
             throw new ServiceException("Error: unauthorized", 401);
         }
 
-        int gameID = joinReq.gameID();
+        GameData foundGame =  gameDAO.getGame(joinReq.gameID());
+        if(foundGame == null){
+            throw new ServiceException("Error: Game doesn't exist", 500);
+        }
+
+        ChessGame.TeamColor playerColor = joinReq.playerColor();
+        if(!checkPlayerColorAvailable(foundGame, playerColor)){
+            throw new ServiceException("Error: color already taken", 403);
+        }
+
+
 
     }
 
@@ -114,7 +122,17 @@ public class Service {
 
     /// HELPER FUNCTIONS //////////
 
-    //write tests for all of these?? 😥 (the createGame helpers)
+
+    private boolean checkPlayerColorAvailable(GameData game, ChessGame.TeamColor color){
+        if (color == ChessGame.TeamColor.WHITE){
+            return game.whiteUsername() == null;
+        }
+        else{
+            return game.blackUsername() == null;
+        }
+    }
+
+
     private GameData newGameData(String gameName){
         int gameID;
 

@@ -169,6 +169,26 @@ public class ServiceTest {
         assertEquals(401, ex.getStatus());
     }
 
+    @Disabled
+    void joinGame() throws ServiceException{
+        AuthData userAuth = service.registerUser(testUser);
+        service.createGame(new CreateRequest("cool game", userAuth.authToken()));
+    }
+
+    @Disabled
+    void joinGamePlayerTaken(){
+
+    }
+
+    @Test
+    void joinGameDoesNotExist() throws ServiceException{
+        AuthData userAuth = service.registerUser(testUser);
+        ServiceException ex = assertThrows(ServiceException.class, ()->{
+            service.joinGame(new JoinRequest(ChessGame.TeamColor.WHITE, 1234, userAuth.authToken()));
+        });
+        assertEquals(500, ex.getStatus());
+    }
+
     @Test
     void joinGameUnauthorized(){
         JoinRequest joinReq = new JoinRequest(ChessGame.TeamColor.WHITE, 1234, testAuth.authToken());
