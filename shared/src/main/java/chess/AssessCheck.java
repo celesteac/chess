@@ -29,6 +29,9 @@ public class AssessCheck {
 
     private boolean checkBishopQueen(){
         for(int j = 1; j < 5; j++){
+//            if(logicCheckQueenBishopRook(j, ChessPiece.PieceType.BISHOP)) {
+//                return true;
+//            }
             for(int i = 1; i < 8; i++){
 
                 boolean contLoop = true;
@@ -76,15 +79,14 @@ public class AssessCheck {
 
     private boolean checkRookQueen(){
         for(int j = 1; j < 5; j++){ //checking 4 directions
-            if(logicCheckQueenBishopRook(j)) {
+            if(logicCheckQueenBishopRook(j, ChessPiece.PieceType.ROOK)) {
                 return true;
             }
         }
         return false;
     }
 
-
-    private boolean logicCheckQueenBishopRook(int j){
+    private boolean logicCheckQueenBishopRook(int j, ChessPiece.PieceType BishopOrRook){
         for(int i = 1; i < 8; i++){
 
             boolean contLoop = true;
@@ -110,7 +112,7 @@ public class AssessCheck {
                 if(tempPiece != null){
                     System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
                     contLoop = false;
-                    if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.ROOK
+                    if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == BishopOrRook
                             || tempPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
                         System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
                         return true;
