@@ -152,6 +152,8 @@ public class ServiceTest {
         AuthData userAuth = service.registerUser(testUser);
         CreateRequest createReq1 = new CreateRequest("game 1", userAuth.authToken());
         CreateRequest createReq2 = new CreateRequest("game 2", userAuth.authToken());
+        service.createGame(createReq1);
+        service.createGame(createReq2);
         ListResponse games = service.listGames(userAuth.authToken());
         assertEquals(2, games.games().size());
     }
