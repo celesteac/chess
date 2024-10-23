@@ -81,8 +81,12 @@ public class ChessPosition implements Cloneable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        };
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        };
         ChessPosition that = (ChessPosition) o;
         return (col == that.col && row == that.row);
     }

@@ -41,7 +41,9 @@ public class QueenMovesCalculator extends PieceMovesCalculator{
                     default -> 0;
                 };
 
-                if(orderOfOperations(rowMod, colMod)) break;
+                if(orderOfOperations(rowMod, colMod)) {
+                    break;
+                };
 
             }
         }

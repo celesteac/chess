@@ -73,8 +73,12 @@ public class ChessMove implements Cloneable{
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(!(o instanceof ChessMove chessMove)) return false;
+        if(this == o) {
+            return true;
+        };
+        if(!(o instanceof ChessMove chessMove)) {
+            return false;
+        };
         return (start.equals(chessMove.start) && end.equals(chessMove.end) && promotion == chessMove.promotion);
     }
 

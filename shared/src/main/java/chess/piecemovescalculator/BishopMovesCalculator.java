@@ -33,7 +33,9 @@ public class BishopMovesCalculator extends PieceMovesCalculator{
                     default -> 0;
                 };
 
-                if(orderOfOperations(rowMod, colMod)) break;
+                if(orderOfOperations(rowMod, colMod)) {
+                    break;
+                };
 
             }
         }
