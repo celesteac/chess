@@ -65,22 +65,12 @@ public class PawnMovesCalculator extends PieceMovesCalculator{
             if(checkBounds(tempRow, tempCol)){
                 if(j < 2){ //diagonals
                     if(!checkEmpty(tempPosition) && checkEnemy(tempPosition)){
-                        if (tempRow == 1 || tempRow == 8) {
-                            addMovesPromotions(tempPosition);
-                        }
-                        else {
-                            addMove(tempPosition);
-                        }
+                        addMove(tempRow, tempPosition);
                     }
                 }
                 if(j > 1){ //forward
                     if(checkEmpty(tempPosition)){
-                        if (tempRow == 1 || tempRow == 8) {
-                            addMovesPromotions(tempPosition);
-                        }
-                        else {
-                            addMove(tempPosition);
-                        }
+                        addMove(tempRow, tempPosition);
                     }
                     else{
                         break; //don't check forward 2 if forward 1 was not empty
@@ -92,5 +82,15 @@ public class PawnMovesCalculator extends PieceMovesCalculator{
         }
 
         return legalMoves;
+    }
+
+    //helper function
+    private void addMove(int tempRow, ChessPosition tempPosition){
+        if (tempRow == 1 || tempRow == 8) {
+            addMovesPromotions(tempPosition);
+        }
+        else {
+            addMove(tempPosition);
+        }
     }
 }
