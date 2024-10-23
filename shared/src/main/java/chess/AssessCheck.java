@@ -54,12 +54,10 @@ public class AssessCheck {
                     if(tempPiece != null){
                         System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
                         contLoop = false;
-                        if(tempPiece.getTeamColor() != kingColor){
-                            if(tempPiece.getPieceType() == ChessPiece.PieceType.BISHOP
-                                         || tempPiece.getPieceType() == ChessPiece.PieceType.QUEEN){
-                                System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
-                                return true;
-                            }
+                        if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.BISHOP
+                                || tempPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
+                            System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
+                            return true;
                         }
                     }
                 }
@@ -106,12 +104,10 @@ public class AssessCheck {
                     if(tempPiece != null){
                         System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
                         contLoop = false;
-                        if(tempPiece.getTeamColor() != kingColor){
-                            if(tempPiece.getPieceType() == ChessPiece.PieceType.ROOK
-                                    || tempPiece.getPieceType() == ChessPiece.PieceType.QUEEN){
-                                System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
-                                return true;
-                            }
+                        if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.ROOK
+                                || tempPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
+                            System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
+                            return true;
                         }
                     }
                 }
@@ -151,11 +147,9 @@ public class AssessCheck {
                 ChessPiece tempPiece = board.getPiece(tempPosition);
                 if(tempPiece != null){
                     System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
-                    if(tempPiece.getTeamColor() != kingColor){
-                        if(tempPiece.getPieceType() == ChessPiece.PieceType.KING){
-                            System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
-                            return true;
-                        }
+                    if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.KING)){
+                        System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
+                        return true;
                     }
                 }
             }
@@ -187,11 +181,9 @@ public class AssessCheck {
                     ChessPiece tempPiece = board.getPiece(tempPosition);
                     if(tempPiece != null){
                         System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
-                        if(tempPiece.getTeamColor() != kingColor){
-                            if(tempPiece.getPieceType() == ChessPiece.PieceType.KNIGHT){
-                                System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
-                                return true;
-                            }
+                        if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.KNIGHT)){
+                            System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
+                            return true;
                         }
                     }
                 }
@@ -226,11 +218,9 @@ public class AssessCheck {
                 ChessPiece tempPiece = board.getPiece(tempPosition);
                 if(tempPiece != null){
                     System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
-                    if(tempPiece.getTeamColor() != kingColor){
-                        if(tempPiece.getPieceType() == ChessPiece.PieceType.PAWN){
-                            System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
-                            return true;
-                        }
+                    if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.PAWN)){
+                        System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
+                        return true;
                     }
                 }
             }

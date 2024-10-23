@@ -153,13 +153,9 @@ public class ChessGame {
             for(int j = 1; j<9; j++){
                 ChessPosition tempPosition = new ChessPosition(i, j);
                 ChessPiece tempPiece = board.getPiece(tempPosition);
-                if(tempPiece != null){
-                    if(tempPiece.getTeamColor() == color){
-                        if(tempPiece.getPieceType() == ChessPiece.PieceType.KING){
-                            System.out.println("king at: " + tempPosition);
-                            return tempPosition;
-                        }
-                    }
+                if((tempPiece != null) && (tempPiece.getTeamColor() == color) && (tempPiece.getPieceType() == ChessPiece.PieceType.KING)){
+                    System.out.println("king at: " + tempPosition);
+                    return tempPosition;
                 }
             }
         }
