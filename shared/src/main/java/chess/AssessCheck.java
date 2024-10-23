@@ -26,60 +26,39 @@ public class AssessCheck {
         return (tempRow < 9 && tempCol < 9 && tempRow > 0 && tempCol > 0);
     }
 
+    private int[] getDirectionBishopQueen(int j, int i){
+        return switch (j){
+            case 1 -> new int[] {i,i};    //up right
+            case 2 -> new int[] {i, -i};  //up left
+            case 3 -> new int[] {-i, i};  //down right
+            case 4 -> new int[] {-i, -i}; //down left
+            default -> new int[] {0, 0};  //error
+        };
+    }
+
+    private int[] getDirectionRookQueen(int j, int i){
+        return switch (j){
+            case 1 -> new int[] {i,0};    //up
+            case 2 -> new int[] {0,-i};  //left
+            case 3 -> new int[] {-i,0};  //down
+            case 4 -> new int[] {0,i}; //right
+            default -> new int[] {0, 0};  //error
+        };
+    }
 
     private boolean checkBishopQueen(){
         for(int j = 1; j < 5; j++){
-//            if(logicCheckQueenBishopRook(j, ChessPiece.PieceType.BISHOP)) {
-//                return true;
-//            }
-            for(int i = 1; i < 8; i++){
-
-                boolean contLoop = true;
-
-                int[] direction = switch (j){
-                    case 1 -> new int[] {i,i};    //up right
-                    case 2 -> new int[] {i, -i};  //up left
-                    case 3 -> new int[] {-i, i};  //down right
-                    case 4 -> new int[] {-i, -i}; //down left
-                    default -> new int[] {0, 0};  //error
-                };
-
-                int rowMod = direction[0];
-                int colMod = direction[1];
-                int tempRow = king.convertRowIndices(row + rowMod);
-                int tempCol = king.convertColToChessIndices(col + colMod);
-                ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
-
-
-                if (checkBounds(tempRow, tempCol)){
-                    System.out.println(tempPosition);
-                    ChessPiece tempPiece = board.getPiece(tempPosition);
-                    if(tempPiece != null){
-                        System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
-                        contLoop = false;
-                        if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.BISHOP
-                                || tempPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
-                            System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
-                            return true;
-                        }
-                    }
-                }
-                else{
-                    contLoop = false;
-                }
-                if(!contLoop){
-                    break;
-                }
+            if(logicCheckQueenBishopRook(j, ChessPiece.PieceType.BISHOP)){
+                return true;
             }
         }
-
         return false;
     }
 
 
     private boolean checkRookQueen(){
         for(int j = 1; j < 5; j++){ //checking 4 directions
-            if(logicCheckQueenBishopRook(j, ChessPiece.PieceType.ROOK)) {
+            if(logicCheckQueenBishopRook(j, ChessPiece.PieceType.ROOK)){
                 return true;
             }
         }
@@ -91,12 +70,10 @@ public class AssessCheck {
 
             boolean contLoop = true;
 
-            int[] direction = switch (j){
-                case 1 -> new int[] {i,0};    //up
-                case 2 -> new int[] {0,-i};  //left
-                case 3 -> new int[] {-i,0};  //down
-                case 4 -> new int[] {0,i}; //right
-                default -> new int[] {0, 0};  //error
+            int[] direction = switch (BishopOrRook){
+                case ROOK -> direction= getDirectionRookQueen(j,i);
+                case BISHOP -> direction= getDirectionBishopQueen(j,i);
+                default -> direction = new int[] {0,0}; //error
             };
 
             int rowMod = direction[0];
@@ -128,7 +105,6 @@ public class AssessCheck {
         }
         return false;
     }
-
 
     private boolean checkKing(){
 
