@@ -10,10 +10,7 @@ import org.eclipse.jetty.server.Authentication;
 import server.CreateRequest;
 import server.JoinRequest;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class Service {
     UserDAOMemory userDAO = new UserDAOMemory();
@@ -104,12 +101,21 @@ public class Service {
 
     }
 
-    public Map<Integer, GameData> listGames(String authToken) throws ServiceException{
+    public ListResponse listGames(String authToken) throws ServiceException{
         if(authDAO.getAuthData(authToken) == null){
             throw new ServiceException("Error: unauthorized", 401);
         }
+        Map<Integer, GameData> games = gameDAO.getAllGames();
+        Collection<GameData> gameDatas = games.values();
+        ArrayList<ListResponseItems> listResponseGames = new ArrayList<>();
+        for(GameData game : gameDatas){
+            ListResponseItems gameToAdd = new ListResponseItems(
+                    game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName());
+            listResponseGames.add(gameToAdd);
+        }
 
-        return gameDAO.getAllGames();
+
+        return new ListResponse(listResponseGames);
     }
 
     public void clearDB() throws ServiceException{

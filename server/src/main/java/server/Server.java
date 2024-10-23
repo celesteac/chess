@@ -5,6 +5,7 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.eclipse.jetty.server.Authentication;
+import service.ListResponse;
 import service.Service;
 import service.ServiceException;
 import spark.*;
@@ -93,7 +94,7 @@ public class Server {
 
     private Object listGames(Request req, Response res) throws ServiceException {
         String authToken = req.headers("Authorization");
-        Map<Integer, GameData> games = service.listGames(authToken);
+        ListResponse games = service.listGames(authToken);
         return new Gson().toJson(games);
     }
 

@@ -13,10 +13,7 @@ import server.CreateRequest;
 import server.JoinRequest;
 import server.JoinResponse;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ServiceTest {
     private static Service service;
@@ -157,8 +154,8 @@ public class ServiceTest {
         CreateRequest createReq_2 = new CreateRequest("game 2", userAuth.authToken());
         int gameID_1 = service.createGame(createReq_1);
         int gameID_2 = service.createGame(createReq_2);
-        Map<Integer, GameData> games = service.listGames(userAuth.authToken());
-        assertEquals(2, games.size());
+        ListResponse games = service.listGames(userAuth.authToken());
+        assertEquals(2, games.games().size());
     }
 
     @Test
