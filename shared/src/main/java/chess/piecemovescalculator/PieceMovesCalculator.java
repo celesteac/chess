@@ -1,9 +1,8 @@
-package chess.pieceMovesCalculator;
+package chess.piecemovescalculator;
 
 import chess.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public abstract class PieceMovesCalculator {
     public final ChessBoard board;

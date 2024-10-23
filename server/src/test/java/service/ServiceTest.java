@@ -150,10 +150,8 @@ public class ServiceTest {
         //not a robust test
     void listGames() throws ServiceException{
         AuthData userAuth = service.registerUser(testUser);
-        CreateRequest createReq_1 = new CreateRequest("game 1", userAuth.authToken());
-        CreateRequest createReq_2 = new CreateRequest("game 2", userAuth.authToken());
-        int gameID_1 = service.createGame(createReq_1);
-        int gameID_2 = service.createGame(createReq_2);
+        CreateRequest createReq1 = new CreateRequest("game 1", userAuth.authToken());
+        CreateRequest createReq2 = new CreateRequest("game 2", userAuth.authToken());
         ListResponse games = service.listGames(userAuth.authToken());
         assertEquals(2, games.games().size());
     }
@@ -176,10 +174,7 @@ public class ServiceTest {
         assertEquals(gameID, gameIDRes);
     }
 
-    @Disabled
-    void joinGamePlayerTaken(){
-
-    }
+    //missing test for joinGamePlayerTaken
 
     @Test
     void joinGameDoesNotExist() throws ServiceException{
