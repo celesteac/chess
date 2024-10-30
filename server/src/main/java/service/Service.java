@@ -1,18 +1,20 @@
 package service;
 
 import chess.ChessGame;
-import chess.ChessPiece;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
+import org.mindrot.jbcrypt.BCrypt;
 import server.CreateRequest;
 import server.JoinRequest;
 
 import java.util.*;
 
 public class Service {
+    //how can I write an if statement here that initiates the right memory access?
+    //would I do it from the server and pass it in, even though there are 3 of them?
+    //do I need to write an init function?
     UserDAOMemory userDAO = new UserDAOMemory();
     AuthDAOMemory authDAO = new AuthDAOMemory();
     GameDAOMemory gameDAO = new GameDAOMemory();
@@ -131,6 +133,15 @@ public class Service {
 
 
     /// HELPER FUNCTIONS //////////
+
+
+    public String getEncryptedPassword(String password){
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    public boolean comparePasswords(String storedEncryptedPassword, String plainTextPassword){
+        return BCrypt.checkpw(plainTextPassword, storedEncryptedPassword);
+    }
 
 
     private boolean checkPlayerColorAvailable(GameData game, ChessGame.TeamColor color){

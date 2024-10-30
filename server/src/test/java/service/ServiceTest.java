@@ -204,4 +204,13 @@ public class ServiceTest {
         });
         assertEquals(400, ex.getStatus());
     }
+
+    @Test
+    void compareEncryptedPasswords(){
+        String password1 = "happy";
+        String password2 = "estatic";
+        String password1Encrypted = service.getEncryptedPassword(password1);
+        assertFalse(service.comparePasswords(password1Encrypted, password2));
+        assertTrue(service.comparePasswords(password1Encrypted, password1));
+    }
 }
