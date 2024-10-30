@@ -8,8 +8,15 @@ public class UserDAOSQL implements UserDAO {
         return null;
     }
 
-    @Override
     public void addUser(UserData newUser) {
         //do something
+    }
+
+    public void clear() {
+
+    }
+
+    public int getNumUsers() {
+        return 0;
     }
 }
