@@ -5,7 +5,7 @@ import model.AuthData;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthDAOMemory implements AuthDOA {
+public class AuthDAOMemory implements AuthDAO {
     Map<String, AuthData> authDataStorage = new HashMap<>();
 
     public void addAuthData(AuthData authData){

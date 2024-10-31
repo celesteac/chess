@@ -2,7 +2,7 @@ package dataaccess;
 
 import model.AuthData;
 
-public class AuthDAOSQL implements AuthDOA{
+public class AuthDAOSQL implements AuthDAO {
     public void addAuthData(AuthData authData) {
 
     }
