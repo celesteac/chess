@@ -8,19 +8,14 @@ import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 import server.CreateRequest;
 import server.JoinRequest;
-//import chessCS240.server.src.main.java.Main;
-//import server.CreateRequest;
-//import java.Main;
 
 import java.util.*;
 
 public class Service {
-    //how can I write an if statement here that initiates the right memory access?
-    //would I do it from the server and pass it in, even though there are 3 of them?
-    //do I need to write an init function?
     UserDAO userDAO = new UserDAOMemory();
     AuthDAO authDAO = new AuthDAOMemory();
     GameDAO gameDAO = new GameDAOMemory();
+
 
     /// DIRECT IMPLEMENTATION FUNCTIONS ////////////////
 
