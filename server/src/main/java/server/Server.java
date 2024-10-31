@@ -13,6 +13,7 @@ import spark.*;
 import java.util.Map;
 
 public class Server {
+
     private final Service service = new Service();
 
     public int run(int desiredPort) {

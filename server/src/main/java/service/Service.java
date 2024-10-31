@@ -12,10 +12,34 @@ import server.JoinRequest;
 import java.util.*;
 
 public class Service {
-    UserDAO userDAO = new UserDAOMemory();
-    AuthDAO authDAO = new AuthDAOMemory();
-    GameDAO gameDAO = new GameDAOMemory();
+    private UserDAO userDAO;
+    private AuthDAO authDAO;
+    private GameDAO gameDAO;
 
+    public enum dataAccessType {
+        MEMORY,
+        SQL
+    }
+
+    public Service(){
+        dataAccessType databaseType = dataAccessType.MEMORY;
+        switch (databaseType) {
+            case MEMORY -> initMemoryDAO();
+            case SQL -> initSQLDAO();
+        }
+    }
+
+    private void initMemoryDAO(){
+        userDAO = new UserDAOMemory();
+        authDAO = new AuthDAOMemory();
+        gameDAO = new GameDAOMemory();
+    }
+
+    private void initSQLDAO(){
+        userDAO = new UserDAOSQL();
+        authDAO = new AuthDAOSQL();
+        gameDAO = new GameDAOSQL();
+    }
 
     /// DIRECT IMPLEMENTATION FUNCTIONS ////////////////
 
