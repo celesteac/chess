@@ -1,8 +1,7 @@
 import chess.*;
 import server.Server;
-import service.Service;
 
-public class Main {
+public class ServerMain {
     private static final dataAccessType dataType = dataAccessType.SQL;
 
     public enum dataAccessType {
