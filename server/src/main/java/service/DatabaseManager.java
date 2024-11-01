@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.DataAccessException;
+import jdk.jshell.spi.SPIResolutionException;
 
 import java.sql.*;
 import java.util.Properties;
@@ -50,9 +51,38 @@ public class DatabaseManager {
         }
     }
 
-    static void createAuthTable(){
-
+    static void createTables() throws DataAccessException {
+        try(Connection conn = DatabaseManager.getConnection()){
+            for(String statement : createTableStatements){
+                try (var preparedStatement = conn.prepareStatement(statement)){
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex){
+            throw new DataAccessException(ex.getMessage());
+        }
     }
+
+    private static final String[] createTableStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS users (
+            id INT NOT NULL AUTO_INCREMENT,
+            username VARCHAR(255) NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            PRIMARY KEY (id),
+            INDEX (username)
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS auth (
+            id INT NOT NULL AUTO_INCREMENT,
+            username VARCHAR(255) NOT NULL,
+            auth VARCHAR(255) NOT NULL,
+            PRIMARY KEY (id),
+            INDEX (auth)
+            )
+            """
+    };
 
     /**
      * Create a connection to the database and sets the catalog based upon the
@@ -68,7 +98,7 @@ public class DatabaseManager {
      */
 
     static Connection getConnection() throws DataAccessException {
-        try { //where do I put the try with resources??
+        try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog(DATABASE_NAME);
             return conn;

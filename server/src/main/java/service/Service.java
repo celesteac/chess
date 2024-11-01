@@ -30,6 +30,7 @@ public class Service {
             }
         } catch (DataAccessException ex){
             //the database or the tables couldn't start
+            System.out.println("************ERROR***********");
             System.out.println(ex.getMessage());
         }
     }
@@ -45,6 +46,7 @@ public class Service {
             authDAO = new AuthDAOSQL();
             gameDAO = new GameDAOSQL();
             DatabaseManager.createDatabase();
+            DatabaseManager.createTables();
     }
 
     /// DIRECT IMPLEMENTATION FUNCTIONS ////////////////
