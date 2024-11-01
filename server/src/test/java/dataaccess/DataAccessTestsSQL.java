@@ -13,7 +13,7 @@ import service.ServiceException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataAccessTests {
+public class DataAccessTestsSQL {
     private static Service service;
     private static UserData testUser1;
     private static UserData testUser2;
