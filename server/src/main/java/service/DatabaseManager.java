@@ -81,6 +81,17 @@ public class DatabaseManager {
             PRIMARY KEY (id),
             INDEX (auth)
             )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS games (
+            game TEXT NOT NULL,
+            gameName VARCHAR(255) NOT NULL,
+            gameID INT NOT NULL,
+            whiteUsername VARCHAR(255),
+            blackUsername VARCHAR(255),
+            PRIMARY KEY (gameID),
+            INDEX (gameName)
+            )
             """
     };
 
