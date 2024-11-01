@@ -38,6 +38,11 @@ public class ServiceTest {
     }
 
     @Test
+    public void dataAccessType(){
+
+    }
+
+    @Test
     void registerUser() throws ServiceException {
         // give it a UserData object
         // get back an AuthData with same username

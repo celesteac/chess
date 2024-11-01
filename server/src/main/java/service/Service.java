@@ -21,11 +21,16 @@ public class Service {
         SQL
     }
 
-    public Service(){
-        dataAccessType databaseType = dataAccessType.MEMORY;
-        switch (databaseType) {
-            case MEMORY -> initMemoryDAO();
-            case SQL -> initSQLDAO();
+    public Service() {
+        try {
+            dataAccessType databaseType = dataAccessType.SQL;
+            switch (databaseType) {
+                case MEMORY -> initMemoryDAO();
+                case SQL -> initSQLDAO();
+            }
+        } catch (DataAccessException ex){
+            //the database or the tables couldn't start
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -35,10 +40,11 @@ public class Service {
         gameDAO = new GameDAOMemory();
     }
 
-    private void initSQLDAO(){
-        userDAO = new UserDAOSQL();
-        authDAO = new AuthDAOSQL();
-        gameDAO = new GameDAOSQL();
+    private void initSQLDAO() throws DataAccessException { //where do I send this exception?
+            userDAO = new UserDAOSQL();
+            authDAO = new AuthDAOSQL();
+            gameDAO = new GameDAOSQL();
+            DatabaseManager.createDatabase();
     }
 
     /// DIRECT IMPLEMENTATION FUNCTIONS ////////////////
