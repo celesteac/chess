@@ -13,7 +13,7 @@ import service.ServiceException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataAccessTestsSQL {
+public class DataAccessSQLTests {
     private static Service service;
     private static UserData testUser1;
     private static UserData testUser2;
@@ -21,6 +21,9 @@ public class DataAccessTestsSQL {
     private static AuthData testAuth2;
     private static GameData testGame1;
     private static GameData testGame2;
+    private static final UserDAOSQL userDataAccess = new UserDAOSQL();
+    private static final AuthDAOSQL authDataAccess = new AuthDAOSQL();
+    private static final GameDAOSQL gameDataAccess = new GameDAOSQL();
 
     @BeforeAll
     public static void init(){
@@ -40,46 +43,44 @@ public class DataAccessTestsSQL {
     }
 
     @BeforeEach
-    public void setup() throws ServiceException {
-        service.clearDB();
+    public void setup() {
+        userDataAccess.clear();
+        authDataAccess.clear();
+        gameDataAccess.clear();
     }
 
     @Test
     void addAndGetUser(){
-        UserDAOMemory dataAccess = new UserDAOMemory();
         UserData expected = testUser1;
-        dataAccess.addUser(expected);
-        UserData actual = dataAccess.getUser(testUser1.username());
+        userDataAccess.addUser(expected);
+        UserData actual = userDataAccess.getUser(testUser1.username());
         assertEquals(expected, actual);
     }
 
     @Test
     void addAndGetAuthData(){
-        AuthDAOMemory dataAccess = new AuthDAOMemory();
         AuthData expected = testAuth1;
 
-        dataAccess.addAuthData(expected);
-        AuthData actual = dataAccess.getAuthData(expected.authToken());
+        authDataAccess.addAuthData(expected);
+        AuthData actual = authDataAccess.getAuthData(expected.authToken());
         System.out.println(expected.authToken());
         assertEquals(expected,actual);
     }
 
     @Test
     void addAndGetGamaData(){
-        GameDAOMemory gameDAO = new GameDAOMemory();
         GameData expected = testGame1;
-        gameDAO.addGame(expected);
-        GameData actual = gameDAO.getGame(expected.gameID());
+        gameDataAccess.addGame(expected);
+        GameData actual = gameDataAccess.getGame(expected.gameID());
         assertEquals(expected, actual);
 
     }
 
     @Test
     void getAllGames(){
-        GameDAOMemory gameDAO = new GameDAOMemory();
-        gameDAO.addGame(testGame1);
-        gameDAO.addGame(testGame2);
-        Map<Integer, GameData> actual = gameDAO.getAllGames();
+        gameDataAccess.addGame(testGame1);
+        gameDataAccess.addGame(testGame2);
+        Map<Integer, GameData> actual = gameDataAccess.getAllGames();
 
         Map<Integer, GameData> expected = new HashMap<>();
         expected.put(testGame1.gameID(), testGame1);
@@ -90,10 +91,9 @@ public class DataAccessTestsSQL {
 
     @Test
     void deleteAuthData(){
-        AuthDAOMemory authDAO = new AuthDAOMemory();
-        authDAO.addAuthData(testAuth1);
-        authDAO.deleteAuth(testAuth1);
-        assertNull(authDAO.getAuthData(testAuth1.authToken()));
+        authDataAccess.addAuthData(testAuth1);
+        authDataAccess.deleteAuth(testAuth1);
+        assertNull(authDataAccess.getAuthData(testAuth1.authToken()));
     }
 
     @Test
@@ -105,38 +105,34 @@ public class DataAccessTestsSQL {
 
     @Test
     void updateGameDataAccessLayer(){
-        GameDAOMemory gameDAO = new GameDAOMemory();
-        gameDAO.addGame(testGame1);
+        gameDataAccess.addGame(testGame1);
         String expectedUserName = "bob";
 
+        //try this with the blackUsername too
         GameData updatedGame = testGame1.updateGame(ChessGame.TeamColor.WHITE, expectedUserName);
-        gameDAO.updateGame(updatedGame);
+        gameDataAccess.updateGame(updatedGame);
 
-        String actualUserName = gameDAO.getGame(testGame1.gameID()).whiteUsername();
+        String actualUserName = gameDataAccess.getGame(testGame1.gameID()).whiteUsername();
         assertEquals(expectedUserName, actualUserName);
     }
 
 
     @Test
     void clearDB(){
-        UserDAOMemory userDAO = new UserDAOMemory();
-        AuthDAOMemory authDAO = new AuthDAOMemory();
-        GameDAOMemory gameDAO = new GameDAOMemory();
+        userDataAccess.addUser(testUser1);
+        userDataAccess.addUser(testUser2);
+        authDataAccess.addAuthData(testAuth1);
+        authDataAccess.addAuthData(testAuth2);
+        gameDataAccess.addGame(testGame1);
+        gameDataAccess.addGame(testGame2);
 
-        userDAO.addUser(testUser1);
-        userDAO.addUser(testUser2);
-        authDAO.addAuthData(testAuth1);
-        authDAO.addAuthData(testAuth2);
-        gameDAO.addGame(testGame1);
-        gameDAO.addGame(testGame2);
+        gameDataAccess.clear();
+        authDataAccess.clear();
+        userDataAccess.clear();
 
-        gameDAO.clear();
-        authDAO.clear();
-        userDAO.clear();
-
-        assertEquals(0, userDAO.getNumUsers());
-        assertEquals(0, authDAO.getNumAuths());
-        assertEquals(0, gameDAO.getNumGames());
+        assertEquals(0, userDataAccess.getNumUsers());
+        assertEquals(0, authDataAccess.getNumAuths());
+        assertEquals(0, gameDataAccess.getNumGames());
     }
 
 }

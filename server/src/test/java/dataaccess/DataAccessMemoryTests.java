@@ -13,7 +13,7 @@ import service.ServiceException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataAccessTestsMemory {
+public class DataAccessMemoryTests {
     private static Service service;
     private static UserData testUser1;
     private static UserData testUser2;
@@ -43,7 +43,7 @@ public class DataAccessTestsMemory {
     }
 
     @BeforeEach
-    public void setup() throws ServiceException {
+    public void setup() {
         userDataAccess.clear();
         authDataAccess.clear();
         gameDataAccess.clear();
