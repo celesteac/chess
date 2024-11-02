@@ -24,15 +24,14 @@ public class UserDAOSQL implements UserDAO {
 
     public UserData getUser(String username) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT password, email FROM auth WHERE username = ?";
+            String statement = "SELECT password, email FROM users WHERE username = ?";
             try(var preparedStatement = conn.prepareStatement(statement) ) {
                 preparedStatement.setString(1, username);
                 try(var rs = preparedStatement.executeQuery()){
                     if(rs.next()){
                         String foundPassword = rs.getString("password");
                         String foundEmail = rs.getString("email");
-                        UserData foundUserData = new UserData(username, foundPassword, foundEmail);
-                        return foundUserData;
+                        return new UserData(username, foundPassword, foundEmail);
                     } else {
                         return null;
                     }
