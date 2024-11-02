@@ -23,7 +23,7 @@ public class Service {
 
     public Service() {
         try {
-            dataAccessType databaseType = dataAccessType.SQL;
+            dataAccessType databaseType = dataAccessType.MEMORY;
             switch (databaseType) {
                 case MEMORY -> initMemoryDAO();
                 case SQL -> initSQLDAO();
@@ -60,8 +60,10 @@ public class Service {
             throw new ServiceException("Error: user already exists", 403);
         }
 
-        userDAO.addUser(newUser);
-        AuthData auth = new AuthData(generateAuthToken(), newUser.username());
+        UserData userEncryptedPassword = newUser.updateUserPassword(getEncryptedPassword(newUser.password()));
+
+        userDAO.addUser(userEncryptedPassword);
+        AuthData auth = new AuthData(generateAuthToken(), userEncryptedPassword.username());
         authDAO.addAuthData(auth);
         //test this?
 
@@ -74,7 +76,7 @@ public class Service {
         if (foundUser == null){
             throw new  ServiceException("Error: unauthorized", 401);
         }
-        if(!Objects.equals(user.password(), foundUser.password())){
+        if(!comparePasswords(foundUser.password(), user.password())){
             throw new ServiceException("Error: wrong password", 401);
         }
 
