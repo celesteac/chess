@@ -51,7 +51,7 @@ public class Service {
 
     /// DIRECT IMPLEMENTATION FUNCTIONS ////////////////
 
-    public AuthData registerUser(UserData newUser) throws ServiceException {
+    public AuthData registerUser(UserData newUser) throws ServiceException, DataAccessException {
 
         if(!checkValidRegisterRequest(newUser)) {
             throw new ServiceException("Error: bad request", 400);
@@ -69,7 +69,7 @@ public class Service {
     }
 
 
-    public AuthData login(UserData user) throws ServiceException{
+    public AuthData login(UserData user) throws ServiceException, DataAccessException{
         UserData foundUser = userDAO.getUser(user.username());
         if (foundUser == null){
             throw new  ServiceException("Error: unauthorized", 401);
@@ -84,7 +84,7 @@ public class Service {
         return auth;
     }
 
-    public void logout(String authToken) throws ServiceException{
+    public void logout(String authToken) throws ServiceException, DataAccessException {
         AuthData foundAuth = authDAO.getAuthData(authToken);
         if(foundAuth == null){
             throw new ServiceException("Error: unauthorized", 401);
@@ -95,7 +95,7 @@ public class Service {
     }
 
 
-    public int createGame(CreateRequest createReq) throws ServiceException{
+    public int createGame(CreateRequest createReq) throws ServiceException, DataAccessException {
         if(!checkValidCreateRequest(createReq)){
             throw new ServiceException("Error: bad request", 400);
         }
@@ -107,7 +107,7 @@ public class Service {
         return newGame.gameID();
     }
 
-    public int joinGame(JoinRequest joinReq) throws ServiceException{
+    public int joinGame(JoinRequest joinReq) throws ServiceException, DataAccessException {
         if(!checkValidJoinRequest(joinReq)){
             throw new ServiceException("Error: bad request", 400);
         }
@@ -133,7 +133,7 @@ public class Service {
 
     }
 
-    public ListResponse listGames(String authToken) throws ServiceException{
+    public ListResponse listGames(String authToken) throws ServiceException, DataAccessException {
         if(authDAO.getAuthData(authToken) == null){
             throw new ServiceException("Error: unauthorized", 401);
         }
@@ -150,7 +150,7 @@ public class Service {
         return new ListResponse(listResponseGames);
     }
 
-    public void clearDB() throws ServiceException{
+    public void clearDB() throws ServiceException, DataAccessException {
         //clear each of the thingies
         //is this void
         userDAO.clear();
@@ -184,7 +184,7 @@ public class Service {
     }
 
 
-    private GameData newGameData(String gameName){
+    private GameData newGameData(String gameName) throws DataAccessException {
         int gameID;
 
         boolean isUnique = false;
@@ -203,7 +203,7 @@ public class Service {
         return new Random().nextInt(9000) + 1000;
     }
 
-    private boolean checkGameIDUnique(int gameID){
+    private boolean checkGameIDUnique(int gameID) throws DataAccessException{
         return gameDAO.getGame(gameID) == null;
     }
 

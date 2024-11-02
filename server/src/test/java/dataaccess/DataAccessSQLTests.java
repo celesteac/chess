@@ -43,7 +43,7 @@ public class DataAccessSQLTests {
     }
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws DataAccessException {
         userDataAccess.clear();
         authDataAccess.clear();
         gameDataAccess.clear();
@@ -58,7 +58,7 @@ public class DataAccessSQLTests {
     }
 
     @Test
-    void addAndGetAuthData(){
+    void addAndGetAuthData() throws DataAccessException{
         AuthData expected = testAuth1;
 
         authDataAccess.addAuthData(expected);
@@ -90,7 +90,7 @@ public class DataAccessSQLTests {
     }
 
     @Test
-    void deleteAuthData(){
+    void deleteAuthData() throws DataAccessException{
         authDataAccess.addAuthData(testAuth1);
         authDataAccess.deleteAuth(testAuth1);
         assertNull(authDataAccess.getAuthData(testAuth1.authToken()));
@@ -118,7 +118,7 @@ public class DataAccessSQLTests {
 
 
     @Test
-    void clearDB(){
+    void clearDB() throws DataAccessException{
         userDataAccess.addUser(testUser1);
         userDataAccess.addUser(testUser2);
         authDataAccess.addAuthData(testAuth1);

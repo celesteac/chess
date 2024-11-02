@@ -1,6 +1,7 @@
 package service;
 
 import chess.ChessGame;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAOMemory;
 import model.AuthData;
@@ -33,7 +34,7 @@ public class ServiceTest {
     }
 
     @BeforeEach
-    public void setup() throws ServiceException{
+    public void setup() throws ServiceException, DataAccessException {
         service.clearDB();
     }
 
@@ -43,7 +44,7 @@ public class ServiceTest {
     }
 
     @Test
-    void registerUser() throws ServiceException {
+    void registerUser() throws ServiceException, DataAccessException {
         // give it a UserData object
         // get back an AuthData with same username
         UserData user = testUser;
@@ -53,7 +54,7 @@ public class ServiceTest {
     }
 
     @Test
-    void registerUserAlreadyTaken() throws ServiceException{
+    void registerUserAlreadyTaken() throws ServiceException, DataAccessException{
         UserData user = testUser;
         service.registerUser(user);
         assertThrows(ServiceException.class, ()->{
@@ -77,7 +78,7 @@ public class ServiceTest {
     }
 
     @Test
-    void login() throws ServiceException{
+    void login() throws ServiceException, DataAccessException{
         service.registerUser(testUser);
         AuthData expected = service.login(testUser);
         assertNotNull(expected);
@@ -91,7 +92,7 @@ public class ServiceTest {
     }
 
     @Test
-    void loginBadPassword() throws ServiceException{
+    void loginBadPassword() throws ServiceException, DataAccessException{
         service.registerUser(testUser);
         UserData badUser = new UserData(testUser.username(), "wrong", null);
         assertThrows(ServiceException.class, ()->{
@@ -100,7 +101,7 @@ public class ServiceTest {
     }
 
     @Test
-    void createGame() throws ServiceException{
+    void createGame() throws ServiceException, DataAccessException{
         AuthData userAuth = service.registerUser(testUser);
         CreateRequest createReq = new CreateRequest(testGame.gameName(), userAuth.authToken());
         int gameID = service.createGame(createReq);
@@ -131,7 +132,7 @@ public class ServiceTest {
     }
 
     @Test
-    void logout() throws ServiceException{
+    void logout() throws ServiceException, DataAccessException{
         AuthData userAuth = service.registerUser(testUser);
         service.logout(userAuth.authToken());
         ServiceException ex = assertThrows(ServiceException.class, ()->{
@@ -153,7 +154,7 @@ public class ServiceTest {
 
     @Test
         //not a robust test
-    void listGames() throws ServiceException{
+    void listGames() throws ServiceException, DataAccessException{
         AuthData userAuth = service.registerUser(testUser);
         CreateRequest createReq1 = new CreateRequest("game 1", userAuth.authToken());
         CreateRequest createReq2 = new CreateRequest("game 2", userAuth.authToken());
@@ -173,7 +174,7 @@ public class ServiceTest {
     }
 
     @Test
-    void joinGame() throws ServiceException{
+    void joinGame() throws ServiceException, DataAccessException{
         AuthData userAuth = service.registerUser(testUser);
         int gameID = service.createGame(new CreateRequest("cool game", userAuth.authToken()));
         JoinRequest joinReq = new JoinRequest(ChessGame.TeamColor.WHITE, gameID, userAuth.authToken());
@@ -184,7 +185,7 @@ public class ServiceTest {
     //missing test for joinGamePlayerTaken
 
     @Test
-    void joinGameDoesNotExist() throws ServiceException{
+    void joinGameDoesNotExist() throws ServiceException, DataAccessException{
         AuthData userAuth = service.registerUser(testUser);
         ServiceException ex = assertThrows(ServiceException.class, ()->{
             service.joinGame(new JoinRequest(ChessGame.TeamColor.WHITE, 1234, userAuth.authToken()));

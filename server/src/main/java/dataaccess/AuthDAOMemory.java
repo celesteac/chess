@@ -8,7 +8,7 @@ import java.util.Map;
 public class AuthDAOMemory implements AuthDAO {
     Map<String, AuthData> authDataStorage = new HashMap<>();
 
-    public void addAuthData(AuthData authData){
+    public void addAuthData(AuthData authData) {
         authDataStorage.put(authData.authToken(), authData);
     }
 
