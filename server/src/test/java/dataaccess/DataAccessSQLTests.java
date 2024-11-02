@@ -146,16 +146,21 @@ public class DataAccessSQLTests {
         assertEquals(expected, actual);
     }
 
-//
-//
-//    @Test
-//    void addAndGetGamaData(){
-//        GameData expected = testGame1;
-//        gameDataAccess.addGame(expected);
-//        GameData actual = gameDataAccess.getGame(expected.gameID());
-//        assertEquals(expected, actual);
-//
-//    }
+    /// GAMEDAO TESTS ///
+
+    @Test
+    public void addGame() throws DataAccessException{
+        gameDataAccess.addGame(testGame1);
+    }
+
+    @Test
+    void addAndGetGamaData() throws DataAccessException{
+        GameData expected = testGame1;
+        gameDataAccess.addGame(expected);
+        GameData actual = gameDataAccess.getGame(expected.gameID());
+        assertEquals(expected, actual);
+
+    }
 //
 //    @Test
 //    void getAllGames(){
@@ -170,12 +175,6 @@ public class DataAccessSQLTests {
 //        assertEquals(expected, actual);
 //    }
 //
-//    @Test
-//    void deleteAuthData() throws DataAccessException{
-//        authDataAccess.addAuthData(testAuth1);
-//        authDataAccess.deleteAuth(testAuth1);
-//        assertNull(authDataAccess.getAuthData(testAuth1.authToken()));
-//    }
 //
 //    @Test
 //    void updateGameRecord(){
@@ -198,22 +197,24 @@ public class DataAccessSQLTests {
 //    }
 //
 //
-//    @Test
-//    void clearDB() throws DataAccessException{
-//        userDataAccess.addUser(testUser1);
-//        userDataAccess.addUser(testUser2);
-//        authDataAccess.addAuthData(testAuth1);
-//        authDataAccess.addAuthData(testAuth2);
-//        gameDataAccess.addGame(testGame1);
-//        gameDataAccess.addGame(testGame2);
-//
-//        gameDataAccess.clear();
-//        authDataAccess.clear();
-//        userDataAccess.clear();
-//
-//        assertEquals(0, userDataAccess.getNumUsers());
-//        assertEquals(0, authDataAccess.getNumAuths());
-//        assertEquals(0, gameDataAccess.getNumGames());
-//    }
+    /// GENERAL TESTS ///
+
+    @Test
+    void clearDB() throws DataAccessException{
+        userDataAccess.addUser(testUser1);
+        userDataAccess.addUser(testUser2);
+        authDataAccess.addAuthData(testAuth1);
+        authDataAccess.addAuthData(testAuth2);
+        gameDataAccess.addGame(testGame1);
+        gameDataAccess.addGame(testGame2);
+
+        gameDataAccess.clear();
+        authDataAccess.clear();
+        userDataAccess.clear();
+
+        assertEquals(0, userDataAccess.getNumUsers());
+        assertEquals(0, authDataAccess.getNumAuths());
+        assertEquals(0, gameDataAccess.getNumGames());
+    }
 
 }
