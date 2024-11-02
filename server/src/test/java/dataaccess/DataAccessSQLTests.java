@@ -161,6 +161,24 @@ public class DataAccessSQLTests {
         assertEquals(expected, actual);
 
     }
+
+    @Test
+    public void getNumGames() throws DataAccessException {
+        gameDataAccess.addGame(testGame1);
+        gameDataAccess.addGame(testGame2);
+        int numGamesFound = gameDataAccess.getNumGames();
+        assertEquals(2, numGamesFound);
+    }
+
+    @Test
+    public void clearGames() throws DataAccessException{
+        gameDataAccess.addGame(testGame1);
+        gameDataAccess.addGame(testGame2);
+        gameDataAccess.clear();
+        int numGamesFound = gameDataAccess.getNumGames();
+        assertEquals(0, numGamesFound);
+    }
+
 //
 //    @Test
 //    void getAllGames(){
@@ -197,6 +215,7 @@ public class DataAccessSQLTests {
 //    }
 //
 //
+
     /// GENERAL TESTS ///
 
     @Test
