@@ -74,6 +74,8 @@ public class DataAccessSQLTests {
         }
     }
 
+    /// AUTHDAO TESTS ///
+
     @Test
     void addAndGetAuthData() throws DataAccessException {
         AuthData expected = testAuth1;
@@ -109,14 +111,41 @@ public class DataAccessSQLTests {
         assertNull(authDataAccess.getAuthData(testAuth1.authToken()));
     }
 
-//
-//    @Test
-//    void addAndGetUser(){
-//        UserData expected = testUser1;
-//        userDataAccess.addUser(expected);
-//        UserData actual = userDataAccess.getUser(testUser1.username());
-//        assertEquals(expected, actual);
-//    }
+    /// USERDAO TESTS ////
+
+    @Test
+    public void addUser() throws DataAccessException{
+        userDataAccess.addUser(testUser1);
+        userDataAccess.addUser(testUser2);
+    }
+
+    @Test
+    public void getNumUsers() throws DataAccessException {
+        userDataAccess.addUser(testUser1);
+        userDataAccess.addUser(testUser2);
+        int numUsersFound = userDataAccess.getNumUsers();
+        assertEquals(2, numUsersFound);
+    }
+
+    @Test
+    public void clearUsers() throws DataAccessException{
+        userDataAccess.addUser(testUser1);
+        userDataAccess.addUser(testUser2);
+        userDataAccess.clear();
+        int numUsersFound = userDataAccess.getNumUsers();
+        assertEquals(0, numUsersFound);
+    }
+
+
+    @Test
+    void addAndGetUser() throws DataAccessException{
+        UserData expected = testUser1;
+        userDataAccess.addUser(expected);
+        userDataAccess.addUser(testUser2);
+        UserData actual = userDataAccess.getUser(testUser1.username());
+        assertEquals(expected, actual);
+    }
+
 //
 //
 //    @Test

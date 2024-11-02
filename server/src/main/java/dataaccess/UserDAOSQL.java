@@ -1,5 +1,6 @@
 package dataaccess;
 
+import model.AuthData;
 import model.UserData;
 import service.DatabaseManager;
 
@@ -7,12 +8,39 @@ import java.sql.Connection;
 
 public class UserDAOSQL implements UserDAO {
 
-    public UserData getUser(String username) throws DataAccessException {
-        return null;
+    public void addUser(UserData newUser) throws DataAccessException {
+        try(Connection conn = DatabaseManager.getConnection()){
+            String statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+            try (var preparedStatement = conn.prepareStatement(statement)){
+                preparedStatement.setString(1, newUser.username());
+                preparedStatement.setString(2, newUser.password());
+                preparedStatement.setString(3, newUser.email());
+                preparedStatement.executeUpdate();
+            }
+        } catch (Exception ex){
+            throw new DataAccessException(ex.getMessage());
+        }
     }
 
-    public void addUser(UserData newUser) throws DataAccessException {
-        //do something
+    public UserData getUser(String username) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            String statement = "SELECT password, email FROM auth WHERE username = ?";
+            try(var preparedStatement = conn.prepareStatement(statement) ) {
+                preparedStatement.setString(1, username);
+                try(var rs = preparedStatement.executeQuery()){
+                    if(rs.next()){
+                        String foundPassword = rs.getString("password");
+                        String foundEmail = rs.getString("email");
+                        UserData foundUserData = new UserData(username, foundPassword, foundEmail);
+                        return foundUserData;
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        } catch (Exception ex){
+            throw new DataAccessException(ex.getMessage());
+        }
     }
 
     public void clear() throws DataAccessException {
