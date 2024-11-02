@@ -39,7 +39,7 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    static void createDatabase() throws DataAccessException {
+    public static void createDatabase() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
             try (var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
@@ -51,7 +51,7 @@ public class DatabaseManager {
         }
     }
 
-    static void createTables() throws DataAccessException {
+    public static void createTables() throws DataAccessException {
         try(Connection conn = DatabaseManager.getConnection()){
             for(String statement : createTableStatements){
                 try (var preparedStatement = conn.prepareStatement(statement)){
@@ -65,6 +65,15 @@ public class DatabaseManager {
 
     private static final String[] createTableStatements = {
             """
+            CREATE TABLE IF NOT EXISTS auth (
+            id INT NOT NULL AUTO_INCREMENT,
+            username VARCHAR(255) NOT NULL,
+            authtoken VARCHAR(255) NOT NULL,
+            PRIMARY KEY (id),
+            INDEX (authtoken)
+            )
+            """,
+            """
             CREATE TABLE IF NOT EXISTS users (
             id INT NOT NULL AUTO_INCREMENT,
             username VARCHAR(255) NOT NULL,
@@ -74,19 +83,10 @@ public class DatabaseManager {
             )
             """,
             """
-            CREATE TABLE IF NOT EXISTS auth (
-            id INT NOT NULL AUTO_INCREMENT,
-            username VARCHAR(255) NOT NULL,
-            auth VARCHAR(255) NOT NULL,
-            PRIMARY KEY (id),
-            INDEX (auth)
-            )
-            """,
-            """
             CREATE TABLE IF NOT EXISTS games (
-            game TEXT NOT NULL,
-            gameName VARCHAR(255) NOT NULL,
             gameID INT NOT NULL,
+            gameName VARCHAR(255) NOT NULL,
+            game TEXT NOT NULL,
             whiteUsername VARCHAR(255),
             blackUsername VARCHAR(255),
             PRIMARY KEY (gameID),

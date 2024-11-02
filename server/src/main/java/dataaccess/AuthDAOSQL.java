@@ -9,12 +9,14 @@ import java.sql.SQLException;
 public class AuthDAOSQL implements AuthDAO  {
 
     public void addAuthData(AuthData authData) throws DataAccessException {
-        try(Connection conn = DatabaseManager.getConnection()){
-
-        }catch (Exception ex){
-//            System.out.println("do something about this exception");
-            throw new DataAccessException(ex.getMessage());
-        }
+//        try(Connection conn = DatabaseManager.getConnection()){
+//            String statement = "INSERT INTO auth (username,
+//            try (var preparedStatement = conn.prepareStatement()){
+//
+//            }
+//        }catch (Exception ex){
+//            throw new DataAccessException(ex.getMessage());
+//        }
     }
 
     public AuthData getAuthData(String authToken) throws DataAccessException{

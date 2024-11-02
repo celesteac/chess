@@ -7,9 +7,13 @@ import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import service.DatabaseManager;
 import service.Service;
 import service.ServiceException;
 
+import javax.xml.crypto.Data;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +51,29 @@ public class DataAccessSQLTests {
         userDataAccess.clear();
         authDataAccess.clear();
         gameDataAccess.clear();
+    }
+
+    @Test
+    public void databaseCreation() throws DataAccessException{
+        DatabaseManager.createDatabase();
+        DatabaseManager.createTables();
+        //get a count of tables
+        try (Connection conn = DatabaseManager.getConnection()){
+//            String statement = "SELECT COUNT(*) as table_count FROM INFORMATION_SCHEMA.TABLES";
+            String statement = "SELECT COUNT(*) as table_count FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'chess'";
+            try(var preparedStatement = conn.prepareStatement(statement)){
+                try (var rs = preparedStatement.executeQuery()){
+                    if(rs.next()){
+                        int count = rs.getInt("table_count");
+                        assertEquals(3, count);
+                    } else {
+                        fail("no results returned from the query");
+                    }
+                }
+            }
+        } catch (Exception ex){
+            throw new DataAccessException(ex.getMessage());
+        }
     }
 
     @Test

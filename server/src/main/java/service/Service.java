@@ -23,14 +23,14 @@ public class Service {
 
     public Service() {
         try {
-            dataAccessType databaseType = dataAccessType.MEMORY;
+            dataAccessType databaseType = dataAccessType.SQL;
             switch (databaseType) {
                 case MEMORY -> initMemoryDAO();
                 case SQL -> initSQLDAO();
             }
         } catch (DataAccessException ex){
             //the database or the tables couldn't start
-            System.out.println("************ERROR***********");
+            System.out.println("************DATABASE CREATION ERROR***********");
             System.out.println(ex.getMessage());
         }
     }
