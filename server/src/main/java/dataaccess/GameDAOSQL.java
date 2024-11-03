@@ -7,6 +7,7 @@ import model.UserData;
 import service.DatabaseManager;
 
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -60,11 +61,44 @@ public class GameDAOSQL implements GameDAO{
     }
 
     public void updateGame(GameData gameData) throws DataAccessException {
-
+        try (Connection conn = DatabaseManager.getConnection()) {
+            String deleteStatement = "DELETE FROM games WHERE gameID = ?";
+            try(var preparedStatement = conn.prepareStatement(deleteStatement) ) {
+                preparedStatement.setInt(1, gameData.gameID());
+                preparedStatement.executeUpdate();
+            }
+            addGame(gameData);
+        } catch (Exception ex){
+            throw new DataAccessException(ex.getMessage());
+        }
     }
 
     public Map<Integer, GameData> getAllGames() throws DataAccessException {
-        return Map.of();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            String statement = "SELECT * FROM games";
+            try(var preparedStatement = conn.prepareStatement(statement) ) {
+                try(var rs = preparedStatement.executeQuery()){
+                    Map<Integer, GameData> allGames = new HashMap<>();
+                    while(rs.next()){
+                        int foundGameID = rs.getInt("gameID");
+                        String foundGameName = rs.getString("gameName");
+                        String foundJsonGameObj = rs.getString("game");
+                        String foundWhiteUsername = rs.getString("whiteUsername");
+                        String foundBlackUsername = rs.getString("blackUsername");
+
+                        ChessGame foundGame = new Gson().fromJson(foundJsonGameObj, ChessGame.class);
+
+                        String checkedWhiteUsername = Objects.equals(foundWhiteUsername, "null") ? null : foundWhiteUsername;
+                        String checkedBlackUsername = Objects.equals(foundBlackUsername, "null") ? null : foundBlackUsername;
+
+                        allGames.put(foundGameID, new GameData(foundGame, checkedWhiteUsername, checkedBlackUsername, foundGameName, foundGameID));
+                    }
+                    return allGames;
+                }
+            }
+        } catch (Exception ex){
+            throw new DataAccessException(ex.getMessage());
+        }
     }
 
     public void clear() throws DataAccessException {

@@ -129,7 +129,7 @@ public class Service {
             throw new ServiceException("Error: color already taken", 403);
         }
 
-        GameData newGame = foundGame.updateGame(joinReq.playerColor(), foundAuth.username());
+        GameData newGame = foundGame.updateGamePlayer(joinReq.playerColor(), foundAuth.username());
         gameDAO.updateGame(newGame);
         return newGame.gameID();
 

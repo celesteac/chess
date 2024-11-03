@@ -151,6 +151,7 @@ public class DataAccessSQLTests {
     @Test
     public void addGame() throws DataAccessException{
         gameDataAccess.addGame(testGame1);
+        gameDataAccess.addGame(testGame2);
     }
 
     @Test
@@ -178,42 +179,30 @@ public class DataAccessSQLTests {
         assertEquals(0, numGamesFound);
     }
 
-//
-//    @Test
-//    void getAllGames(){
-//        gameDataAccess.addGame(testGame1);
-//        gameDataAccess.addGame(testGame2);
-//        Map<Integer, GameData> actual = gameDataAccess.getAllGames();
-//
-//        Map<Integer, GameData> expected = new HashMap<>();
-//        expected.put(testGame1.gameID(), testGame1);
-//        expected.put(testGame2.gameID(), testGame2);
-//
-//        assertEquals(expected, actual);
-//    }
-//
-//
-//    @Test
-//    void updateGameRecord(){
-//        GameData updatedGame = testGame1.updateGame(ChessGame.TeamColor.WHITE, "bob");
-//        System.out.println(updatedGame);
-//        //should do some equals method here
-//    }
-//
-//    @Test
-//    void updateGameDataAccessLayer(){
-//        gameDataAccess.addGame(testGame1);
-//        String expectedUserName = "bob";
-//
-//        //try this with the blackUsername too
-//        GameData updatedGame = testGame1.updateGame(ChessGame.TeamColor.WHITE, expectedUserName);
-//        gameDataAccess.updateGame(updatedGame);
-//
-//        String actualUserName = gameDataAccess.getGame(testGame1.gameID()).whiteUsername();
-//        assertEquals(expectedUserName, actualUserName);
-//    }
-//
-//
+    @Test
+    public void updateGame() throws DataAccessException{
+        GameData testGame2Updated = testGame2.updateGamePlayer(ChessGame.TeamColor.WHITE, "kittens");
+        gameDataAccess.addGame(testGame2);
+        gameDataAccess.updateGame(testGame2Updated);
+        GameData actual = gameDataAccess.getGame(testGame2Updated.gameID());
+        assertEquals(testGame2Updated, actual);
+    }
+
+
+    @Test
+    void getAllGames() throws DataAccessException{
+        gameDataAccess.addGame(testGame1);
+        gameDataAccess.addGame(testGame2);
+        Map<Integer, GameData> actual = gameDataAccess.getAllGames();
+
+        Map<Integer, GameData> expected = new HashMap<>();
+        expected.put(testGame1.gameID(), testGame1);
+        expected.put(testGame2.gameID(), testGame2);
+
+        assertEquals(expected, actual);
+    }
+
+
 
     /// GENERAL TESTS ///
 

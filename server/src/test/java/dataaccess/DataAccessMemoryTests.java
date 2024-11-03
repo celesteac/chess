@@ -8,7 +8,6 @@ import model.UserData;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import service.Service;
-import service.ServiceException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,7 +97,7 @@ public class DataAccessMemoryTests {
 
     @Test
     void updateGameRecord(){
-        GameData updatedGame = testGame1.updateGame(ChessGame.TeamColor.WHITE, "bob");
+        GameData updatedGame = testGame1.updateGamePlayer(ChessGame.TeamColor.WHITE, "bob");
         System.out.println(updatedGame);
         //should do some equals method here
     }
@@ -108,7 +107,7 @@ public class DataAccessMemoryTests {
         gameDataAccess.addGame(testGame1);
         String expectedUserName = "bob";
 
-        GameData updatedGame = testGame1.updateGame(ChessGame.TeamColor.WHITE, expectedUserName);
+        GameData updatedGame = testGame1.updateGamePlayer(ChessGame.TeamColor.WHITE, expectedUserName);
         gameDataAccess.updateGame(updatedGame);
 
         String actualUserName = gameDataAccess.getGame(testGame1.gameID()).whiteUsername();
