@@ -159,7 +159,6 @@ public class DataAccessSQLTests {
         gameDataAccess.addGame(expected);
         GameData actual = gameDataAccess.getGame(expected.gameID());
         assertEquals(expected, actual);
-
     }
 
     @Test

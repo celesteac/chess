@@ -33,7 +33,7 @@ public class GameDAOSQL implements GameDAO{
 
     public GameData getGame(Integer gameID) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT gameID, gameName, game, whiteUsername, blackUsername FROM games WHERE gameID = ?";
+            String statement = "SELECT gameName, game, whiteUsername, blackUsername FROM games WHERE gameID = ?";
             try(var preparedStatement = conn.prepareStatement(statement) ) {
                 preparedStatement.setInt(1, gameID);
                 try(var rs = preparedStatement.executeQuery()){
