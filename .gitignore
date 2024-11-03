@@ -11,6 +11,3 @@ out/
 
 ### Chess project ###
 server/**/db.properties
-
-## Extra Tests ##
-server/**/DataAccessMemoryTests.java

@@ -118,11 +118,8 @@ public class DataAccessMemoryTests {
     @Test
     void clearDB(){
         USER_DATA_ACCESS.addUser(testUser1);
-        USER_DATA_ACCESS.addUser(testUser2);
         AUTH_DATA_ACCESS.addAuthData(testAuth1);
-        AUTH_DATA_ACCESS.addAuthData(testAuth2);
         GAME_DATA_ACCESS.addGame(testGame1);
-        GAME_DATA_ACCESS.addGame(testGame2);
 
         GAME_DATA_ACCESS.clear();
         AUTH_DATA_ACCESS.clear();

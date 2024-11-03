@@ -56,8 +56,9 @@ public class DataAccessSQLTests {
         DatabaseManager.createDatabase();
         DatabaseManager.createTables();
         try (Connection conn = DatabaseManager.getConnection()){
-            String statement = "SELECT COUNT(*) AS table_count FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'chess'";
+            String statement = "SELECT COUNT(*) AS table_count FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?";
             try(var preparedStatement = conn.prepareStatement(statement)){
+                preparedStatement.setString(1, DatabaseManager.DATABASE_NAME);
                 try (var rs = preparedStatement.executeQuery()){
                     if(rs.next()){
                         int count = rs.getInt("table_count");
@@ -179,13 +180,20 @@ public class DataAccessSQLTests {
 
     @Test
     void getAllGames() throws DataAccessException{
+        GameData testGame3 = new GameData(
+                new ChessGame(), "hey", "hi there",
+                "coolest game", 7289
+        );
+
         GAME_DATA_ACCESS.addGame(testGame1);
         GAME_DATA_ACCESS.addGame(testGame2);
+        GAME_DATA_ACCESS.addGame(testGame3);
         Map<Integer, GameData> actual = GAME_DATA_ACCESS.getAllGames();
 
         Map<Integer, GameData> expected = new HashMap<>();
         expected.put(testGame1.gameID(), testGame1);
         expected.put(testGame2.gameID(), testGame2);
+        expected.put(testGame3.gameID(), testGame3);
 
         assertEquals(expected, actual);
     }
