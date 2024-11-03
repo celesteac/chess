@@ -144,6 +144,7 @@ public class DataAccessSQLTests {
     void addAndGetGamaData() throws DataAccessException{
         GameData expected = testGame1;
         gameDataAccess.addGame(expected);
+        gameDataAccess.addGame(testGame2);
         GameData actual = gameDataAccess.getGame(expected.gameID());
         assertEquals(expected, actual);
     }
@@ -171,6 +172,7 @@ public class DataAccessSQLTests {
         gameDataAccess.addGame(testGame2);
         gameDataAccess.updateGame(testGame2Updated);
         GameData actual = gameDataAccess.getGame(testGame2Updated.gameID());
+        System.out.println(actual);
         assertEquals(testGame2Updated, actual);
     }
 

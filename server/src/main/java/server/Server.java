@@ -84,7 +84,8 @@ public class Server {
 
     private Object createGame(Request req, Response res) throws ServiceException, DataAccessException {
         String authToken = req.headers("Authorization");
-        CreateRequest createReq = new CreateRequest(req.body(), authToken);
+        CreateRequest createReq = new Gson().fromJson(req.body(), CreateRequest.class);
+        createReq = createReq.addAuthToken(authToken);
         int gameID = service.createGame(createReq);
         CreateResponse createRes = new CreateResponse(gameID);
         return new Gson().toJson(createRes);
