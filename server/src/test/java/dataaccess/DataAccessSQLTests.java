@@ -23,20 +23,20 @@ public class DataAccessSQLTests {
     private static AuthData testAuth2;
     private static GameData testGame1;
     private static GameData testGame2;
-    private static final UserDAOSQL userDataAccess = new UserDAOSQL();
-    private static final AuthDAOSQL authDataAccess = new AuthDAOSQL();
-    private static final GameDAOSQL gameDataAccess = new GameDAOSQL();
+    private static final UserDAOSQL USER_DATA_ACCESS = new UserDAOSQL();
+    private static final AuthDAOSQL AUTH_DATA_ACCESS = new AuthDAOSQL();
+    private static final GameDAOSQL GAME_DATA_ACCESS = new GameDAOSQL();
 
     @BeforeAll
     public static void init(){
         service = new Service();
-        testUser1 = new UserData("carl", "balloons", "cliff@mail");
-        testUser2 = new UserData("russell", "balloons", "birds@mail");
-        testAuth1 = new AuthData(service.generateAuthToken(), "Ellie");
+        testUser1 = new UserData("elli", "balloons", "waterfalls@mail");
+        testUser2 = new UserData("russel", "dogs", "birds@mail");
+        testAuth1 = new AuthData(service.generateAuthToken(), "carl");
         testAuth2 = new AuthData(service.generateAuthToken(), "Kevin" );
         testGame1 = new GameData(
                 new ChessGame(), null, null,
-                "best game", 1234
+                "coolest game", 1234
         );
         testGame2 = new GameData(
                 new ChessGame(), null, null,
@@ -46,9 +46,9 @@ public class DataAccessSQLTests {
 
     @BeforeEach
     public void setup() throws DataAccessException {
-        userDataAccess.clear();
-        authDataAccess.clear();
-        gameDataAccess.clear();
+        USER_DATA_ACCESS.clear();
+        AUTH_DATA_ACCESS.clear();
+        GAME_DATA_ACCESS.clear();
     }
 
     @Test
@@ -78,53 +78,53 @@ public class DataAccessSQLTests {
     void addAndGetAuthData() throws DataAccessException {
         AuthData expected = testAuth1;
 
-        authDataAccess.addAuthData(testAuth2);
-        authDataAccess.addAuthData(expected);
-        AuthData actual = authDataAccess.getAuthData(expected.authToken());
+        AUTH_DATA_ACCESS.addAuthData(testAuth2);
+        AUTH_DATA_ACCESS.addAuthData(expected);
+        AuthData actual = AUTH_DATA_ACCESS.getAuthData(expected.authToken());
         assertEquals(expected,actual);
     }
 
     @Test
     public void getNumAuths() throws DataAccessException {
-        authDataAccess.addAuthData(testAuth1);
-        authDataAccess.addAuthData(testAuth2);
-        int numAuthsFound = authDataAccess.getNumAuths();
+        AUTH_DATA_ACCESS.addAuthData(testAuth1);
+        AUTH_DATA_ACCESS.addAuthData(testAuth2);
+        int numAuthsFound = AUTH_DATA_ACCESS.getNumAuths();
         assertEquals(2, numAuthsFound);
     }
 
     @Test
     public void clearAuth() throws DataAccessException{
-        authDataAccess.addAuthData(testAuth1);
-        authDataAccess.addAuthData(testAuth2);
-        authDataAccess.clear();
-        int numAuthsFound = authDataAccess.getNumAuths();
+        AUTH_DATA_ACCESS.addAuthData(testAuth1);
+        AUTH_DATA_ACCESS.addAuthData(testAuth2);
+        AUTH_DATA_ACCESS.clear();
+        int numAuthsFound = AUTH_DATA_ACCESS.getNumAuths();
         assertEquals(0, numAuthsFound);
     }
 
     @Test
     public void deleteAuth() throws DataAccessException {
-        authDataAccess.addAuthData(testAuth1);
-        authDataAccess.addAuthData(testAuth2);
-        authDataAccess.deleteAuth(testAuth1);
-        assertNull(authDataAccess.getAuthData(testAuth1.authToken()));
+        AUTH_DATA_ACCESS.addAuthData(testAuth1);
+        AUTH_DATA_ACCESS.addAuthData(testAuth2);
+        AUTH_DATA_ACCESS.deleteAuth(testAuth1);
+        assertNull(AUTH_DATA_ACCESS.getAuthData(testAuth1.authToken()));
     }
 
     /// USERDAO TESTS ////
 
     @Test
     public void getNumUsers() throws DataAccessException {
-        userDataAccess.addUser(testUser1);
-        userDataAccess.addUser(testUser2);
-        int numUsersFound = userDataAccess.getNumUsers();
+        USER_DATA_ACCESS.addUser(testUser1);
+        USER_DATA_ACCESS.addUser(testUser2);
+        int numUsersFound = USER_DATA_ACCESS.getNumUsers();
         assertEquals(2, numUsersFound);
     }
 
     @Test
     public void clearUsers() throws DataAccessException{
-        userDataAccess.addUser(testUser1);
-        userDataAccess.addUser(testUser2);
-        userDataAccess.clear();
-        int numUsersFound = userDataAccess.getNumUsers();
+        USER_DATA_ACCESS.addUser(testUser1);
+        USER_DATA_ACCESS.addUser(testUser2);
+        USER_DATA_ACCESS.clear();
+        int numUsersFound = USER_DATA_ACCESS.getNumUsers();
         assertEquals(0, numUsersFound);
     }
 
@@ -132,9 +132,9 @@ public class DataAccessSQLTests {
     @Test
     void addAndGetUser() throws DataAccessException{
         UserData expected = testUser1;
-        userDataAccess.addUser(expected);
-        userDataAccess.addUser(testUser2);
-        UserData actual = userDataAccess.getUser(testUser1.username());
+        USER_DATA_ACCESS.addUser(expected);
+        USER_DATA_ACCESS.addUser(testUser2);
+        UserData actual = USER_DATA_ACCESS.getUser(testUser1.username());
         assertEquals(expected, actual);
     }
 
@@ -143,35 +143,35 @@ public class DataAccessSQLTests {
     @Test
     void addAndGetGamaData() throws DataAccessException{
         GameData expected = testGame1;
-        gameDataAccess.addGame(expected);
-        gameDataAccess.addGame(testGame2);
-        GameData actual = gameDataAccess.getGame(expected.gameID());
+        GAME_DATA_ACCESS.addGame(expected);
+        GAME_DATA_ACCESS.addGame(testGame2);
+        GameData actual = GAME_DATA_ACCESS.getGame(expected.gameID());
         assertEquals(expected, actual);
     }
 
     @Test
     public void getNumGames() throws DataAccessException {
-        gameDataAccess.addGame(testGame1);
-        gameDataAccess.addGame(testGame2);
-        int numGamesFound = gameDataAccess.getNumGames();
+        GAME_DATA_ACCESS.addGame(testGame1);
+        GAME_DATA_ACCESS.addGame(testGame2);
+        int numGamesFound = GAME_DATA_ACCESS.getNumGames();
         assertEquals(2, numGamesFound);
     }
 
     @Test
     public void clearGames() throws DataAccessException{
-        gameDataAccess.addGame(testGame1);
-        gameDataAccess.addGame(testGame2);
-        gameDataAccess.clear();
-        int numGamesFound = gameDataAccess.getNumGames();
+        GAME_DATA_ACCESS.addGame(testGame1);
+        GAME_DATA_ACCESS.addGame(testGame2);
+        GAME_DATA_ACCESS.clear();
+        int numGamesFound = GAME_DATA_ACCESS.getNumGames();
         assertEquals(0, numGamesFound);
     }
 
     @Test
     public void updateGame() throws DataAccessException{
         GameData testGame2Updated = testGame2.updateGamePlayer(ChessGame.TeamColor.WHITE, "kittens");
-        gameDataAccess.addGame(testGame2);
-        gameDataAccess.updateGame(testGame2Updated);
-        GameData actual = gameDataAccess.getGame(testGame2Updated.gameID());
+        GAME_DATA_ACCESS.addGame(testGame2);
+        GAME_DATA_ACCESS.updateGame(testGame2Updated);
+        GameData actual = GAME_DATA_ACCESS.getGame(testGame2Updated.gameID());
         System.out.println(actual);
         assertEquals(testGame2Updated, actual);
     }
@@ -179,9 +179,9 @@ public class DataAccessSQLTests {
 
     @Test
     void getAllGames() throws DataAccessException{
-        gameDataAccess.addGame(testGame1);
-        gameDataAccess.addGame(testGame2);
-        Map<Integer, GameData> actual = gameDataAccess.getAllGames();
+        GAME_DATA_ACCESS.addGame(testGame1);
+        GAME_DATA_ACCESS.addGame(testGame2);
+        Map<Integer, GameData> actual = GAME_DATA_ACCESS.getAllGames();
 
         Map<Integer, GameData> expected = new HashMap<>();
         expected.put(testGame1.gameID(), testGame1);
@@ -196,20 +196,20 @@ public class DataAccessSQLTests {
 
     @Test
     void clearDB() throws DataAccessException{
-        userDataAccess.addUser(testUser1);
-        userDataAccess.addUser(testUser2);
-        authDataAccess.addAuthData(testAuth1);
-        authDataAccess.addAuthData(testAuth2);
-        gameDataAccess.addGame(testGame1);
-        gameDataAccess.addGame(testGame2);
+        USER_DATA_ACCESS.addUser(testUser1);
+        USER_DATA_ACCESS.addUser(testUser2);
+        AUTH_DATA_ACCESS.addAuthData(testAuth1);
+        AUTH_DATA_ACCESS.addAuthData(testAuth2);
+        GAME_DATA_ACCESS.addGame(testGame1);
+        GAME_DATA_ACCESS.addGame(testGame2);
 
-        gameDataAccess.clear();
-        authDataAccess.clear();
-        userDataAccess.clear();
+        GAME_DATA_ACCESS.clear();
+        AUTH_DATA_ACCESS.clear();
+        USER_DATA_ACCESS.clear();
 
-        assertEquals(0, userDataAccess.getNumUsers());
-        assertEquals(0, authDataAccess.getNumAuths());
-        assertEquals(0, gameDataAccess.getNumGames());
+        assertEquals(0, USER_DATA_ACCESS.getNumUsers());
+        assertEquals(0, AUTH_DATA_ACCESS.getNumAuths());
+        assertEquals(0, GAME_DATA_ACCESS.getNumGames());
     }
 
 }

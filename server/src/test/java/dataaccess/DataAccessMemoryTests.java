@@ -20,9 +20,9 @@ public class DataAccessMemoryTests {
     private static AuthData testAuth2;
     private static GameData testGame1;
     private static GameData testGame2;
-    private static final UserDAOMemory userDataAccess = new UserDAOMemory();
-    private static final AuthDAOMemory authDataAccess = new AuthDAOMemory();
-    private static final GameDAOMemory gameDataAccess = new GameDAOMemory();
+    private static final UserDAOMemory USER_DATA_ACCESS = new UserDAOMemory();
+    private static final AuthDAOMemory AUTH_DATA_ACCESS = new AuthDAOMemory();
+    private static final GameDAOMemory GAME_DATA_ACCESS = new GameDAOMemory();
 
     @BeforeAll
     public static void init(){
@@ -43,16 +43,16 @@ public class DataAccessMemoryTests {
 
     @BeforeEach
     public void setup() {
-        userDataAccess.clear();
-        authDataAccess.clear();
-        gameDataAccess.clear();
+        USER_DATA_ACCESS.clear();
+        AUTH_DATA_ACCESS.clear();
+        GAME_DATA_ACCESS.clear();
     }
 
     @Test
     void addAndGetUser(){
         UserData expected = testUser1;
-        userDataAccess.addUser(expected);
-        UserData actual = userDataAccess.getUser(testUser1.username());
+        USER_DATA_ACCESS.addUser(expected);
+        UserData actual = USER_DATA_ACCESS.getUser(testUser1.username());
         assertEquals(expected, actual);
     }
 
@@ -60,8 +60,8 @@ public class DataAccessMemoryTests {
     void addAndGetAuthData(){
         AuthData expected = testAuth1;
 
-        authDataAccess.addAuthData(expected);
-        AuthData actual = authDataAccess.getAuthData(expected.authToken());
+        AUTH_DATA_ACCESS.addAuthData(expected);
+        AuthData actual = AUTH_DATA_ACCESS.getAuthData(expected.authToken());
         System.out.println(expected.authToken());
         assertEquals(expected,actual);
     }
@@ -69,17 +69,17 @@ public class DataAccessMemoryTests {
     @Test
     void addAndGetGamaData(){
         GameData expected = testGame1;
-        gameDataAccess.addGame(expected);
-        GameData actual = gameDataAccess.getGame(expected.gameID());
+        GAME_DATA_ACCESS.addGame(expected);
+        GameData actual = GAME_DATA_ACCESS.getGame(expected.gameID());
         assertEquals(expected, actual);
 
     }
 
     @Test
     void getAllGames(){
-        gameDataAccess.addGame(testGame1);
-        gameDataAccess.addGame(testGame2);
-        Map<Integer, GameData> actual = gameDataAccess.getAllGames();
+        GAME_DATA_ACCESS.addGame(testGame1);
+        GAME_DATA_ACCESS.addGame(testGame2);
+        Map<Integer, GameData> actual = GAME_DATA_ACCESS.getAllGames();
 
         Map<Integer, GameData> expected = new HashMap<>();
         expected.put(testGame1.gameID(), testGame1);
@@ -90,9 +90,9 @@ public class DataAccessMemoryTests {
 
     @Test
     void deleteAuthData(){
-        authDataAccess.addAuthData(testAuth1);
-        authDataAccess.deleteAuth(testAuth1);
-        assertNull(authDataAccess.getAuthData(testAuth1.authToken()));
+        AUTH_DATA_ACCESS.addAuthData(testAuth1);
+        AUTH_DATA_ACCESS.deleteAuth(testAuth1);
+        assertNull(AUTH_DATA_ACCESS.getAuthData(testAuth1.authToken()));
     }
 
     @Test
@@ -104,33 +104,33 @@ public class DataAccessMemoryTests {
 
     @Test
     void updateGameDataAccessLayer(){
-        gameDataAccess.addGame(testGame1);
+        GAME_DATA_ACCESS.addGame(testGame1);
         String expectedUserName = "bob";
 
         GameData updatedGame = testGame1.updateGamePlayer(ChessGame.TeamColor.WHITE, expectedUserName);
-        gameDataAccess.updateGame(updatedGame);
+        GAME_DATA_ACCESS.updateGame(updatedGame);
 
-        String actualUserName = gameDataAccess.getGame(testGame1.gameID()).whiteUsername();
+        String actualUserName = GAME_DATA_ACCESS.getGame(testGame1.gameID()).whiteUsername();
         assertEquals(expectedUserName, actualUserName);
     }
 
 
     @Test
     void clearDB(){
-        userDataAccess.addUser(testUser1);
-        userDataAccess.addUser(testUser2);
-        authDataAccess.addAuthData(testAuth1);
-        authDataAccess.addAuthData(testAuth2);
-        gameDataAccess.addGame(testGame1);
-        gameDataAccess.addGame(testGame2);
+        USER_DATA_ACCESS.addUser(testUser1);
+        USER_DATA_ACCESS.addUser(testUser2);
+        AUTH_DATA_ACCESS.addAuthData(testAuth1);
+        AUTH_DATA_ACCESS.addAuthData(testAuth2);
+        GAME_DATA_ACCESS.addGame(testGame1);
+        GAME_DATA_ACCESS.addGame(testGame2);
 
-        gameDataAccess.clear();
-        authDataAccess.clear();
-        userDataAccess.clear();
+        GAME_DATA_ACCESS.clear();
+        AUTH_DATA_ACCESS.clear();
+        USER_DATA_ACCESS.clear();
 
-        assertEquals(0, userDataAccess.getNumUsers());
-        assertEquals(0, authDataAccess.getNumAuths());
-        assertEquals(0, gameDataAccess.getNumGames());
+        assertEquals(0, USER_DATA_ACCESS.getNumUsers());
+        assertEquals(0, AUTH_DATA_ACCESS.getNumAuths());
+        assertEquals(0, GAME_DATA_ACCESS.getNumGames());
     }
 
 }

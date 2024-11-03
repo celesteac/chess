@@ -16,14 +16,14 @@ public class Service {
     private AuthDAO authDAO;
     private GameDAO gameDAO;
 
-    public enum dataAccessType {
+    public enum DataAccessType {
         MEMORY,
         SQL
     }
 
     public Service() {
         try {
-            dataAccessType databaseType = dataAccessType.SQL;
+            DataAccessType databaseType = DataAccessType.SQL;
             switch (databaseType) {
                 case MEMORY -> initMemoryDAO();
                 case SQL -> initSQLDAO();

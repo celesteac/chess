@@ -52,7 +52,7 @@ public class DatabaseManager {
 
     public static void createTables() throws DataAccessException {
         try(Connection conn = DatabaseManager.getConnection()){
-            for(String statement : createTableStatements){
+            for(String statement : CREATE_TABLE_STATEMENTS){
                 try (var preparedStatement = conn.prepareStatement(statement)){
                     preparedStatement.executeUpdate();
                 }
@@ -62,7 +62,7 @@ public class DatabaseManager {
         }
     }
 
-    private static final String[] createTableStatements = {
+    private static final String[] CREATE_TABLE_STATEMENTS = {
             """
             CREATE TABLE IF NOT EXISTS auth (
             id INT NOT NULL AUTO_INCREMENT,
