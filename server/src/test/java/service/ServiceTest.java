@@ -2,17 +2,13 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
-import dataaccess.UserDAOMemory;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 import server.CreateRequest;
 import server.JoinRequest;
-import server.JoinResponse;
 
 import java.util.*;
 
@@ -57,17 +53,13 @@ public class ServiceTest {
     void registerUserAlreadyTaken() throws ServiceException, DataAccessException{
         UserData user = testUser;
         service.registerUser(user);
-        assertThrows(ServiceException.class, ()->{
-           service.registerUser(user);
-        });
+        assertThrows(ServiceException.class, ()-> service.registerUser(user));
     }
 
     @Test
-    void registerUserBadRequest() throws ServiceException{
+    void registerUserBadRequest() {
         UserData badUser = new UserData("car", "balloons", null);
-        assertThrows(ServiceException.class, ()->{
-            service.registerUser(badUser);
-        });
+        assertThrows(ServiceException.class, ()-> service.registerUser(badUser));
     }
 
     @Test
@@ -85,19 +77,15 @@ public class ServiceTest {
     }
 
     @Test
-    void loginUnauthorized() throws ServiceException{
-        assertThrows(ServiceException.class, ()->{
-            service.login(testUser);
-        });
+    void loginUnauthorized() {
+        assertThrows(ServiceException.class, ()-> service.login(testUser));
     }
 
     @Test
     void loginBadPassword() throws ServiceException, DataAccessException{
         service.registerUser(testUser);
         UserData badUser = new UserData(testUser.username(), "wrong", null);
-        assertThrows(ServiceException.class, ()->{
-            service.login(badUser);
-        });
+        assertThrows(ServiceException.class, ()-> service.login(badUser));
     }
 
     @Test
@@ -112,20 +100,20 @@ public class ServiceTest {
     }
 
     @Test
-    void createGameNotAuthorized() throws ServiceException{
+    void createGameNotAuthorized() {
         CreateRequest createReq = new CreateRequest(testGame.gameName(), testAuth.authToken());
         ServiceException ex = assertThrows(ServiceException.class, ()->{
-            int gameID = service.createGame(createReq);
+            service.createGame(createReq);
             //throws 401 unauthorized
         });
         assertEquals(401, ex.getStatus());
     }
 
     @Test
-    void createGameBadRequest() throws ServiceException{
+    void createGameBadRequest() {
         CreateRequest createReq = new CreateRequest(testGame.gameName(), "");
         ServiceException ex = assertThrows(ServiceException.class, ()->{
-            int gameID = service.createGame(createReq);
+            service.createGame(createReq);
             //throws 400 bad request
         });
         assertEquals(400, ex.getStatus());
@@ -187,27 +175,22 @@ public class ServiceTest {
     @Test
     void joinGameDoesNotExist() throws ServiceException, DataAccessException{
         AuthData userAuth = service.registerUser(testUser);
-        ServiceException ex = assertThrows(ServiceException.class, ()->{
-            service.joinGame(new JoinRequest(ChessGame.TeamColor.WHITE, 1234, userAuth.authToken()));
-        });
+        ServiceException ex = assertThrows(ServiceException.class, ()->
+                service.joinGame(new JoinRequest(ChessGame.TeamColor.WHITE, 1234, userAuth.authToken())));
         assertEquals(500, ex.getStatus());
     }
 
     @Test
     void joinGameUnauthorized(){
         JoinRequest joinReq = new JoinRequest(ChessGame.TeamColor.WHITE, 1234, testAuth.authToken());
-        ServiceException ex = assertThrows(ServiceException.class, ()->{
-            service.joinGame(joinReq);
-        });
+        ServiceException ex = assertThrows(ServiceException.class, ()-> service.joinGame(joinReq));
         assertEquals(401, ex.getStatus());
     }
 
     @Test
     void joinGameBadRequest(){
         JoinRequest joinReq = new JoinRequest(ChessGame.TeamColor.WHITE, null, testAuth.authToken());
-        ServiceException ex = assertThrows(ServiceException.class, ()->{
-            service.joinGame(joinReq);
-        });
+        ServiceException ex = assertThrows(ServiceException.class, ()-> service.joinGame(joinReq));
         assertEquals(400, ex.getStatus());
     }
 

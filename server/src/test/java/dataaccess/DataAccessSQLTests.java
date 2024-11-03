@@ -10,9 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import service.DatabaseManager;
 import service.Service;
-import service.ServiceException;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,12 +112,6 @@ public class DataAccessSQLTests {
     /// USERDAO TESTS ////
 
     @Test
-    public void addUser() throws DataAccessException{
-        userDataAccess.addUser(testUser1);
-        userDataAccess.addUser(testUser2);
-    }
-
-    @Test
     public void getNumUsers() throws DataAccessException {
         userDataAccess.addUser(testUser1);
         userDataAccess.addUser(testUser2);
@@ -147,12 +139,6 @@ public class DataAccessSQLTests {
     }
 
     /// GAMEDAO TESTS ///
-
-    @Test
-    public void addGame() throws DataAccessException{
-        gameDataAccess.addGame(testGame1);
-        gameDataAccess.addGame(testGame2);
-    }
 
     @Test
     void addAndGetGamaData() throws DataAccessException{

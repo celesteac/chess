@@ -1,7 +1,6 @@
 package service;
 
 import dataaccess.DataAccessException;
-import jdk.jshell.spi.SPIResolutionException;
 
 import java.sql.*;
 import java.util.Properties;

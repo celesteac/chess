@@ -4,7 +4,6 @@ import model.AuthData;
 import service.DatabaseManager;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public class AuthDAOSQL implements AuthDAO  {
 
@@ -29,8 +28,7 @@ public class AuthDAOSQL implements AuthDAO  {
                 try(var rs = preparedStatement.executeQuery()){
                     if(rs.next()){
                         String foundUsername = rs.getString("username");
-                        AuthData foundAuthData = new AuthData(authToken, foundUsername);
-                        return foundAuthData;
+                        return new AuthData(authToken, foundUsername);
                     } else {
                         return null;
                     }

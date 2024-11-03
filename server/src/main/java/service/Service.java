@@ -189,7 +189,7 @@ public class Service {
     private GameData newGameData(String gameName) throws DataAccessException {
         int gameID;
 
-        boolean isUnique = false;
+        boolean isUnique;
         do {
             gameID = generateGameID();
             isUnique = checkGameIDUnique(gameID);
@@ -210,13 +210,10 @@ public class Service {
     }
 
     private boolean checkValidCreateRequest(CreateRequest createReq){
-//        System.out.println(createReq.gameName());
-//        System.out.println(createReq.authToken());
         return (createReq.gameName() != null && !createReq.gameName().isEmpty()
                 && createReq.authToken() != null && !createReq.authToken().isEmpty());
     }
 
-    //make this an internal class??
     private boolean checkValidRegisterRequest(UserData user) {
         return (user.username() != null
                 && user.password() != null
@@ -229,7 +226,6 @@ public class Service {
                 && joinReq.gameID() != null);
     }
 
-    //not this one
     public String generateAuthToken(){
         return UUID.randomUUID().toString();
     }

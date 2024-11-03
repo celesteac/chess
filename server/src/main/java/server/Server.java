@@ -3,15 +3,11 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.AuthData;
-import model.GameData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import service.ListResponse;
 import service.Service;
 import service.ServiceException;
 import spark.*;
-
-import java.util.Map;
 
 public class Server {
 
