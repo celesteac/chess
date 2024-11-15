@@ -48,14 +48,14 @@ public class ClientLoggedIn implements Client{
 
     public String help(){
         return """
+                Options:
                 - help
                 - logout
                 - create
                 - list
                 - play
                 - observe
-                - quit
-                """;
+                - quit""";
     }
 
 }

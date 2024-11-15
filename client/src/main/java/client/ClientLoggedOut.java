@@ -22,11 +22,11 @@ public class ClientLoggedOut implements Client {
 
     public String help(){
         return """
+                Options:
                 - help
                 - login
                 - register
-                - quit
-                """;
+                - quit""";
     }
 
     String login(){

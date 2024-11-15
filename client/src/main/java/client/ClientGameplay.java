@@ -20,7 +20,7 @@ public class ClientGameplay implements Client{
             case "quit" -> "quit";
             case "leave" -> leave();
             case "redraw" -> drawBoard();
-            default -> "Unknown input. Options:%n" + help();
+            default -> help();
         };
     }
 
@@ -38,10 +38,10 @@ public class ClientGameplay implements Client{
 
     public String help(){
         return """
+                Options:
                 - help
                 - leave
                 - redraw
-                - quit
-                """;
+                - quit""";
     }
 }

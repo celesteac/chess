@@ -24,7 +24,7 @@ public class Repl {
         String response = "";
 
         setBlue(out);
-        out.printf("Welcome!%n%s%n", client.help());
+        printWelcome(out);
         setDefault(out);
 
         while (!response.equals("quit")){
@@ -45,11 +45,31 @@ public class Repl {
         }
     }
 
+    /// HELPER FUNCTIONS /////
+
+    public void setState(State newState){
+        this.state = newState;
+        this.client = switch (newState){
+            case LOGGED_OUT -> new ClientLoggedOut(this);
+            case LOGGED_IN -> new ClientLoggedIn(this);
+            case GAMEPLAY -> new ClientGameplay(this);
+        };
+    }
+
     private void printPrompt(PrintStream out){
         out.print(EscapeSequences.SET_TEXT_COLOR_YELLOW);
         out.printf("[%s]>>> ", state.toString());
         setDefault(out);
     }
+
+    private void printWelcome(PrintStream out){
+        out.printf("%s Welcome to Chess! %s%n",
+                EscapeSequences.WHITE_QUEEN, EscapeSequences.WHITE_QUEEN);
+        out.print(client.help());
+    }
+
+
+    /// FORMATTING FUNCTIONS ///
 
     private void setBlue(PrintStream out){
         out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
@@ -59,14 +79,5 @@ public class Repl {
         out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
     }
 
-    public void setState(State newState){
-        this.state = newState;
-        this.client = switch (newState){
-            case LOGGED_OUT -> new ClientLoggedOut(this);
-            case LOGGED_IN -> new ClientLoggedIn(this);
-            case GAMEPLAY -> new ClientGameplay(this);
-        };
-
-    }
 
 }
