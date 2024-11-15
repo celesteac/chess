@@ -16,7 +16,7 @@ public class ChessBoardUI {
 
     public void drawBoard(){
         drawTopBoarder();
-        drawRow();
+        drawRows();drawTopBoarder();
         out.print(board.toString());
     }
 
@@ -30,11 +30,22 @@ public class ChessBoardUI {
         out.println();
     }
 
-    private void drawRow(){
-        setBoarderColor();
-        out.print(EscapeSequences.EMPTY);
+    private void drawRows(){
+        int startingSquareColor = 0;
+        for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
+            setBoarderColor();
+            out.print(EscapeSequences.EMPTY);
+            drawRow(startingSquareColor);
+            setBoarderColor();
+            out.print(EscapeSequences.EMPTY);
+            setDefaultColors();
+            out.println();
+            startingSquareColor = startingSquareColor == 0 ? 1 : 0;
+        }
+    }
 
-        int squareColor = 0;
+    private void drawRow(int startingColor){
+        int squareColor = startingColor;
         for(int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
             switch (squareColor){
                 case 0 -> setLightSquare();
@@ -42,12 +53,8 @@ public class ChessBoardUI {
             }
 
             out.print(EscapeSequences.EMPTY);
-
             squareColor = squareColor == 0 ? 1 : 0;
         }
-        setBoarderColor();
-        out.print(EscapeSequences.EMPTY);
-        setDefaultColors();
     }
 
 

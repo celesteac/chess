@@ -65,7 +65,8 @@ public class Repl {
     private void printWelcome(PrintStream out){
         out.printf("%s Welcome to Chess! %s%n",
                 EscapeSequences.WHITE_QUEEN, EscapeSequences.WHITE_QUEEN);
-        out.print(client.help());
+        out.println(client.help());
+        out.println();
     }
 
 
