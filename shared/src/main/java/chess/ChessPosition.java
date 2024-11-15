@@ -19,11 +19,11 @@ public class ChessPosition implements Cloneable {
     }
 
 
-    public int convertColToChessIndices(int inCol){
+    public static int convertColToChessIndices(int inCol){
         return inCol +1;
     }
 
-    public int convertRowIndices(int inRow) {
+    public static int convertRowIndices(int inRow) {
         return switch(inRow){
             case -1 -> 9;
             case 0 -> 8;
