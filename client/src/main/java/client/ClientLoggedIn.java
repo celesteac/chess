@@ -24,7 +24,7 @@ public class ClientLoggedIn implements Client{
     }
 
     private String logout() {
-        ui.setState(Repl.STATE.LOGGED_OUT);
+        ui.setState(Repl.State.LOGGED_OUT);
         return "logout";
     }
 
@@ -37,12 +37,12 @@ public class ClientLoggedIn implements Client{
     }
 
     private String play() {
-        ui.setState(Repl.STATE.GAMEPLAY);
+        ui.setState(Repl.State.GAMEPLAY);
         return "playing game";
     }
 
     private String observe() {
-        ui.setState(Repl.STATE.GAMEPLAY);
+        ui.setState(Repl.State.GAMEPLAY);
         return "observing game";
     }
 

@@ -31,7 +31,7 @@ public class ClientLoggedOut implements Client {
 
     String login(){
         //authenticate
-        ui.setState(Repl.STATE.LOGGED_IN);
+        ui.setState(Repl.State.LOGGED_IN);
         return "welcome to chess";
     }
 

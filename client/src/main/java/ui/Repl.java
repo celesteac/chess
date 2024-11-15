@@ -7,16 +7,16 @@ import java.util.Scanner;
 
 public class Repl {
     private Client client;
-    private STATE state;
+    private State state;
 
-    public enum STATE {
+    public enum State {
         LOGGED_OUT,
         LOGGED_IN,
         GAMEPLAY
     }
 
     public Repl(){
-        setState(STATE.LOGGED_OUT);
+        setState(State.LOGGED_OUT);
     }
 
     public void run(){
@@ -59,7 +59,7 @@ public class Repl {
         out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
     }
 
-    public void setState(STATE newState){
+    public void setState(State newState){
         this.state = newState;
         this.client = switch (newState){
             case LOGGED_OUT -> new ClientLoggedOut(this);

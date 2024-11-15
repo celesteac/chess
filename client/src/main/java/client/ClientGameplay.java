@@ -20,7 +20,7 @@ public class ClientGameplay implements Client{
             case "quit" -> "quit";
             case "leave" -> leave();
             case "redraw" -> drawBoard();
-            default -> help();
+            default -> "Unknown input. Options:%n" + help();
         };
     }
 
@@ -32,7 +32,7 @@ public class ClientGameplay implements Client{
     }
 
     private String leave(){
-        ui.setState(Repl.STATE.LOGGED_IN);
+        ui.setState(Repl.State.LOGGED_IN);
         return "leaving game";
     }
 
