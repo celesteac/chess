@@ -1,5 +1,7 @@
 package client;
 
+import ui.Repl;
+
 public class ClientLoggedOut implements Client {
 
     public String eval(String input){
@@ -22,6 +24,8 @@ public class ClientLoggedOut implements Client {
     }
 
     String login(){
+        //authenticate
+
         return "welcome to chess";
     }
 
