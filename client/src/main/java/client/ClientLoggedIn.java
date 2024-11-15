@@ -1,6 +1,15 @@
 package client;
 
+import ui.Repl;
+
 public class ClientLoggedIn implements Client{
+    Repl ui;
+    String serverUrl;
+
+    public ClientLoggedIn(Repl repl){
+        this.ui = repl;
+    }
+
     public String eval(String input){
         return switch (input) {
             case "help" -> help();
@@ -15,6 +24,7 @@ public class ClientLoggedIn implements Client{
     }
 
     private String logout() {
+        ui.setState(Repl.STATE.LOGGED_OUT);
         return "logout";
     }
 

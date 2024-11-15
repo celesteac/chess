@@ -28,12 +28,12 @@ public class Repl {
         setDefault(out);
 
         while (!response.equals("quit")){
-            out.printf(printPrompt());
+            printPrompt(out);
 //            out.print(EscapeSequences.moveCursorToLocation(0,5));
             Scanner scanner = new Scanner(System.in);
             response = scanner.nextLine();
-            setBlue(out);
 
+            setBlue(out);
             try {
                 out.printf("%s", client.eval(response));
             } catch(Exception ex){
@@ -45,29 +45,33 @@ public class Repl {
         }
     }
 
-    String printPrompt(){
-        return ">>> ";
+    private void printPrompt(PrintStream out){
+        out.print(EscapeSequences.SET_TEXT_COLOR_YELLOW);
+        out.printf("[%s]>>> ", state.toString());
+        setDefault(out);
+//        return "["+ state.toString() + "]>>> ";
     }
 
-    public String welcome(){
+    private String welcome(){
         return "Welcome!%n" + client.help();
     }
 
-    void setBlue(PrintStream out){
+    private void setBlue(PrintStream out){
         out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
     }
 
-    void setDefault(PrintStream out){
+    private void setDefault(PrintStream out){
         out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
     }
 
     public void setState(STATE newState){
         this.state = newState;
         this.client = switch (newState){
-            case LOGGED_OUT -> new ClientLoggedOut();
-            case LOGGED_IN -> new ClientLoggedIn();
-            case GAMEPLAY -> new ClientGameplay();
+            case LOGGED_OUT -> new ClientLoggedOut(this);
+            case LOGGED_IN -> new ClientLoggedIn(this);
+            case GAMEPLAY -> new ClientGameplay(this);
         };
+
     }
 
 }

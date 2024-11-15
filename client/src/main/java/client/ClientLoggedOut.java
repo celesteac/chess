@@ -3,6 +3,12 @@ package client;
 import ui.Repl;
 
 public class ClientLoggedOut implements Client {
+    Repl ui;
+    String serverUrl;
+
+    public ClientLoggedOut(Repl repl){
+        this.ui = repl;
+    }
 
     public String eval(String input){
         return switch (input) {
@@ -25,7 +31,7 @@ public class ClientLoggedOut implements Client {
 
     String login(){
         //authenticate
-
+        ui.setState(Repl.STATE.LOGGED_IN);
         return "welcome to chess";
     }
 
