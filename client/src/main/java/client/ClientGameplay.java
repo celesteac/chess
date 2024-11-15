@@ -1,5 +1,7 @@
 package client;
 
+import chess.ChessBoard;
+import ui.ChessBoardUI;
 import ui.Repl;
 
 public class ClientGameplay implements Client{
@@ -8,6 +10,7 @@ public class ClientGameplay implements Client{
 
     public ClientGameplay(Repl repl){
         this.ui = repl;
+        drawBoard();
     }
 
     public String eval(String input){
@@ -16,8 +19,16 @@ public class ClientGameplay implements Client{
             case "help" -> help();
             case "quit" -> "quit";
             case "leave" -> leave();
+            case "redraw" -> drawBoard();
             default -> help();
         };
+    }
+
+    private String drawBoard(){
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
+        new ChessBoardUI(board).drawBoard();
+        return "drawing board";
     }
 
     private String leave(){
@@ -29,7 +40,7 @@ public class ClientGameplay implements Client{
         return """
                 - help
                 - leave
-                - reprint
+                - redraw
                 - quit
                 """;
     }
