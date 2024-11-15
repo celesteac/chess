@@ -29,19 +29,21 @@ public class ClientLoggedIn implements Client{
     }
 
     private String create() {
-        return "create";
+        return "created new game";
     }
 
     private String list() {
-        return "list";
+        return "list of games";
     }
 
     private String play() {
-        return "play";
+        ui.setState(Repl.STATE.GAMEPLAY);
+        return "playing game";
     }
 
     private String observe() {
-        return "observe";
+        ui.setState(Repl.STATE.GAMEPLAY);
+        return "observing game";
     }
 
     public String help(){

@@ -49,11 +49,6 @@ public class Repl {
         out.print(EscapeSequences.SET_TEXT_COLOR_YELLOW);
         out.printf("[%s]>>> ", state.toString());
         setDefault(out);
-//        return "["+ state.toString() + "]>>> ";
-    }
-
-    private String welcome(){
-        return "Welcome!%n" + client.help();
     }
 
     private void setBlue(PrintStream out){

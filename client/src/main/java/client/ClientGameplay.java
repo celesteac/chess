@@ -10,13 +10,27 @@ public class ClientGameplay implements Client{
         this.ui = repl;
     }
 
-    @Override
-    public String help() {
-        return "";
+    public String eval(String input){
+        return switch (input) {
+            //do something about the quit case
+            case "help" -> help();
+            case "quit" -> "quit";
+            case "leave" -> leave();
+            default -> help();
+        };
     }
 
-    @Override
-    public String eval(String input) {
-        return "";
+    private String leave(){
+        ui.setState(Repl.STATE.LOGGED_IN);
+        return "leaving game";
+    }
+
+    public String help(){
+        return """
+                - help
+                - leave
+                - reprint
+                - quit
+                """;
     }
 }
