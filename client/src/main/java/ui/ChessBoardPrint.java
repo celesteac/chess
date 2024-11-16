@@ -7,104 +7,74 @@ import chess.ChessPosition;
 
 import java.io.PrintStream;
 
-public class ChessBoardUI {
+public class ChessBoardPrint {
     private final PrintStream out = System.out;
+    private final StringBuilder sb = new StringBuilder();
     private final ChessBoard board;
     private final int BOARD_SIZE_IN_SQUARES = 8;
-    private final ChessGame.TeamColor playerColor;
+    private final int BOARDER_SIZE_IN_SQUARES = BOARD_SIZE_IN_SQUARES + 2;
 
-    public ChessBoardUI(ChessBoard board, ChessGame.TeamColor playerColor){
+    public ChessBoardPrint(ChessBoard board){
         this.board = board;
-        this.playerColor = playerColor;
     }
 
     public void drawBoard(){
         drawBoarder();
         drawRows();
         drawBoarder();
+        out.printf("%s",sb);
     }
 
     private void drawBoarder(){
-        char[] columnLabels;
-        if(playerColor == ChessGame.TeamColor.WHITE){
-            char[] columnLabelsWhite = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-            columnLabels = columnLabelsWhite;
-        } else {
-            char[] columnLabelsBlack = {'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
-            columnLabels = columnLabelsBlack;
-        }
+        char[] columnLabels = {'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
         setBoarderColor();
         setBoarderText();
-        out.print(EscapeSequences.EMPTY);
+        sb.append(EscapeSequences.EMPTY);
         for(int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
-            out.printf(" %c\u2003", columnLabels[i]);
+            sb.append(" ").append(columnLabels[i]).append("\u2003");
         }
-        out.print(EscapeSequences.EMPTY);
+        sb.append(EscapeSequences.EMPTY);
         setDefaultColors();
-        out.println();
+        sb.append("%n");
     }
 
     private void drawRows(){
         int startingSquareColor = 0;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
-            drawBorderSquare(i);
+            setBoarderColor();
+            setBoarderText();
+            sb.append(" ").append(i+1).append("\u2003");
+//            out.printf(" %d\u2003", i+1);
+
             drawRow(startingSquareColor, i);
-            drawBorderSquare(i);
+
+            setBoarderColor();
+            setBoarderText();
+            sb.append(" ").append(i+1).append("\u2003");
+//            out.printf("\u2003%d ", i+1);
 
             setDefaultColors();
-            out.println();
+            sb.append("%n");
+//            out.println();
             startingSquareColor = startingSquareColor == 0 ? 1 : 0;
         }
     }
 
-    private void drawBorderSquare(int num){
-        setBoarderColor();
-        setBoarderText();
-        if(playerColor == ChessGame.TeamColor.WHITE){
-            num = 8 - num;
-        }else{
-            num = num +1;
-        }
-        out.printf(" %d\u2003", num);
-    }
-
     private void drawRow(int startingSquareColor, int boardRow){
         int squareColor = startingSquareColor;
-        if(playerColor == ChessGame.TeamColor.BLACK){
-            boardRow = reverseIndex(boardRow);
-        }
-
         for(int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
             switch (squareColor){
                 case 0 -> setLightSquare();
                 case 1 -> setDarkSquare();
             }
 
-            int boardColumn = i;
-            if(playerColor == ChessGame.TeamColor.BLACK){
-                boardColumn = reverseIndex(boardColumn);
-            }
-
-            out.print(getPieceAsString(getPieceAtPosition(boardRow,boardColumn)));
+            sb.append(getPieceUiString(getPieceAtPosition(boardRow,i)));
+//            out.print(getPieceUiString(getPieceAtPosition(boardRow,i)));
             squareColor = squareColor == 0 ? 1 : 0;
         }
     }
 
-    private int reverseIndex(int index){
-        return switch (index) {
-            case 0 -> 7;
-            case 1 -> 6;
-            case 2 -> 5;
-            case 3 -> 4;
-            case 4 -> 3;
-            case 5 -> 2;
-            case 6 -> 1;
-            case 7 -> 0;
-            default -> -10; //error
-        };
-    }
-
-    private String getPieceAsString(ChessPiece piece){
+    private String getPieceUiString(ChessPiece piece){
         if(piece == null){
             return EscapeSequences.EMPTY;
         }
@@ -140,34 +110,39 @@ public class ChessBoardUI {
 
     /// PRIVATE FORMATTING FUNCTIONS //////
     private void setDefaultColors(){
-        out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
-        out.print(EscapeSequences.RESET_BG_COLOR);
+        sb.append(EscapeSequences.SET_TEXT_COLOR_BLUE);
+        sb.append(EscapeSequences.RESET_BG_COLOR);
+//        out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
+//        out.print(EscapeSequences.RESET_BG_COLOR);
     }
 
     private void setBoarderColor(){
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-//        out.print(sb);
-        out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        sb.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+//        out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
     }
 
     private void setBoarderText(){
-        out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
+        sb.append(EscapeSequences.SET_TEXT_COLOR_BLACK);
+//        out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
     }
 
     private void setLightSquare(){
-        out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+        sb.append(EscapeSequences.SET_BG_COLOR_YELLOW);
+//        out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
     }
 
     private void setDarkSquare(){
-        out.print(EscapeSequences.SET_BG_COLOR_BLUE);
+        sb.append(EscapeSequences.SET_BG_COLOR_BLUE);
+//        out.print(EscapeSequences.SET_BG_COLOR_BLUE);
     }
 
     private void setPlayerWhite(){
-        out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
+        sb.append(EscapeSequences.SET_TEXT_COLOR_WHITE);
+//        out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
     }
 
     private void setPlayerBlack(){
-        out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
+        sb.append(EscapeSequences.SET_TEXT_COLOR_BLACK);
+//        out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
     }
 }
