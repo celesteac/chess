@@ -15,28 +15,33 @@ public class Repl {
         GAMEPLAY
     }
 
-    public Repl(){
+    public Repl() {
         setState(State.LOGGED_OUT);
     }
 
-    public void run(){
+    public void run() {
         PrintStream out = System.out;
         String response = "";
 
         setBlue(out);
         printWelcome(out);
+        out.print(EscapeSequences.moveCursorToLocation(0, 0));
         setDefault(out);
 
-        while (!response.equals("quit")){
+        while (!response.equals("quit")) {
             printPrompt(out);
-//            out.print(EscapeSequences.moveCursorToLocation(0,5));
             Scanner scanner = new Scanner(System.in);
             response = scanner.nextLine();
 
             setBlue(out);
             try {
-                out.printf("%s", client.eval(response));
-            } catch(Exception ex){
+                String output = client.eval(response);
+                out.printf("%s", output);
+
+                if(response.equals("quit") && state != State.LOGGED_OUT){
+                    response = "";
+                }
+            } catch (Exception ex) {
                 out.print(ex.getMessage());
             }
 
@@ -47,22 +52,22 @@ public class Repl {
 
     /// HELPER FUNCTIONS /////
 
-    public void setState(State newState){
+    public void setState(State newState) {
         this.state = newState;
-        this.client = switch (newState){
+        this.client = switch (newState) {
             case LOGGED_OUT -> new ClientLoggedOut(this);
             case LOGGED_IN -> new ClientLoggedIn(this);
             case GAMEPLAY -> new ClientGameplay(this);
         };
     }
 
-    private void printPrompt(PrintStream out){
+    private void printPrompt(PrintStream out) {
         out.print(EscapeSequences.SET_TEXT_COLOR_YELLOW);
         out.printf("[%s]>>> ", state.toString());
         setDefault(out);
     }
 
-    private void printWelcome(PrintStream out){
+    private void printWelcome(PrintStream out) {
         out.printf("%s Welcome to Chess! %s%n",
                 EscapeSequences.WHITE_QUEEN, EscapeSequences.WHITE_QUEEN);
         out.println(client.help());
@@ -72,11 +77,11 @@ public class Repl {
 
     /// FORMATTING FUNCTIONS ///
 
-    private void setBlue(PrintStream out){
+    private void setBlue(PrintStream out) {
         out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
     }
 
-    private void setDefault(PrintStream out){
+    private void setDefault(PrintStream out) {
         out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
     }
 

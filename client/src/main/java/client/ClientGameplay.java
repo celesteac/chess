@@ -18,7 +18,7 @@ public class ClientGameplay implements Client{
         return switch (input) {
             //do something about the quit case
             case "help" -> help();
-            case "quit" -> "quit";
+            case "quit" -> "please leave the game before quitting";
             case "leave" -> leave();
             case "redraw" -> drawBoard();
             default -> help();
@@ -44,7 +44,6 @@ public class ClientGameplay implements Client{
                 Options:
                 - help
                 - leave
-                - redraw
-                - quit""";
+                - redraw""";
     }
 }

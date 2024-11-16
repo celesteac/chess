@@ -18,7 +18,7 @@ public class ClientLoggedIn implements Client{
             case "list" -> list();
             case "play" -> play();
             case "observe" -> observe();
-            case "quit" -> "quit";
+            case "quit" -> "please logout before quitting";
             default -> help();
         };
     }
@@ -54,8 +54,7 @@ public class ClientLoggedIn implements Client{
                 - create
                 - list
                 - play
-                - observe
-                - quit""";
+                - observe""";
     }
 
 }

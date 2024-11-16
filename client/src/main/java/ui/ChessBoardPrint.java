@@ -10,7 +10,7 @@ import java.io.PrintStream;
 public class ChessBoardPrint {
     private final PrintStream out = System.out;
     private final ChessBoard board;
-    private final int BOARD_SIZE_IN_SQUARES = 8;
+    private final int boardSizeInSquares = 8;
     private final ChessGame.TeamColor playerColor;
 
     public ChessBoardPrint(ChessBoard board, ChessGame.TeamColor playerColor){
@@ -36,7 +36,7 @@ public class ChessBoardPrint {
         setBoarderColor();
         setBoarderText();
         out.print(EscapeSequences.EMPTY);
-        for(int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
+        for(int i = 0; i < boardSizeInSquares; i++){
             out.printf(" %c\u2003", columnLabels[i]);
         }
         out.print(EscapeSequences.EMPTY);
@@ -46,7 +46,7 @@ public class ChessBoardPrint {
 
     private void drawRows(){
         int startingSquareColor = 0;
-        for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
+        for (int i = 0; i < boardSizeInSquares; i++){
             drawBorderSquare(i);
             drawRow(startingSquareColor, i);
             drawBorderSquare(i);
@@ -74,7 +74,7 @@ public class ChessBoardPrint {
             boardRow = reverseIndex(boardRow);
         }
 
-        for(int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
+        for(int i = 0; i < boardSizeInSquares; i++){
             switch (squareColor){
                 case 0 -> setLightSquare();
                 case 1 -> setDarkSquare();
