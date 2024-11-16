@@ -1,8 +1,10 @@
+import client.ServerFacade;
 import ui.Repl;
 
 public class Main {
     public static void main(String[] args) {
-        Repl repl = new Repl();
+        String serverUrl = "";
+        Repl repl = new Repl(serverUrl);
         repl.run();
     }
 }

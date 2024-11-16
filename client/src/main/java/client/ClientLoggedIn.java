@@ -5,9 +5,11 @@ import ui.Repl;
 public class ClientLoggedIn implements Client{
     Repl ui;
     String serverUrl;
+    ServerFacade serverFacade;
 
-    public ClientLoggedIn(Repl repl){
+    public ClientLoggedIn(Repl repl, String serverUrl){
         this.ui = repl;
+        serverFacade = new ServerFacade(serverUrl);
     }
 
     public String eval(String input){

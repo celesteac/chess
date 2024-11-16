@@ -5,9 +5,11 @@ import ui.Repl;
 public class ClientLoggedOut implements Client {
     Repl ui;
     String serverUrl;
+    ServerFacade serverFacade;
 
-    public ClientLoggedOut(Repl repl){
+    public ClientLoggedOut(Repl repl, String serverUrl){
         this.ui = repl;
+        serverFacade = new ServerFacade(serverUrl);
     }
 
     public String eval(String input){

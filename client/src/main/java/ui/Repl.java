@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 public class Repl {
+    String serverUrl;
     private Client client;
     private State state;
 
@@ -15,8 +16,9 @@ public class Repl {
         GAMEPLAY
     }
 
-    public Repl() {
+    public Repl(String serverUrl) {
         setState(State.LOGGED_OUT);
+        this.serverUrl = serverUrl;
     }
 
     public void run() {
@@ -55,9 +57,9 @@ public class Repl {
     public void setState(State newState) {
         this.state = newState;
         this.client = switch (newState) {
-            case LOGGED_OUT -> new ClientLoggedOut(this);
-            case LOGGED_IN -> new ClientLoggedIn(this);
-            case GAMEPLAY -> new ClientGameplay(this);
+            case LOGGED_OUT -> new ClientLoggedOut(this, serverUrl);
+            case LOGGED_IN -> new ClientLoggedIn(this, serverUrl);
+            case GAMEPLAY -> new ClientGameplay(this, serverUrl);
         };
     }
 
