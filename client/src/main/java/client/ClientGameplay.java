@@ -2,7 +2,7 @@ package client;
 
 import chess.ChessBoard;
 import chess.ChessGame;
-import ui.ChessBoardUI;
+import ui.ChessBoardPrint;
 import ui.Repl;
 
 public class ClientGameplay implements Client{
@@ -28,9 +28,9 @@ public class ClientGameplay implements Client{
     private String drawBoard(){
         ChessBoard board = new ChessBoard();
         board.resetBoard();
-        new ChessBoardUI(board, ChessGame.TeamColor.BLACK).drawBoard();
+        new ChessBoardPrint(board, ChessGame.TeamColor.BLACK).drawBoard();
         System.out.println();
-        new ChessBoardUI(board, ChessGame.TeamColor.WHITE).drawBoard();
+        new ChessBoardPrint(board, ChessGame.TeamColor.WHITE).drawBoard();
         return "drawing board";
     }
 
