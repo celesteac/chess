@@ -18,17 +18,20 @@ public class ChessBoardUI {
     }
 
     public void drawBoard(){
-        drawTopBoarder();
-        drawRows();drawTopBoarder();
-        out.print(board.toString());
+        drawBoarder();
+        drawRows();
+        drawBoarder();
     }
 
-    private void drawTopBoarder(){
+    private void drawBoarder(){
+        char[] columnLabels = {'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
         setBoarderColor();
         setBoarderText();
-        for(int i = 0; i < BOARDER_SIZE_IN_SQUARES; i++){
-            out.print(EscapeSequences.EMPTY);
+        out.print(EscapeSequences.EMPTY);
+        for(int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
+            out.printf(" %c\u2003", columnLabels[i]);
         }
+        out.print(EscapeSequences.EMPTY);
         setDefaultColors();
         out.println();
     }
@@ -37,12 +40,15 @@ public class ChessBoardUI {
         int startingSquareColor = 0;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
             setBoarderColor();
-            out.print(EscapeSequences.EMPTY);
+            setBoarderText();
+            out.printf(" %d\u2003", i+1);
 
             drawRow(startingSquareColor, i);
-            setBoarderColor();
 
-            out.print(EscapeSequences.EMPTY);
+            setBoarderColor();
+            setBoarderText();
+            out.printf("\u2003%d ", i+1);
+
             setDefaultColors();
             out.println();
             startingSquareColor = startingSquareColor == 0 ? 1 : 0;
@@ -103,6 +109,9 @@ public class ChessBoardUI {
     }
 
     private void setBoarderColor(){
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+//        out.print(sb);
         out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
     }
 
