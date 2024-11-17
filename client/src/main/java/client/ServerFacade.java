@@ -28,7 +28,8 @@ public class ServerFacade {
     AuthData register(String username, String password, String email) throws ResponseException{
         String path = "/user";
         UserData newUser = new UserData(username, password, email);
-        return makeRequest("POST", path, newUser, AuthData.class);
+        AuthData auth =  makeRequest("POST", path, newUser, AuthData.class);
+        return auth;
     }
 
     void logout(){
@@ -57,7 +58,8 @@ public class ServerFacade {
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
-            URL url = (new URI(serverUrl + path)).toURL();
+            String absoluteURL = serverUrl + path;
+            URL url = (new URI(absoluteURL)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);

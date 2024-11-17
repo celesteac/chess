@@ -2,9 +2,10 @@ package client;
 
 import ui.Repl;
 
+import java.util.Arrays;
+
 public class ClientLoggedOut implements Client {
     Repl ui;
-    String serverUrl;
     ServerFacade serverFacade;
 
     public ClientLoggedOut(Repl repl, String serverUrl){
@@ -13,10 +14,13 @@ public class ClientLoggedOut implements Client {
     }
 
     public String eval(String input){
-        return switch (input) {
+        String[] tokens = input.toLowerCase().split(" ");
+        String cmd = (tokens.length > 0) ? tokens[0] : "help";
+        String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
+        return switch (cmd) {
             case "help" -> help();
-            case "login" -> login();
-            case "register" -> login();
+            case "login" -> login(params);
+            case "register" -> register(params);
             case "quit" -> "quit";
             default -> help();
         };
@@ -26,19 +30,30 @@ public class ClientLoggedOut implements Client {
         return """
                 Options:
                 - help
-                - login
-                - register
+                - login <username> <password>
+                - register <username> <password> <email>
                 - quit""";
     }
 
-    String login(){
-        //authenticate
-        ui.setState(Repl.State.LOGGED_IN);
-        return "welcome to chess";
+    String login(String[] params) throws ResponseException{
+        if(params.length == 2) {
+            ui.setState(Repl.State.LOGGED_IN);
+            return "Welcome to chess";
+        }
+        else {
+            throw new ResponseException(400, "Error: missing user input");
+        }
     }
 
-    String register(){
-        return "welcome to chess, new user";
+    String register(String[] params) throws ResponseException {
+        if(params.length == 3) {
+            serverFacade.register(params[0], params[1], params[2]);
+            ui.setState(Repl.State.LOGGED_IN);
+            return "Welcome to chess, " + params[0] + "!";
+        }
+        else{
+            throw new ResponseException(400, "Error: missing user input");
+        }
     }
 
 }

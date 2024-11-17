@@ -7,7 +7,6 @@ import ui.Repl;
 
 public class ClientGameplay implements Client{
     Repl ui;
-    String serverUrl;
     ServerFacade serverFacade;
 
     public ClientGameplay(Repl repl, String serverUrl){

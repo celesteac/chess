@@ -4,7 +4,6 @@ import ui.Repl;
 
 public class ClientLoggedIn implements Client{
     Repl ui;
-    String serverUrl;
     ServerFacade serverFacade;
 
     public ClientLoggedIn(Repl repl, String serverUrl){
@@ -53,10 +52,10 @@ public class ClientLoggedIn implements Client{
                 Options:
                 - help
                 - logout
-                - create
+                - create <game name>
                 - list
-                - play
-                - observe""";
+                - play <game number> <player color>
+                - observe <game number>""";
     }
 
 }

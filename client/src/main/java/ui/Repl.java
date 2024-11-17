@@ -17,8 +17,8 @@ public class Repl {
     }
 
     public Repl(String serverUrl) {
-        setState(State.LOGGED_OUT);
         this.serverUrl = serverUrl;
+        setState(State.LOGGED_OUT);
     }
 
     public void run() {
