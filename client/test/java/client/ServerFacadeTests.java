@@ -51,7 +51,14 @@ public class ServerFacadeTests {
     @Test
     public void loginTestBad(){
         Assertions.assertThrows(ResponseException.class, ()->serverFacade.login("celeste", "wrongPassword"));
+    }
 
+    @Test
+    public void logoutTestGood(){
+        serverFacade.register("celeste", "secret", "piano@email.com");
+        AuthData auth = serverFacade.login("celeste", "secret");
+        serverFacade.logout(auth.authToken());
+//        Assertions.assertDoesNotThrow(ResponseException.class, ()-> );
     }
 
     /// FIX THIS LATER /////////

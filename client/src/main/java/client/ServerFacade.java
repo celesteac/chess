@@ -23,45 +23,49 @@ public class ServerFacade {
     AuthData login(String username, String password) throws ResponseException {
         String path = "/session";
         UserData newUser = new UserData(username, password, null);
-        return makeRequest("POST", path, newUser, AuthData.class);
+        return makeRequest("POST", path, newUser, AuthData.class, null);
     }
 
     AuthData register(String username, String password, String email) throws ResponseException{
         String path = "/user";
         UserData newUser = new UserData(username, password, email);
-        return makeRequest("POST", path, newUser, AuthData.class);
+        return makeRequest("POST", path, newUser, AuthData.class, null);
     }
 
-    void logout(){
+    void logout(String authtoken){
         String path = "/session";
+        makeRequest("DELETE", path, null, null, authtoken);
     }
 
-    void createGame(String gameName){
+    void createGame(String gameName) throws ResponseException {
         String path = "/game";
 
     }
 
-    void listGames(){
+    void listGames() throws ResponseException {
         String path = "/game";
 
     }
 
-    void joinGame(){
+    void joinGame() throws ResponseException {
         String path = "/game";
 
     }
 
-    void delete(){
+    void delete() throws ResponseException {
         String path = "/db";
-        makeRequest("DELETE", path, null, null);
+        makeRequest("DELETE", path, null, null, null);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authtoken) throws ResponseException {
         try {
             String absoluteURL = serverUrl + path;
             URL url = (new URI(absoluteURL)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
+            if(authtoken != null){
+                http.setRequestProperty("Authorization", authtoken);
+            }
             http.setDoOutput(true);
 
             writeBody(request, http);

@@ -27,6 +27,7 @@ public class ClientLoggedIn implements Client{
     }
 
     private String logout() {
+        serverFacade.logout(authtoken);
         ui.setState(Repl.State.LOGGED_OUT, null);
         return "logout";
     }
