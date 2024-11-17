@@ -6,8 +6,10 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
-import server.CreateRequest;
-import server.JoinRequest;
+import requestresponsetypes.GameDetails;
+import requestresponsetypes.ListResponse;
+import requestresponsetypes.CreateRequest;
+import requestresponsetypes.JoinRequest;
 
 import java.util.*;
 
@@ -141,9 +143,9 @@ public class Service {
         }
         Map<Integer, GameData> games = gameDAO.getAllGames();
         Collection<GameData> gameDatas = games.values();
-        ArrayList<ListResponseItems> listResponseGames = new ArrayList<>();
+        ArrayList<GameDetails> listResponseGames = new ArrayList<>();
         for(GameData game : gameDatas){
-            ListResponseItems gameToAdd = new ListResponseItems(
+            GameDetails gameToAdd = new GameDetails(
                     game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName());
             listResponseGames.add(gameToAdd);
         }

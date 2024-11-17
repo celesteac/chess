@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
-import service.ListResponse;
+import requestresponsetypes.*;
 import service.Service;
 import service.ServiceException;
 import spark.*;

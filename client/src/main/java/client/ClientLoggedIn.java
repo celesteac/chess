@@ -1,13 +1,16 @@
 package client;
 
+import requestresponsetypes.*;
 import ui.Repl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ClientLoggedIn implements Client{
     Repl ui;
     ServerFacade serverFacade;
     String authtoken;
+    ArrayList<GameDetails> gamesList;
 
     public ClientLoggedIn(Repl repl, String serverUrl, String authtoken){
         this.ui = repl;
@@ -48,7 +51,8 @@ public class ClientLoggedIn implements Client{
     }
 
     private String list() {
-        return "list of games";
+        ArrayList<GameDetails> gamesList = serverFacade.listGames(authtoken);
+        return gamesList.toString();
     }
 
     private String play(String[] params) {

@@ -1,6 +1,6 @@
 package client;
 
-
+import requestresponsetypes.*;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.UserData;
@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class ServerFacade {
     String serverUrl;
@@ -43,9 +44,10 @@ public class ServerFacade {
         makeRequest("POST", path, createRequest, null, authtoken);
     }
 
-    void listGames() throws ResponseException {
+    ArrayList<GameDetails> listGames(String authtoken) throws ResponseException {
         String path = "/game";
-
+        ListResponse listResponse = makeRequest("GET", path, null, ListResponse.class, authtoken);
+        return listResponse.games();
     }
 
     void joinGame() throws ResponseException {

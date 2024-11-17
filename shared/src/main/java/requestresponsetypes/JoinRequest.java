@@ -1,9 +1,9 @@
-package server;
+package requestresponsetypes;
 
 import chess.ChessGame;
 
 public record JoinRequest(ChessGame.TeamColor playerColor, Integer gameID, String authToken) {
-    JoinRequest assignAuth(String newAuthToken){
+    public JoinRequest assignAuth(String newAuthToken){
         return new JoinRequest(playerColor, gameID, newAuthToken);
     }
 }

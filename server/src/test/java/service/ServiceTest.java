@@ -7,10 +7,9 @@ import model.GameData;
 import model.UserData;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
-import server.CreateRequest;
-import server.JoinRequest;
-
-import java.util.*;
+import requestresponsetypes.ListResponse;
+import requestresponsetypes.CreateRequest;
+import requestresponsetypes.JoinRequest;
 
 public class ServiceTest {
     private static Service service;
