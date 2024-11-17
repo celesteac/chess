@@ -5,6 +5,8 @@ import chess.ChessGame;
 import ui.ChessBoardPrint;
 import ui.Repl;
 
+import java.util.Arrays;
+
 public class ClientGameplay implements Client{
     Repl ui;
     ServerFacade serverFacade;
@@ -18,8 +20,10 @@ public class ClientGameplay implements Client{
     }
 
     public String eval(String input){
-        return switch (input) {
-            //do something about the quit case
+        String[] tokens = input.toLowerCase().split(" ");
+        String cmd = (tokens.length > 0) ? tokens[0] : "help";
+        String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
+        return switch (cmd) {
             case "help" -> help();
             case "quit" -> "please leave the game before quitting";
             case "leave" -> leave();
