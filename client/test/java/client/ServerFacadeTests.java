@@ -61,6 +61,14 @@ public class ServerFacadeTests {
 //        Assertions.assertDoesNotThrow(ResponseException.class, ()-> );
     }
 
+    @Test
+    public void createTestGood(){
+        serverFacade.register("celeste", "secret", "piano@email.com");
+        AuthData auth = serverFacade.login("celeste", "secret");
+        serverFacade.createGame("new game", auth.authToken());
+//        serverFacade.
+    }
+
     /// FIX THIS LATER /////////
 
     @Disabled
