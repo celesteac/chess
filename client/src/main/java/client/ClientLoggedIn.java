@@ -39,6 +39,7 @@ public class ClientLoggedIn implements Client{
 
     private String create(String[] params) {
         if(params.length == 1) {
+            serverFacade.createGame(params[0], authtoken);
             return "created game " + params[0];
         }
         else {

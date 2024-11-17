@@ -37,9 +37,10 @@ public class ServerFacade {
         makeRequest("DELETE", path, null, null, authtoken);
     }
 
-    void createGame(String gameName) throws ResponseException {
+    void createGame(String gameName, String authtoken) throws ResponseException {
         String path = "/game";
-
+        CreateRequest createRequest = new CreateRequest(gameName);
+        makeRequest("POST", path, createRequest, null, authtoken);
     }
 
     void listGames() throws ResponseException {
