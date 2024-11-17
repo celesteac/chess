@@ -17,6 +17,11 @@ public class ServerFacadeTests {
         serverFacade = new ServerFacade("http://localhost:" + port);
     }
 
+    @AfterEach
+    void clear(){
+        serverFacade.delete();
+    }
+
     @AfterAll
     static void stopServer() {
         server.stop();
@@ -24,9 +29,20 @@ public class ServerFacadeTests {
 
 
     @Test
-    public void registerTest() {
+    public void registerTestGood() {
         AuthData auth = serverFacade.register("celeste", "secret", "piano@email.com");
         Assertions.assertEquals(auth.username(), "celeste");
+    }
+
+    @Test
+    public void registerTestBad() {
+        Assertions.assertThrows(ResponseException.class, ()->serverFacade.register("celeste", null, "piano@email.com"));
+    }
+
+    @Disabled
+    public void deleteText(){
+        serverFacade.register("miguel", "cute", "piano@email");
+        //fix this
     }
 
 }
