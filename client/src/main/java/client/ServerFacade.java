@@ -20,16 +20,16 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    void login(String username, String password){
+    AuthData login(String username, String password) throws ResponseException {
         String path = "/session";
-
+        UserData newUser = new UserData(username, password, null);
+        return makeRequest("POST", path, newUser, AuthData.class);
     }
 
     AuthData register(String username, String password, String email) throws ResponseException{
         String path = "/user";
         UserData newUser = new UserData(username, password, email);
-        AuthData auth =  makeRequest("POST", path, newUser, AuthData.class);
-        return auth;
+        return makeRequest("POST", path, newUser, AuthData.class);
     }
 
     void logout(){
@@ -86,8 +86,10 @@ public class ServerFacade {
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
+//        String errorMessage = readBody(http, String.class);
+        String errorMessage = http.getResponseMessage();
         if (!isSuccessful(status)) {
-            throw new ResponseException(status, "failure: " + status);
+            throw new ResponseException(status, errorMessage);
         }
     }
 

@@ -35,8 +35,9 @@ public class ClientLoggedOut implements Client {
                 - quit""";
     }
 
-    String login(String[] params) throws ResponseException{
+    String login(String[] params) throws ResponseException {
         if(params.length == 2) {
+            serverFacade.login(params[0], params[1]);
             ui.setState(Repl.State.LOGGED_IN);
             return "Welcome to chess";
         }
