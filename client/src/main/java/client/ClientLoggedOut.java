@@ -37,4 +37,8 @@ public class ClientLoggedOut implements Client {
         return "welcome to chess";
     }
 
+    String register(){
+        return "welcome to chess, new user";
+    }
+
 }
