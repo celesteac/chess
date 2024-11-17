@@ -1,5 +1,6 @@
 package client;
 
+import model.AuthData;
 import ui.Repl;
 
 import java.util.Arrays;
@@ -37,8 +38,8 @@ public class ClientLoggedOut implements Client {
 
     String login(String[] params) throws ResponseException {
         if(params.length == 2) {
-            serverFacade.login(params[0], params[1]);
-            ui.setState(Repl.State.LOGGED_IN);
+            AuthData auth = serverFacade.login(params[0], params[1]);
+            ui.setState(Repl.State.LOGGED_IN, auth.authToken());
             return "Welcome to chess";
         }
         else {
@@ -48,8 +49,8 @@ public class ClientLoggedOut implements Client {
 
     String register(String[] params) throws ResponseException {
         if(params.length == 3) {
-            serverFacade.register(params[0], params[1], params[2]);
-            ui.setState(Repl.State.LOGGED_IN);
+            AuthData auth = serverFacade.register(params[0], params[1], params[2]);
+            ui.setState(Repl.State.LOGGED_IN, auth.authToken());
             return "Welcome to chess, " + params[0] + "!";
         }
         else{

@@ -5,10 +5,12 @@ import ui.Repl;
 public class ClientLoggedIn implements Client{
     Repl ui;
     ServerFacade serverFacade;
+    String authtoken;
 
-    public ClientLoggedIn(Repl repl, String serverUrl){
+    public ClientLoggedIn(Repl repl, String serverUrl, String authtoken){
         this.ui = repl;
-        serverFacade = new ServerFacade(serverUrl);
+        this.serverFacade = new ServerFacade(serverUrl);
+        this.authtoken = authtoken;
     }
 
     public String eval(String input){
@@ -25,7 +27,7 @@ public class ClientLoggedIn implements Client{
     }
 
     private String logout() {
-        ui.setState(Repl.State.LOGGED_OUT);
+        ui.setState(Repl.State.LOGGED_OUT, null);
         return "logout";
     }
 
@@ -38,12 +40,12 @@ public class ClientLoggedIn implements Client{
     }
 
     private String play() {
-        ui.setState(Repl.State.GAMEPLAY);
+        ui.setState(Repl.State.GAMEPLAY, authtoken);
         return "playing game";
     }
 
     private String observe() {
-        ui.setState(Repl.State.GAMEPLAY);
+        ui.setState(Repl.State.GAMEPLAY, authtoken);
         return "observing game";
     }
 

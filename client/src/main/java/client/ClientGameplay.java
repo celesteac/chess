@@ -8,10 +8,12 @@ import ui.Repl;
 public class ClientGameplay implements Client{
     Repl ui;
     ServerFacade serverFacade;
+    String authtoken;
 
-    public ClientGameplay(Repl repl, String serverUrl){
+    public ClientGameplay(Repl repl, String serverUrl, String authtoken){
         this.ui = repl;
-        serverFacade = new ServerFacade(serverUrl);
+        this.serverFacade = new ServerFacade(serverUrl);
+        this.authtoken = authtoken;
         drawBoard();
     }
 
@@ -36,7 +38,7 @@ public class ClientGameplay implements Client{
     }
 
     private String leave(){
-        ui.setState(Repl.State.LOGGED_IN);
+        ui.setState(Repl.State.LOGGED_IN, authtoken);
         return "leaving game";
     }
 

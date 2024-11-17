@@ -18,7 +18,7 @@ public class Repl {
 
     public Repl(String serverUrl) {
         this.serverUrl = serverUrl;
-        setState(State.LOGGED_OUT);
+        setState(State.LOGGED_OUT, null);
     }
 
     public void run() {
@@ -54,12 +54,12 @@ public class Repl {
 
     /// HELPER FUNCTIONS /////
 
-    public void setState(State newState) {
+    public void setState(State newState, String authtoken) {
         this.state = newState;
         this.client = switch (newState) {
             case LOGGED_OUT -> new ClientLoggedOut(this, serverUrl);
-            case LOGGED_IN -> new ClientLoggedIn(this, serverUrl);
-            case GAMEPLAY -> new ClientGameplay(this, serverUrl);
+            case LOGGED_IN -> new ClientLoggedIn(this, serverUrl, authtoken);
+            case GAMEPLAY -> new ClientGameplay(this, serverUrl, authtoken);
         };
     }
 
