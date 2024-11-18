@@ -95,16 +95,24 @@ public class ClientLoggedIn implements Client {
     }
 
     private String observe(String[] params) { //see what happens if they don't list the game first
+        if(gamesMap == null){
+            throw new ResponseException(400, "Error: please list games first");
+        }
         if (params.length == 1) {
-            int gameNum = Integer.parseInt(params[0]); //see what happens if they give a name
-            GameDetails game = gamesMap.get(gameNum);
-            if(game == null){
-                throw new ResponseException(300, "Error: no game number " + gameNum);
-            }
+            try{
+                int gameNum = Integer.parseInt(params[0]);
+                GameDetails game = gamesMap.get(gameNum);
+                if(game == null){
+                    throw new ResponseException(400, "Error: no game number " + gameNum);
+                }
 
-            serverFacade.joinGame(game.gameID(), null, authtoken);
-            ui.setState(Repl.State.GAMEPLAY, authtoken);
-            return "observing game " + gameNum + " " + game.gameName();
+                serverFacade.joinGame(game.gameID(), null, authtoken);
+                ui.setState(Repl.State.GAMEPLAY, authtoken);
+                return "observing game " + gameNum + " " + game.gameName();
+
+            } catch (NumberFormatException ex){
+                throw new ResponseException(400, "Error: please provide the game number");
+            }
         } else {
             throw new ResponseException(400, "Error: missing game number");
         }
