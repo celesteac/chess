@@ -69,15 +69,18 @@ public class ClientLoggedIn implements Client {
 
     private String gamesMapToString(Map<Integer, GameDetails> gamesMap) {
         StringBuilder sb = new StringBuilder();
+        sb.append("Games:").append("\n");
         for (int i = 0; i < gamesMap.size(); i++) {
-            GameDetails gameDetails = gamesMap.get(i);
+            int gameNum = i+1;
+            GameDetails gameDetails = gamesMap.get(gameNum);
             String whiteUsername = gameDetails.whiteUsername() == null ? "empty" : gameDetails.whiteUsername();
             String blackUsername = gameDetails.blackUsername() == null ? "empty" : gameDetails.blackUsername();
 
-            sb.append(i).append(". ").append(gameDetails.gameName()).append("\n");
-            sb.append("  White player: ").append(whiteUsername).append("\n");
-            sb.append("  Black player: ").append(blackUsername).append("\n");
+            sb.append(gameNum).append(". ").append(gameDetails.gameName()).append("\n");
+            sb.append("   White player: ").append(whiteUsername).append("\n");
+            sb.append("   Black player: ").append(blackUsername).append("\n");
         }
+        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 
