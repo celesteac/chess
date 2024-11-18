@@ -131,10 +131,12 @@ public class Service {
             throw new ServiceException("Error: color already taken", 403);
         }
 
-        GameData newGame = foundGame.updateGamePlayer(joinReq.playerColor(), foundAuth.username());
-        gameDAO.updateGame(newGame);
-        return newGame.gameID();
+        if(joinReq.playerColor() != null){
+            GameData newGame = foundGame.updateGamePlayer(joinReq.playerColor(), foundAuth.username());
+            gameDAO.updateGame(newGame);
+        }
 
+        return foundGame.gameID();
     }
 
     public ListResponse listGames(String authToken) throws ServiceException, DataAccessException {
@@ -179,7 +181,10 @@ public class Service {
 
 
     private boolean checkPlayerColorAvailable(GameData game, ChessGame.TeamColor color){
-        if (color == ChessGame.TeamColor.WHITE){
+        if (color == null){
+            return true;
+        }
+        else if (color == ChessGame.TeamColor.WHITE){
             return game.whiteUsername() == null;
         }
         else{
@@ -224,7 +229,7 @@ public class Service {
 
     private boolean checkValidJoinRequest(JoinRequest joinReq){
         return (joinReq.authToken() != null
-                && joinReq.playerColor() != null
+//                && joinReq.playerColor() != null
                 && joinReq.gameID() != null);
     }
 

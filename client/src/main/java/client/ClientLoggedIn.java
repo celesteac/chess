@@ -94,10 +94,17 @@ public class ClientLoggedIn implements Client {
         }
     }
 
-    private String observe(String[] params) {
+    private String observe(String[] params) { //see what happens if they don't list the game first
         if (params.length == 1) {
+            int gameNum = Integer.parseInt(params[0]); //see what happens if they give a name
+            GameDetails game = gamesMap.get(gameNum);
+            if(game == null){
+                throw new ResponseException(300, "Error: no game number " + gameNum);
+            }
+
+            serverFacade.joinGame(game.gameID(), null, authtoken);
             ui.setState(Repl.State.GAMEPLAY, authtoken);
-            return "observing game " + params[0];
+            return "observing game " + gameNum + " " + game.gameName();
         } else {
             throw new ResponseException(400, "Error: missing game number");
         }

@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import requestresponsetypes.*;
 import com.google.gson.Gson;
 import model.AuthData;
@@ -50,9 +51,10 @@ public class ServerFacade {
         return listResponse.games();
     }
 
-    void joinGame() throws ResponseException {
+    void joinGame(int gameID, ChessGame.TeamColor playColor, String authtoken) throws ResponseException {
         String path = "/game";
-
+        JoinRequest joinReq = new JoinRequest(playColor, gameID, null);
+        makeRequest("PUT", path, joinReq, null, authtoken);
     }
 
     void delete() throws ResponseException {
