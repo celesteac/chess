@@ -51,7 +51,7 @@ public class ServerFacade {
         return listResponse.games();
     }
 
-    void joinGame(int gameID, ChessGame.TeamColor playColor, String authtoken) throws ResponseException {
+    void joinGame(int gameID, ChessGame.TeamColor playColor, String authtoken) {
         String path = "/game";
         JoinRequest joinReq = new JoinRequest(playColor, gameID, null);
         makeRequest("PUT", path, joinReq, null, authtoken);
@@ -95,10 +95,14 @@ public class ServerFacade {
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
-//        String errorMessage = readBody(http, String.class);
-        String errorMessage = http.getResponseMessage();
+//        String errorMessage = http.getResponseMessage();
+//            String errorMessage = readBody(http, String.class);
         if (!isSuccessful(status)) {
-            throw new ResponseException(status, errorMessage);
+            try (InputStream respBody = http.getErrorStream()) {
+                InputStreamReader reader = new InputStreamReader(respBody);
+                String errorMessage = new Gson().fromJson(reader, String.class);
+                throw new ResponseException(status, errorMessage);
+            }
         }
     }
 
