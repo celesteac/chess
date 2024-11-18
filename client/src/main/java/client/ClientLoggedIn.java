@@ -105,7 +105,7 @@ public class ClientLoggedIn implements Client {
 
                 serverFacade.joinGame(game.gameID(), playerColor, authtoken);
                 ui.setState(Repl.State.GAMEPLAY, authtoken);
-                return "playing game " + params[0] + " as " + params[1];
+                return "Playing game " + params[0] + " \"" + game.gameName() + "\" as " + params[1];
 
             } catch (NumberFormatException ex){
                 throw new ResponseException(400, "Error: please provide the game number");
@@ -145,7 +145,7 @@ public class ClientLoggedIn implements Client {
 
                 serverFacade.joinGame(game.gameID(), null, authtoken);
                 ui.setState(Repl.State.GAMEPLAY, authtoken);
-                return "observing game " + gameNum + " " + game.gameName();
+                return "Observing game " + gameNum + " \"" + game.gameName() + "\"";
 
             } catch (NumberFormatException ex){
                 throw new ResponseException(400, "Error: please provide the game number");

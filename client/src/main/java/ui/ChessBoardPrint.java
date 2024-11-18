@@ -153,7 +153,7 @@ public class ChessBoardPrint {
     }
 
     private void setLightSquare(){
-        out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+        out.print(EscapeSequences.SET_BG_COLOR_DARK_YELLOW);
     }
 
     private void setDarkSquare(){
