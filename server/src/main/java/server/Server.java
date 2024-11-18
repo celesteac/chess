@@ -37,9 +37,8 @@ public class Server {
     private void exceptionHandler(ServiceException ex, Request req, Response res){
         var gson = new Gson();
         res.status(ex.getStatus());
-//        ErrorResponse messageObj = new ErrorResponse(ex.getMessage());
-//        res.body(gson.toJson(messageObj));
-        res.body(gson.toJson(ex.getMessage()));
+        ErrorResponse messageObj = new ErrorResponse(ex.getMessage());
+        res.body(gson.toJson(messageObj));
         res.type("application/json");
         System.out.println();
     }

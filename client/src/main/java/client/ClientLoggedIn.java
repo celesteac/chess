@@ -143,7 +143,7 @@ public class ClientLoggedIn implements Client {
                     throw new ResponseException(400, "Error: no game number " + gameNum);
                 }
 
-                serverFacade.joinGame(game.gameID(), null, authtoken);
+//                serverFacade.joinGame(game.gameID(), null, authtoken);
                 ui.setState(Repl.State.GAMEPLAY, authtoken);
                 return "Observing game " + gameNum + " \"" + game.gameName() + "\"";
 

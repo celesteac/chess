@@ -69,12 +69,5 @@ public class ServerFacadeTests {
 //        serverFacade.
     }
 
-    /// FIX THIS LATER /////////
-
-    @Disabled
-    public void deleteText(){
-        serverFacade.register("miguel", "cute", "piano@email");
-        //fix this
-    }
 
 }

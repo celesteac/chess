@@ -131,10 +131,10 @@ public class Service {
             throw new ServiceException("Error: color already taken", 403);
         }
 
-        if(joinReq.playerColor() != null){
+//        if(joinReq.playerColor() != null){
             GameData newGame = foundGame.updateGamePlayer(joinReq.playerColor(), foundAuth.username());
             gameDAO.updateGame(newGame);
-        }
+//        }
 
         return foundGame.gameID();
     }
@@ -157,8 +157,6 @@ public class Service {
     }
 
     public void clearDB() throws ServiceException, DataAccessException {
-        //clear each of the thingies
-        //is this void
         userDAO.clear();
         authDAO.clear();
         gameDAO.clear();
@@ -229,7 +227,7 @@ public class Service {
 
     private boolean checkValidJoinRequest(JoinRequest joinReq){
         return (joinReq.authToken() != null
-//                && joinReq.playerColor() != null
+                && joinReq.playerColor() != null
                 && joinReq.gameID() != null);
     }
 
