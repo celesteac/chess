@@ -38,7 +38,7 @@ public class Server {
         var gson = new Gson();
         res.status(ex.getStatus());
         ErrorResponse messageObj = new ErrorResponse(ex.getMessage());
-        res.body(gson.toJson(messageObj.message()));
+        res.body(gson.toJson(messageObj));
         res.type("application/json");
         System.out.println();
     }
