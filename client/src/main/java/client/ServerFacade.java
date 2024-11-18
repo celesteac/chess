@@ -95,10 +95,13 @@ public class ServerFacade {
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
-        String errorMessage = http.getResponseMessage();
-        if (!isSuccessful(status)) {
-                throw new ResponseException(status, errorMessage);
-        }
+//        String errorMessage = http.getResponseMessage();
+            try (InputStream respBody = http.getErrorStream()) {
+//            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader reader = new InputStreamReader(respBody);
+                ErrorResponse errorMessage = new Gson().fromJson(reader, ErrorResponse.class);
+        throw new ResponseException(status, errorMessage.message());
+            }
     }
 
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
