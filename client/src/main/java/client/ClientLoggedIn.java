@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import model.GameData;
 import requestresponsetypes.*;
 import ui.Repl;
@@ -47,8 +48,12 @@ public class ClientLoggedIn implements Client {
         if (params.length == 1) {
             serverFacade.createGame(params[0], authtoken);
             return "created game " + params[0];
-        } else {
+        }
+        else if(params.length < 1) {
             throw new ResponseException(400, "Error: missing game name");
+        }
+        else {
+            throw new ResponseException(400, "Error: too many inputs");
         }
     }
 
@@ -86,11 +91,43 @@ public class ClientLoggedIn implements Client {
 
 
     private String play(String[] params) {
+        if(gamesMap == null){
+            throw new ResponseException(400, "Error: please list games first");
+        }
         if (params.length == 2) {
-            ui.setState(Repl.State.GAMEPLAY, authtoken);
-            return "playing game " + params[0] + " as " + params[1];
-        } else {
+            try{
+                int gameNum = Integer.parseInt(params[0]);
+                ChessGame.TeamColor playerColor = getPlayerColor(params[1]);
+                GameDetails game = gamesMap.get(gameNum);
+                if(game == null){
+                    throw new ResponseException(400, "Error: no game number " + gameNum);
+                }
+
+                serverFacade.joinGame(game.gameID(), playerColor, authtoken);
+                ui.setState(Repl.State.GAMEPLAY, authtoken);
+                return "playing game " + params[0] + " as " + params[1];
+
+            } catch (NumberFormatException ex){
+                throw new ResponseException(400, "Error: please provide the game number");
+            }
+        }
+        else if(params.length < 2) {
             throw new ResponseException(400, "Error: missing game or player color");
+        }
+        else {
+            throw new ResponseException(400, "Error: too many inputs");
+        }
+    }
+
+    private ChessGame.TeamColor getPlayerColor(String color) throws ResponseException{
+        if(color.equalsIgnoreCase("WHITE")){
+            return ChessGame.TeamColor.WHITE;
+        }
+        if(color.equalsIgnoreCase("BLACK")){
+            return ChessGame.TeamColor.BLACK;
+        }
+        else{
+            throw new ResponseException(400, "Error: please provide color WHITE or BLACK");
         }
     }
 
@@ -113,8 +150,12 @@ public class ClientLoggedIn implements Client {
             } catch (NumberFormatException ex){
                 throw new ResponseException(400, "Error: please provide the game number");
             }
-        } else {
+        }
+        else if(params.length < 1) {
             throw new ResponseException(400, "Error: missing game number");
+        }
+        else{
+            throw new ResponseException(400, "Error: too many inputs");
         }
     }
 
@@ -125,7 +166,7 @@ public class ClientLoggedIn implements Client {
                 - logout
                 - create <game name>
                 - list
-                - play <game number> <player color>
+                - play <game number> <WHITE | BLACK>
                 - observe <game number>""";
     }
 
