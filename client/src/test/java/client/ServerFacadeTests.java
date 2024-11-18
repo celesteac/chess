@@ -1,11 +1,9 @@
 package client;
 
 import chess.ChessGame;
-import com.google.gson.Gson;
 import model.AuthData;
 import org.junit.jupiter.api.*;
 import requestresponsetypes.GameDetails;
-import server.ErrorResponse;
 import server.Server;
 
 import java.util.ArrayList;
