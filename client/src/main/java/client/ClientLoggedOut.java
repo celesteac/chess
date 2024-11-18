@@ -40,10 +40,13 @@ public class ClientLoggedOut implements Client {
         if(params.length == 2) {
             AuthData auth = serverFacade.login(params[0], params[1]);
             ui.setState(Repl.State.LOGGED_IN, auth.authToken());
-            return "Welcome to chess";
+            return "Welcome to chess, " + params[0];
+        }
+        else if(params.length < 2) {
+            throw new ResponseException(400, "Error: missing username or password");
         }
         else {
-            throw new ResponseException(400, "Error: missing user input");
+            throw new ResponseException(400, "Error: too many inputs");
         }
     }
 
@@ -53,8 +56,11 @@ public class ClientLoggedOut implements Client {
             ui.setState(Repl.State.LOGGED_IN, auth.authToken());
             return "Welcome to chess, " + params[0] + "!";
         }
-        else{
+        else if (params.length < 3){
             throw new ResponseException(400, "Error: missing user input");
+        }
+        else {
+            throw new ResponseException(400, "Error: too many inputs");
         }
     }
 
