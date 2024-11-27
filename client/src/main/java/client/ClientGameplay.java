@@ -32,6 +32,9 @@ public class ClientGameplay implements Client{
             case "help" -> help();
             case "quit" -> "please leave the game before quitting";
             case "leave" -> leave();
+            case "resign" -> resign();
+            case "move" -> move(params);
+            case "highlight" -> highlight(params);
             case "redraw" -> drawBoard();
             default -> help();
         };
@@ -46,7 +49,38 @@ public class ClientGameplay implements Client{
         return "drawing board";
     }
 
+    private String move(String[] params){
+        if(params.length == 2){
+            wsFacade.makeMove();
+            return "moving";
+        }
+        else if (params.length > 2) {
+            throw new ResponseException(400, "Error: too may inputs");
+        }
+        else {
+            throw new ResponseException(400, "Error: start or end position");
+        }
+    }
+
+    private String resign(){
+        wsFacade.resign();
+        return "resigning";
+    }
+
+    private String highlight(String[] params){
+        if(params.length == 1){
+            return "highlighting";
+        }
+        else if (params.length > 1) {
+            throw new ResponseException(400, "Error: too may inputs");
+        }
+        else {
+            throw new ResponseException(400, "Error: missing piece position");
+        }
+    }
+
     private String leave(){
+        wsFacade.leave();
         ui.setState(Repl.State.LOGGED_IN, authtoken);
         return "leaving game";
     }
@@ -55,7 +89,10 @@ public class ClientGameplay implements Client{
         return """
                 Options:
                 - help
-                - leave
-                - redraw""";
+                - move <start> <end>
+                - redraw
+                - highlight <position>
+                - resign
+                - leave""";
     }
 }
