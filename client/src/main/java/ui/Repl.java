@@ -1,11 +1,12 @@
 package ui;
 
 import client.*;
+import websocket.messages.ServerMessage;
 
 import java.io.PrintStream;
 import java.util.Scanner;
 
-public class Repl {
+public class Repl implements ServerMessageObserver {
     String serverUrl;
     private Client client;
     private State state;
@@ -50,6 +51,11 @@ public class Repl {
             setDefault(out);
             out.println();
         }
+    }
+
+    @Override
+    public void notify(String message) {
+        System.out.println(message);
     }
 
     /// HELPER FUNCTIONS /////

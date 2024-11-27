@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
 import requestresponsetypes.*;
+import server.websocket.WebSocketHandler;
 import service.Service;
 import service.ServiceException;
 import spark.*;
@@ -12,11 +13,14 @@ import spark.*;
 public class Server {
 
     private final Service service = new Service();
+    private final WebSocketHandler wsHandler = new WebSocketHandler();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/ws", wsHandler);
 
         Spark.post("/user", this::registerUser);
         Spark.post("/session", this::login);

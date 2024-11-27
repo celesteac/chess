@@ -9,13 +9,18 @@ import java.util.Arrays;
 
 public class ClientGameplay implements Client{
     Repl ui;
+    String serverUrl;
     ServerFacade serverFacade;
     String authtoken;
+    WebSocketFacade wsFacade;
 
     public ClientGameplay(Repl repl, String serverUrl, String authtoken){
         this.ui = repl;
+        this.serverUrl = serverUrl;
         this.serverFacade = new ServerFacade(serverUrl);
         this.authtoken = authtoken;
+        this.wsFacade = new WebSocketFacade(serverUrl, repl);
+//        wsFacade.
         drawBoard();
     }
 
