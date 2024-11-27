@@ -2,6 +2,7 @@ package client;
 
 import com.google.gson.Gson;
 import ui.ServerMessageObserver;
+import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static websocket.commands.UserGameCommand.CommandType.*;
 import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 public class WebSocketFacade extends Endpoint {
@@ -23,8 +25,6 @@ public class WebSocketFacade extends Endpoint {
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
-
-//            messageObserver.notify(new ServerMessage(type(NOTIFICATION)));
 
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
@@ -59,9 +59,36 @@ public class WebSocketFacade extends Endpoint {
 
     }
 
+    /// CALLABLE FUNCTIONS
+
+    public void connect() throws ResponseException{
+        try{
+            UserGameCommand command = new UserGameCommand(type(CONNECT), "authtoken", 1234); //FIXME
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex){
+            throw new ResponseException(500, ex.getMessage()); //is this the right error code?
+        }
+    }
+
+    public void leave(){
+
+    }
+
+    public void makeMove(){
+
+    }
+
+    public void resign(){
+
+    }
+
     /// HELPER FUNCTIONS //////
 
     private ServerMessage.ServerMessageType type(ServerMessage.ServerMessageType type) {
+        return type;
+    }
+
+    private UserGameCommand.CommandType type(UserGameCommand.CommandType type) {
         return type;
     }
 }

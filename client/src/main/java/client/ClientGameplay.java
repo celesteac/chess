@@ -20,7 +20,7 @@ public class ClientGameplay implements Client{
         this.serverFacade = new ServerFacade(serverUrl);
         this.authtoken = authtoken;
         this.wsFacade = new WebSocketFacade(serverUrl, repl);
-//        wsFacade.
+        wsFacade.connect();
         drawBoard();
     }
 
