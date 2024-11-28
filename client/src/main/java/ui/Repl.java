@@ -19,7 +19,7 @@ public class Repl implements ServerMessageObserver {
 
     public Repl(String serverUrl) {
         this.serverUrl = serverUrl;
-        setState(State.LOGGED_OUT, null, null);
+        setState(State.LOGGED_OUT, null, null, null);
     }
 
     public void run() {
@@ -62,12 +62,12 @@ public class Repl implements ServerMessageObserver {
 
     /// HELPER FUNCTIONS /////
 
-    public void setState(State newState, String authtoken, String username) {
+    public void setState(State newState, String authtoken, String username, Integer gameID) {
         this.state = newState;
         this.client = switch (newState) {
             case LOGGED_OUT -> new ClientLoggedOut(this, serverUrl);
             case LOGGED_IN -> new ClientLoggedIn(this, serverUrl, authtoken, username);
-            case GAMEPLAY -> new ClientGameplay(this, serverUrl, authtoken, username);
+            case GAMEPLAY -> new ClientGameplay(this, serverUrl, authtoken, username, gameID);
         };
     }
 

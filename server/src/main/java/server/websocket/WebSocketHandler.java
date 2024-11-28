@@ -1,10 +1,12 @@
 package server.websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.AuthDAOSQL;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.GameDAOSQL;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -23,7 +25,7 @@ import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 @WebSocket
 public class WebSocketHandler {
-    GameDAOSQL gameDAO = new GameDAOSQL();
+
     Map<Integer, ConnectionManager> connectionMap = new HashMap<>();
 
     @OnWebSocketMessage
@@ -44,7 +46,7 @@ public class WebSocketHandler {
         }
     }
 
-    public void connect(Session session, UserGameCommand command) throws IOException {
+    public void connect(Session session, UserGameCommand command) throws IOException, DataAccessException {
         String username = command.getUsername();
         int gameID = command.getGameID();
 
@@ -52,12 +54,8 @@ public class WebSocketHandler {
         saveSession(command, session);
         //send load game to recently connected session
 
-        String message = username + " connected!";
+        String message = createConnectMessage(getPlayerColor(gameID, username), username);
         sendNotification(message, gameID, username);
-//        NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
-//        String jsonMessage = new Gson().toJson(notification);
-//        ConnectionManager connectionManager = connectionMap.get(command.getGameID());
-//        connectionManager.broadcast(username, jsonMessage);
     }
 
     public void move(Session session, MakeMoveCommand command) throws IOException {
@@ -91,6 +89,12 @@ public class WebSocketHandler {
 
     /// HELPER FUNCTIONS /////
 
+    private ChessGame.TeamColor getPlayerColor(int gameID, String username) throws DataAccessException {
+        GameDAOSQL gameDAO = new GameDAOSQL();
+        GameData game = gameDAO.getGame(gameID);
+        return game.getPlayerColor(username);
+    }
+
     private void sendNotification(String message, int gameID, String excludePlayerName) throws IOException {
         NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
         String jsonMessage = new Gson().toJson(notification);
@@ -109,6 +113,16 @@ public class WebSocketHandler {
         }
     }
 
+    private String createConnectMessage(ChessGame.TeamColor playerColor, String username){
+        if(playerColor == ChessGame.TeamColor.WHITE){
+            return username + " connected as white";
+        } else if (playerColor == ChessGame.TeamColor.BLACK){
+            return username + " connected as black";
+        } else {
+            return username+ " is observing";
+        }
+    }
+
 
     private void saveSession(UserGameCommand command, Session session){
         int gameID = command.getGameID();
@@ -122,7 +136,7 @@ public class WebSocketHandler {
 
     private void validateAuth(String authtoken) throws UnauthorizedWebSocketException, DataAccessException{
             AuthDAOSQL authDAO = new AuthDAOSQL();
-            if(authDAO.getAuthData(authtoken) != null){
+            if(authDAO.getAuthData(authtoken) == null){
                 throw new UnauthorizedWebSocketException("Error: unauthorized");
             }
     }

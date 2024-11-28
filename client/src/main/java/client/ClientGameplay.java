@@ -17,17 +17,19 @@ public class ClientGameplay implements Client{
     ServerFacade serverFacade;
     String authtoken;
     String username;
+    int gameID;
     WebSocketFacade wsFacade;
 
-    public ClientGameplay(Repl repl, String serverUrl, String authtoken, String username){
+    public ClientGameplay(Repl repl, String serverUrl, String authtoken, String username, int gameID){
         this.ui = repl;
         this.serverUrl = serverUrl;
         this.serverFacade = new ServerFacade(serverUrl);
         this.authtoken = authtoken;
         this.username = username;
+        this.gameID = gameID;
         this.wsFacade = new WebSocketFacade(serverUrl, repl);
 
-        UserGameCommand connectCommand = new UserGameCommand(type(CONNECT), authtoken, username,1234); //fixme
+        UserGameCommand connectCommand = new UserGameCommand(type(CONNECT), authtoken, username,ClientGameplay.this.gameID); //fixme
         wsFacade.connect(connectCommand);
         drawBoard();
     }
@@ -58,8 +60,8 @@ public class ClientGameplay implements Client{
     }
 
     private String move(String[] params){
-        if(params.length == 2){ //fixme
-            UserGameCommand moveCommand = new UserGameCommand(type(MAKE_MOVE), authtoken, username,1234); //fixme
+        if(params.length == 2){
+            UserGameCommand moveCommand = new UserGameCommand(type(MAKE_MOVE), authtoken, username,gameID); //fixme
             wsFacade.makeMove(moveCommand);
             return "moving";
         }
@@ -73,7 +75,7 @@ public class ClientGameplay implements Client{
 
     private String resign(){
         try {
-            UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, 1234); //fixme
+            UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, gameID); //fixme
             wsFacade.resign(resignCommand);
             return "resigning";
         } catch (ResponseException ex){
@@ -94,9 +96,9 @@ public class ClientGameplay implements Client{
     }
 
     private String leave(){
-        UserGameCommand leaveCommand = new UserGameCommand(type(LEAVE), authtoken, username,1234); //fixme
+        UserGameCommand leaveCommand = new UserGameCommand(type(LEAVE), authtoken, username,gameID); //fixme
         wsFacade.leave(leaveCommand);
-        ui.setState(Repl.State.LOGGED_IN, authtoken, username);
+        ui.setState(Repl.State.LOGGED_IN, authtoken, username, null);
         return "leaving game";
     }
 
