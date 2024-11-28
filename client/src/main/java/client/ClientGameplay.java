@@ -4,12 +4,12 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import ui.ChessBoardPrint;
 import ui.Repl;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 
 import java.util.Arrays;
 
-import static websocket.commands.UserGameCommand.CommandType.CONNECT;
-import static websocket.commands.UserGameCommand.CommandType.RESIGN;
+import static websocket.commands.UserGameCommand.CommandType.*;
 
 public class ClientGameplay implements Client{
     Repl ui;
@@ -58,8 +58,8 @@ public class ClientGameplay implements Client{
     }
 
     private String move(String[] params){
-        if(params.length == 2){
-            UserGameCommand moveCommand = new UserGameCommand(type(CONNECT), authtoken, username,1234); //fixme
+        if(params.length == 2){ //fixme
+            UserGameCommand moveCommand = new UserGameCommand(type(MAKE_MOVE), authtoken, username,1234); //fixme
             wsFacade.makeMove(moveCommand);
             return "moving";
         }
@@ -72,9 +72,13 @@ public class ClientGameplay implements Client{
     }
 
     private String resign(){
-        UserGameCommand resignCommand = new UserGameCommand(type(CONNECT), authtoken, username,1234); //fixme
-        wsFacade.resign(resignCommand);
-        return "resigning";
+        try {
+            UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, 1234); //fixme
+            wsFacade.resign(resignCommand);
+            return "resigning";
+        } catch (ResponseException ex){
+            return "Error: " + ex.getMessage();
+        }
     }
 
     private String highlight(String[] params){
@@ -90,7 +94,7 @@ public class ClientGameplay implements Client{
     }
 
     private String leave(){
-        UserGameCommand leaveCommand = new UserGameCommand(type(CONNECT), authtoken, username,1234); //fixme
+        UserGameCommand leaveCommand = new UserGameCommand(type(LEAVE), authtoken, username,1234); //fixme
         wsFacade.leave(leaveCommand);
         ui.setState(Repl.State.LOGGED_IN, authtoken, username);
         return "leaving game";

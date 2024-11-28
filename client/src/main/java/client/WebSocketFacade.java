@@ -1,8 +1,13 @@
 package client;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import ui.EscapeSequences;
 import ui.ServerMessageObserver;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorServerMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationServerMessage;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
@@ -29,11 +34,23 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                    switch (serverMessage.getServerMessageType()) {
-                        case NOTIFICATION -> onNotification(serverMessage);
-                        case ERROR -> onError(serverMessage);
-                        case LOAD_GAME -> onLoadGame(serverMessage);
+                    Gson gson = new Gson();
+                    JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+                    ServerMessage serverMessage;
+
+                    switch (ServerMessage.ServerMessageType.valueOf(jsonObject.get("serverMessageType").getAsString())) {
+                        case NOTIFICATION -> {
+                            serverMessage = gson.fromJson(message, NotificationServerMessage.class);
+                            onNotification((NotificationServerMessage) serverMessage);
+                        }
+                        case ERROR -> {
+                            serverMessage = gson.fromJson(message, ErrorServerMessage.class);
+                            onError((ErrorServerMessage) serverMessage);
+                        }
+                        case LOAD_GAME -> {
+                            serverMessage = gson.fromJson(message, LoadGameMessage.class);
+                            onLoadGame((LoadGameMessage) serverMessage);
+                        }
                     }
                 }
             });
@@ -47,15 +64,17 @@ public class WebSocketFacade extends Endpoint {
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {}
 
-    private void onNotification(ServerMessage serverMessage){
+    private void onNotification(NotificationServerMessage notification){
+        messageObserver.notify(EscapeSequences.SET_TEXT_COLOR_BLUE + notification.getMessage());
+//        System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE);
+//        System.out.println(notification.getMessage());
+    }
+
+    private void onError(ErrorServerMessage serverMessage){
 
     }
 
-    private void onError(ServerMessage serverMessage){
-
-    }
-
-    private void onLoadGame(ServerMessage serverMessage){
+    private void onLoadGame(LoadGameMessage serverMessage){
 
     }
 
