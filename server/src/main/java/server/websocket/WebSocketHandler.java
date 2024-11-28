@@ -62,18 +62,16 @@ public class WebSocketHandler {
         System.out.printf("move message received from %s%n", command.getUsername());
     }
 
-    public void leave(Session session, UserGameCommand command) throws IOException {
+    public void leave(Session session, UserGameCommand command) throws IOException, DataAccessException {
         String username = command.getUsername();
         int gameID = command.getGameID();
-        //remove player from game in database
-        //remove from connection manager
+
+        removePlayerFromGameDB(username, gameID);
+
         ConnectionManager connectionManager = connectionMap.get(command.getGameID());
         connectionManager.removeConnection(command.getUsername());
-        //send notification to other players
-        String message = username + " left the game";
-        sendNotification(message, gameID, username);
-        //close ws connection?
-        //client moves to logged in state
+
+        sendNotification(username + " left the game", gameID, username);
         System.out.printf("leave message received from %s%n", command.getUsername());
     }
 
@@ -88,12 +86,6 @@ public class WebSocketHandler {
 
 
     /// HELPER FUNCTIONS /////
-
-    private ChessGame.TeamColor getPlayerColor(int gameID, String username) throws DataAccessException {
-        GameDAOSQL gameDAO = new GameDAOSQL();
-        GameData game = gameDAO.getGame(gameID);
-        return game.getPlayerColor(username);
-    }
 
     private void sendNotification(String message, int gameID, String excludePlayerName) throws IOException {
         NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
@@ -119,10 +111,22 @@ public class WebSocketHandler {
         } else if (playerColor == ChessGame.TeamColor.BLACK){
             return username + " connected as black";
         } else {
-            return username+ " is observing";
+            return username+ " connected as an observer";
         }
     }
 
+    private ChessGame.TeamColor getPlayerColor(int gameID, String username) throws DataAccessException {
+        GameDAOSQL gameDAO = new GameDAOSQL();
+        GameData game = gameDAO.getGame(gameID);
+        return game.getPlayerColor(username);
+    }
+
+    private void removePlayerFromGameDB(String username, int gameID) throws DataAccessException{
+        GameDAOSQL gameDAO = new GameDAOSQL();
+        GameData game = gameDAO.getGame(gameID);
+        GameData updatedGame = game.updateGamePlayer(getPlayerColor(gameID, username), null);
+        gameDAO.updateGame(updatedGame);
+    }
 
     private void saveSession(UserGameCommand command, Session session){
         int gameID = command.getGameID();

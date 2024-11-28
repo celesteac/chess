@@ -29,7 +29,7 @@ public class ClientGameplay implements Client{
         this.gameID = gameID;
         this.wsFacade = new WebSocketFacade(serverUrl, repl);
 
-        UserGameCommand connectCommand = new UserGameCommand(type(CONNECT), authtoken, username,ClientGameplay.this.gameID); //fixme
+        UserGameCommand connectCommand = new UserGameCommand(type(CONNECT), authtoken, username,ClientGameplay.this.gameID);
         wsFacade.connect(connectCommand);
         drawBoard();
     }
@@ -61,7 +61,7 @@ public class ClientGameplay implements Client{
 
     private String move(String[] params){
         if(params.length == 2){
-            UserGameCommand moveCommand = new UserGameCommand(type(MAKE_MOVE), authtoken, username,gameID); //fixme
+            UserGameCommand moveCommand = new UserGameCommand(type(MAKE_MOVE), authtoken, username,gameID);
             wsFacade.makeMove(moveCommand);
             return "moving";
         }
@@ -75,7 +75,7 @@ public class ClientGameplay implements Client{
 
     private String resign(){
         try {
-            UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, gameID); //fixme
+            UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, gameID);
             wsFacade.resign(resignCommand);
             return "resigning";
         } catch (ResponseException ex){
@@ -96,7 +96,7 @@ public class ClientGameplay implements Client{
     }
 
     private String leave(){
-        UserGameCommand leaveCommand = new UserGameCommand(type(LEAVE), authtoken, username,gameID); //fixme
+        UserGameCommand leaveCommand = new UserGameCommand(type(LEAVE), authtoken, username,gameID);
         wsFacade.leave(leaveCommand);
         ui.setState(Repl.State.LOGGED_IN, authtoken, username, null);
         return "leaving game";
