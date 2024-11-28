@@ -8,8 +8,10 @@ import dataaccess.GameDAOSQL;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import websocket.UnauthorizedWebSocketException;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorServerMessage;
 import websocket.messages.NotificationServerMessage;
 import websocket.messages.ServerMessage;
 
@@ -37,8 +39,8 @@ public class WebSocketHandler {
                 case LEAVE -> leave(session, command);
                 case RESIGN -> resign(session, command);
             }
-        } catch (IOException ex){
-            System.out.printf("error, io exception %s%n", ex.getMessage()); //fixme
+        } catch (IOException | DataAccessException | UnauthorizedWebSocketException ex){
+            sendErrorMessage(session, ex.getMessage());
         }
     }
 
@@ -96,6 +98,17 @@ public class WebSocketHandler {
         connectionManager.broadcast(excludePlayerName, jsonMessage);
     }
 
+    private void sendErrorMessage(Session session, String message) {
+        try {
+            ErrorServerMessage errorMessage = new ErrorServerMessage(type(ERROR), message);
+            String jsonMessage = new Gson().toJson(errorMessage);
+            session.getRemote().sendString(jsonMessage);
+        } catch (IOException ex){
+            System.out.println("IO Exception when sending error message");
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+
 
     private void saveSession(UserGameCommand command, Session session){
         int gameID = command.getGameID();
@@ -107,15 +120,11 @@ public class WebSocketHandler {
     }
 
 
-    private void validateAuth(String authtoken){
-        try {
+    private void validateAuth(String authtoken) throws UnauthorizedWebSocketException, DataAccessException{
             AuthDAOSQL authDAO = new AuthDAOSQL();
-            if(authDAO.getAuthData(authtoken) == null){
-                System.out.println("Error: unauthorized"); //fixme
+            if(authDAO.getAuthData(authtoken) != null){
+                throw new UnauthorizedWebSocketException("Error: unauthorized");
             }
-        } catch (DataAccessException ex){
-            System.out.printf("Error: %s%n", ex.getMessage()); //fixme
-        }
     }
 
     private ServerMessage.ServerMessageType type(ServerMessage.ServerMessageType type) {

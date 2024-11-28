@@ -66,12 +66,10 @@ public class WebSocketFacade extends Endpoint {
 
     private void onNotification(NotificationServerMessage notification){
         messageObserver.notify(EscapeSequences.SET_TEXT_COLOR_BLUE + notification.getMessage());
-//        System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE);
-//        System.out.println(notification.getMessage());
     }
 
-    private void onError(ErrorServerMessage serverMessage){
-
+    private void onError(ErrorServerMessage errorMessage){
+        messageObserver.notify(EscapeSequences.SET_TEXT_COLOR_RED + errorMessage.getMessage());
     }
 
     private void onLoadGame(LoadGameMessage serverMessage){
