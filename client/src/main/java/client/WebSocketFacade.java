@@ -69,28 +69,25 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void leave(){
+    public void leave(UserGameCommand leaveCommand){
         try{
-            UserGameCommand command = new UserGameCommand(type(LEAVE), "authtoken", "username",1234); //FIXME
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+            this.session.getBasicRemote().sendText(new Gson().toJson(leaveCommand));
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage()); //is this the right error code?
         }
     }
 
-    public void makeMove(){
+    public void makeMove(UserGameCommand moveCommand){
         try{
-            UserGameCommand command = new UserGameCommand(type(MAKE_MOVE), "authtoken", "username",1234); //FIXME
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+            this.session.getBasicRemote().sendText(new Gson().toJson(moveCommand));
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage()); //is this the right error code?
         }
     }
 
-    public void resign(){
+    public void resign(UserGameCommand resignCommand){
         try{
-            UserGameCommand command = new UserGameCommand(type(RESIGN), "authtoken", "username",1234); //FIXME
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+            this.session.getBasicRemote().sendText(new Gson().toJson(resignCommand));
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage()); //is this the right error code?
         }

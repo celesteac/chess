@@ -59,7 +59,8 @@ public class ClientGameplay implements Client{
 
     private String move(String[] params){
         if(params.length == 2){
-            wsFacade.makeMove();
+            UserGameCommand moveCommand = new UserGameCommand(type(CONNECT), authtoken, username,1234); //fixme
+            wsFacade.makeMove(moveCommand);
             return "moving";
         }
         else if (params.length > 2) {
@@ -71,7 +72,8 @@ public class ClientGameplay implements Client{
     }
 
     private String resign(){
-        wsFacade.resign();
+        UserGameCommand resignCommand = new UserGameCommand(type(CONNECT), authtoken, username,1234); //fixme
+        wsFacade.resign(resignCommand);
         return "resigning";
     }
 
@@ -88,7 +90,8 @@ public class ClientGameplay implements Client{
     }
 
     private String leave(){
-        wsFacade.leave();
+        UserGameCommand leaveCommand = new UserGameCommand(type(CONNECT), authtoken, username,1234); //fixme
+        wsFacade.leave(leaveCommand);
         ui.setState(Repl.State.LOGGED_IN, authtoken, username);
         return "leaving game";
     }
