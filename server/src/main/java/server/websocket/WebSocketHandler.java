@@ -62,6 +62,8 @@ public class WebSocketHandler {
         session.getRemote().sendString(jsonMessage);
     }
 
+
+
     /// HELPER FUNCTIONS /////
 
     private void validateAuth(String authtoken){

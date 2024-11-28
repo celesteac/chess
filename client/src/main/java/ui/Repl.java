@@ -55,7 +55,9 @@ public class Repl implements ServerMessageObserver {
 
     @Override
     public void notify(String message) {
+        System.out.println();
         System.out.println(message);
+        printPrompt(System.out);
     }
 
     /// HELPER FUNCTIONS /////
