@@ -14,11 +14,15 @@ import websocket.messages.ServerMessage;
 import javax.imageio.IIOException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 @WebSocket
 public class WebSocketHandler {
+
+    Map<Integer, ConnectionManager> connectionMap = new HashMap<>();
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message){
@@ -40,10 +44,15 @@ public class WebSocketHandler {
 
     public void connect(Session session, UserGameCommand command) throws IOException {
         System.out.printf("connect message received from %s%n", command.getUsername());
-//        String message = "Connected!";
-//        NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
-//        String jsonMessage = new Gson().toJson(notification);
-//        session.getRemote().sendString(jsonMessage);
+        saveSession(command, session);
+        //send load game to recently connected session
+        //send notification to everyone else
+
+        String message = command.getUsername() + " connected!";
+        NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
+        String jsonMessage = new Gson().toJson(notification);
+        ConnectionManager connectionManager = connectionMap.get(command.getGameID());
+        connectionManager.braodcast(jsonMessage);
     }
 
     public void move(Session session, MakeMoveCommand command) throws IOException {
@@ -65,6 +74,16 @@ public class WebSocketHandler {
 
 
     /// HELPER FUNCTIONS /////
+
+    private void saveSession(UserGameCommand command, Session session){
+        int gameID = command.getGameID();
+        if(connectionMap.get(gameID) == null){
+            connectionMap.put(gameID, new ConnectionManager(gameID));
+            ConnectionManager connectionManager = connectionMap.get(gameID);
+            connectionManager.addConnection(session, command.getUsername());
+        }
+    }
+
 
     private void validateAuth(String authtoken){
         try {
