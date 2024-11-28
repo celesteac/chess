@@ -17,16 +17,18 @@ public class ClientGameplay implements Client{
     ServerFacade serverFacade;
     String authtoken;
     String username;
+    ChessGame.TeamColor playerColor;
     int gameID;
     WebSocketFacade wsFacade;
 
-    public ClientGameplay(Repl repl, String serverUrl, String authtoken, String username, int gameID){
+    public ClientGameplay(Repl repl, String serverUrl, String authtoken, String username, int gameID, ChessGame.TeamColor playerColor){
         this.ui = repl;
         this.serverUrl = serverUrl;
         this.serverFacade = new ServerFacade(serverUrl);
         this.authtoken = authtoken;
         this.username = username;
         this.gameID = gameID;
+        this.playerColor = playerColor;
         this.wsFacade = new WebSocketFacade(serverUrl, repl);
 
         UserGameCommand connectCommand = new UserGameCommand(type(CONNECT), authtoken, username,ClientGameplay.this.gameID);
@@ -53,10 +55,14 @@ public class ClientGameplay implements Client{
     private String drawBoard(){
         ChessBoard board = new ChessBoard();
         board.resetBoard();
-        new ChessBoardPrint(board, ChessGame.TeamColor.BLACK).drawBoard();
-        System.out.println();
-        new ChessBoardPrint(board, ChessGame.TeamColor.WHITE).drawBoard();
-        return "drawing board";
+
+        if(playerColor == null){
+            new ChessBoardPrint(board, ChessGame.TeamColor.WHITE).drawBoard();
+        } else {
+            new ChessBoardPrint(board, playerColor).drawBoard();
+        }
+
+        return "Drawing board";
     }
 
     private String move(String[] params){
@@ -98,7 +104,7 @@ public class ClientGameplay implements Client{
     private String leave(){
         UserGameCommand leaveCommand = new UserGameCommand(type(LEAVE), authtoken, username,gameID);
         wsFacade.leave(leaveCommand);
-        ui.setState(Repl.State.LOGGED_IN, authtoken, username, null);
+        ui.setState(Repl.State.LOGGED_IN, authtoken, username, null, null);
         return "leaving game";
     }
 

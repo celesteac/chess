@@ -41,7 +41,7 @@ public class ClientLoggedOut implements Client {
             String username = params[0];
             String password = params[1];
             AuthData auth = serverFacade.login(username, password);
-            ui.setState(Repl.State.LOGGED_IN, auth.authToken(), username, null);
+            ui.setState(Repl.State.LOGGED_IN, auth.authToken(), username, null, null);
             return "Welcome to chess, " + username;
         }
         else if(params.length < 2) {
@@ -56,7 +56,7 @@ public class ClientLoggedOut implements Client {
         if(params.length == 3) {
             String username = params[0];
             AuthData auth = serverFacade.register(username, params[1], params[2]);
-            ui.setState(Repl.State.LOGGED_IN, auth.authToken(), username, null);
+            ui.setState(Repl.State.LOGGED_IN, auth.authToken(), username, null, null);
             return "Welcome to chess, " + username + "!";
         }
         else if (params.length < 3){

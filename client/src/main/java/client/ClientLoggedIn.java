@@ -42,7 +42,7 @@ public class ClientLoggedIn implements Client {
 
     private String logout() {
         serverFacade.logout(authtoken);
-        ui.setState(Repl.State.LOGGED_OUT, null, null, null);
+        ui.setState(Repl.State.LOGGED_OUT, null, null, null, null);
         return "logging out";
     }
 
@@ -106,7 +106,7 @@ public class ClientLoggedIn implements Client {
                 }
 
                 serverFacade.joinGame(game.gameID(), playerColor, authtoken);
-                ui.setState(Repl.State.GAMEPLAY, authtoken, username, game.gameID());
+                ui.setState(Repl.State.GAMEPLAY, authtoken, username, game.gameID(), playerColor);
                 return "Playing game " + params[0] + " \"" + game.gameName() + "\" as " + params[1];
 
             } catch (NumberFormatException ex){
@@ -145,7 +145,7 @@ public class ClientLoggedIn implements Client {
                     throw new ResponseException(400, "Error: no game number " + gameNum);
                 }
 
-                ui.setState(Repl.State.GAMEPLAY, authtoken, username, game.gameID());
+                ui.setState(Repl.State.GAMEPLAY, authtoken, username, game.gameID(), null);
                 return "Observing game " + gameNum + " \"" + game.gameName() + "\"";
 
             } catch (NumberFormatException ex){
