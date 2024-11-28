@@ -11,8 +11,6 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.NotificationServerMessage;
 import websocket.messages.ServerMessage;
 
-import javax.imageio.IIOException;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,16 +41,18 @@ public class WebSocketHandler {
     }
 
     public void connect(Session session, UserGameCommand command) throws IOException {
-        System.out.printf("connect message received from %s%n", command.getUsername());
+        String username = command.getUsername();
+
+        System.out.printf("connect message received from %s%n", username);
         saveSession(command, session);
         //send load game to recently connected session
         //send notification to everyone else
 
-        String message = command.getUsername() + " connected!";
+        String message = username + " connected!";
         NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
         String jsonMessage = new Gson().toJson(notification);
         ConnectionManager connectionManager = connectionMap.get(command.getGameID());
-        connectionManager.braodcast(jsonMessage);
+        connectionManager.broadcast(username, jsonMessage);
     }
 
     public void move(Session session, MakeMoveCommand command) throws IOException {
@@ -79,9 +79,9 @@ public class WebSocketHandler {
         int gameID = command.getGameID();
         if(connectionMap.get(gameID) == null){
             connectionMap.put(gameID, new ConnectionManager(gameID));
-            ConnectionManager connectionManager = connectionMap.get(gameID);
-            connectionManager.addConnection(session, command.getUsername());
         }
+        ConnectionManager connectionManager = connectionMap.get(gameID);
+        connectionManager.addConnection(session, command.getUsername());
     }
 
 

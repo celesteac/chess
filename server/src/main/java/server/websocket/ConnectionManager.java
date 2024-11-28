@@ -1,9 +1,9 @@
 package server.websocket;
 
-import chess.ChessGame;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
@@ -22,9 +22,23 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
-    public void braodcast(String message) throws IOException {
-        for(Connection conn : connections.values()){
-            conn.send(message);
+    public void broadcast(String excludePlayerName, String message) throws IOException {
+        var removeList = new ArrayList<Connection>();
+
+        for (var conn : connections.values()) {
+            if (conn.session.isOpen()) {
+                if (!conn.username.equals(excludePlayerName)) {
+                    conn.send(message);
+                }
+            } else {
+                removeList.add(conn);
+            }
         }
+
+        // Clean up any connections that were left open.
+        for (var conn : removeList) {
+            connections.remove(conn.username);
+        }
+
     }
 }
