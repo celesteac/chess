@@ -15,11 +15,11 @@ public class UserGameCommand {
     private final Integer gameID;
     private final String username;
 
-    public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
+    public UserGameCommand(CommandType commandType, String authToken, String username, Integer gameID) {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
-        this.username = findUsername(authToken);
+        this.username = username;
     }
 
     public enum CommandType {
@@ -27,10 +27,6 @@ public class UserGameCommand {
         MAKE_MOVE,
         LEAVE,
         RESIGN
-    }
-
-    private String findUsername(String authToken){
-        return "name";
     }
 
     public CommandType getCommandType() {
@@ -44,6 +40,8 @@ public class UserGameCommand {
     public Integer getGameID() {
         return gameID;
     }
+
+    public String getUsername() {return username;}
 
     @Override
     public boolean equals(Object o) {

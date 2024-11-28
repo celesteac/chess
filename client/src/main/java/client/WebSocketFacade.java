@@ -61,10 +61,9 @@ public class WebSocketFacade extends Endpoint {
 
     /// CALLABLE FUNCTIONS
 
-    public void connect() throws ResponseException{
+    public void connect(UserGameCommand connectCommand) throws ResponseException{
         try{
-            UserGameCommand command = new UserGameCommand(type(CONNECT), "authtoken", 1234); //FIXME
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+            this.session.getBasicRemote().sendText(new Gson().toJson(connectCommand));
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage()); //is this the right error code?
         }
@@ -72,7 +71,7 @@ public class WebSocketFacade extends Endpoint {
 
     public void leave(){
         try{
-            UserGameCommand command = new UserGameCommand(type(LEAVE), "authtoken", 1234); //FIXME
+            UserGameCommand command = new UserGameCommand(type(LEAVE), "authtoken", "username",1234); //FIXME
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage()); //is this the right error code?
@@ -81,7 +80,7 @@ public class WebSocketFacade extends Endpoint {
 
     public void makeMove(){
         try{
-            UserGameCommand command = new UserGameCommand(type(MAKE_MOVE), "authtoken", 1234); //FIXME
+            UserGameCommand command = new UserGameCommand(type(MAKE_MOVE), "authtoken", "username",1234); //FIXME
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage()); //is this the right error code?
@@ -90,7 +89,7 @@ public class WebSocketFacade extends Endpoint {
 
     public void resign(){
         try{
-            UserGameCommand command = new UserGameCommand(type(RESIGN), "authtoken", 1234); //FIXME
+            UserGameCommand command = new UserGameCommand(type(RESIGN), "authtoken", "username",1234); //FIXME
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage()); //is this the right error code?

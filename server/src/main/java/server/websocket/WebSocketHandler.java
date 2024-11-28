@@ -13,26 +13,26 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message){
         UserGameCommand command = new Gson().fromJson(message,UserGameCommand.class);
         switch (command.getCommandType()) {
-            case CONNECT -> connect();
-            case MAKE_MOVE -> move();
-            case LEAVE -> leave();
-            case RESIGN -> resign();
+            case CONNECT -> connect(command);
+            case MAKE_MOVE -> move(command);
+            case LEAVE -> leave(command);
+            case RESIGN -> resign(command);
         }
     }
 
-    public void connect(){
-        System.out.println("connect message received");
+    public void connect(UserGameCommand command){
+        System.out.printf("connect message received from %s%n", command.getUsername());
     }
 
-    public void move(){
+    public void move(UserGameCommand command){
         System.out.println("move message received");
     }
 
-    public void leave(){
+    public void leave(UserGameCommand command){
         System.out.println("leave message received");
     }
 
-    public void resign(){
+    public void resign(UserGameCommand command){
         System.out.println("resign message received");
     }
 }

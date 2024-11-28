@@ -4,8 +4,12 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import ui.ChessBoardPrint;
 import ui.Repl;
+import websocket.commands.UserGameCommand;
 
 import java.util.Arrays;
+
+import static websocket.commands.UserGameCommand.CommandType.CONNECT;
+import static websocket.commands.UserGameCommand.CommandType.RESIGN;
 
 public class ClientGameplay implements Client{
     Repl ui;
@@ -22,7 +26,9 @@ public class ClientGameplay implements Client{
         this.authtoken = authtoken;
         this.username = username;
         this.wsFacade = new WebSocketFacade(serverUrl, repl);
-        wsFacade.connect();
+
+        UserGameCommand connectCommand = new UserGameCommand(type(CONNECT), authtoken, username,1234); //fixme
+        wsFacade.connect(connectCommand);
         drawBoard();
     }
 
@@ -96,5 +102,9 @@ public class ClientGameplay implements Client{
                 - highlight <position>
                 - resign
                 - leave""";
+    }
+
+    private UserGameCommand.CommandType type(UserGameCommand.CommandType type) {
+        return type;
     }
 }
