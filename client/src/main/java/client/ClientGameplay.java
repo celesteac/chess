@@ -12,13 +12,15 @@ public class ClientGameplay implements Client{
     String serverUrl;
     ServerFacade serverFacade;
     String authtoken;
+    String username;
     WebSocketFacade wsFacade;
 
-    public ClientGameplay(Repl repl, String serverUrl, String authtoken){
+    public ClientGameplay(Repl repl, String serverUrl, String authtoken, String username){
         this.ui = repl;
         this.serverUrl = serverUrl;
         this.serverFacade = new ServerFacade(serverUrl);
         this.authtoken = authtoken;
+        this.username = username;
         this.wsFacade = new WebSocketFacade(serverUrl, repl);
         wsFacade.connect();
         drawBoard();
@@ -81,7 +83,7 @@ public class ClientGameplay implements Client{
 
     private String leave(){
         wsFacade.leave();
-        ui.setState(Repl.State.LOGGED_IN, authtoken);
+        ui.setState(Repl.State.LOGGED_IN, authtoken, username);
         return "leaving game";
     }
 

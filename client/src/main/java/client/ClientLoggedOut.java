@@ -38,9 +38,11 @@ public class ClientLoggedOut implements Client {
 
     String login(String[] params) throws ResponseException {
         if(params.length == 2) {
-            AuthData auth = serverFacade.login(params[0], params[1]);
-            ui.setState(Repl.State.LOGGED_IN, auth.authToken());
-            return "Welcome to chess, " + params[0];
+            String username = params[0];
+            String password = params[1];
+            AuthData auth = serverFacade.login(username, password);
+            ui.setState(Repl.State.LOGGED_IN, auth.authToken(), username);
+            return "Welcome to chess, " + username;
         }
         else if(params.length < 2) {
             throw new ResponseException(400, "Error: missing username or password");
@@ -52,9 +54,10 @@ public class ClientLoggedOut implements Client {
 
     String register(String[] params) throws ResponseException {
         if(params.length == 3) {
-            AuthData auth = serverFacade.register(params[0], params[1], params[2]);
-            ui.setState(Repl.State.LOGGED_IN, auth.authToken());
-            return "Welcome to chess, " + params[0] + "!";
+            String username = params[0];
+            AuthData auth = serverFacade.register(username, params[1], params[2]);
+            ui.setState(Repl.State.LOGGED_IN, auth.authToken(), username);
+            return "Welcome to chess, " + username + "!";
         }
         else if (params.length < 3){
             throw new ResponseException(400, "Error: missing user input");

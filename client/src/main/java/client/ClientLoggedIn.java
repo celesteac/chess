@@ -14,12 +14,14 @@ public class ClientLoggedIn implements Client {
     Repl ui;
     ServerFacade serverFacade;
     String authtoken;
+    String username;
     Map<Integer, GameDetails> gamesMap;
 
-    public ClientLoggedIn(Repl repl, String serverUrl, String authtoken) {
+    public ClientLoggedIn(Repl repl, String serverUrl, String authtoken, String username) {
         this.ui = repl;
         this.serverFacade = new ServerFacade(serverUrl);
         this.authtoken = authtoken;
+        this.username = username;
     }
 
     public String eval(String input) {
@@ -40,7 +42,7 @@ public class ClientLoggedIn implements Client {
 
     private String logout() {
         serverFacade.logout(authtoken);
-        ui.setState(Repl.State.LOGGED_OUT, null);
+        ui.setState(Repl.State.LOGGED_OUT, null, null);
         return "logging out";
     }
 
@@ -104,7 +106,7 @@ public class ClientLoggedIn implements Client {
                 }
 
                 serverFacade.joinGame(game.gameID(), playerColor, authtoken);
-                ui.setState(Repl.State.GAMEPLAY, authtoken);
+                ui.setState(Repl.State.GAMEPLAY, authtoken, username);
                 return "Playing game " + params[0] + " \"" + game.gameName() + "\" as " + params[1];
 
             } catch (NumberFormatException ex){
@@ -144,7 +146,7 @@ public class ClientLoggedIn implements Client {
                 }
 
 //                serverFacade.joinGame(game.gameID(), null, authtoken);
-                ui.setState(Repl.State.GAMEPLAY, authtoken);
+                ui.setState(Repl.State.GAMEPLAY, authtoken, username);
                 return "Observing game " + gameNum + " \"" + game.gameName() + "\"";
 
             } catch (NumberFormatException ex){
