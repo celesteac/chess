@@ -3,6 +3,8 @@ package server.websocket;
 import com.google.gson.Gson;
 import dataaccess.AuthDAOSQL;
 import dataaccess.DataAccessException;
+import dataaccess.GameDAO;
+import dataaccess.GameDAOSQL;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -19,7 +21,7 @@ import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 @WebSocket
 public class WebSocketHandler {
-
+    GameDAOSQL gameDAO = new GameDAOSQL();
     Map<Integer, ConnectionManager> connectionMap = new HashMap<>();
 
     @OnWebSocketMessage
@@ -42,17 +44,18 @@ public class WebSocketHandler {
 
     public void connect(Session session, UserGameCommand command) throws IOException {
         String username = command.getUsername();
+        int gameID = command.getGameID();
 
         System.out.printf("connect message received from %s%n", username);
         saveSession(command, session);
         //send load game to recently connected session
-        //send notification to everyone else
 
         String message = username + " connected!";
-        NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
-        String jsonMessage = new Gson().toJson(notification);
-        ConnectionManager connectionManager = connectionMap.get(command.getGameID());
-        connectionManager.broadcast(username, jsonMessage);
+        sendNotification(message, gameID, username);
+//        NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
+//        String jsonMessage = new Gson().toJson(notification);
+//        ConnectionManager connectionManager = connectionMap.get(command.getGameID());
+//        connectionManager.broadcast(username, jsonMessage);
     }
 
     public void move(Session session, MakeMoveCommand command) throws IOException {
@@ -60,6 +63,17 @@ public class WebSocketHandler {
     }
 
     public void leave(Session session, UserGameCommand command) throws IOException {
+        String username = command.getUsername();
+        int gameID = command.getGameID();
+        //remove player from game in database
+        //remove from connection manager
+        ConnectionManager connectionManager = connectionMap.get(command.getGameID());
+        connectionManager.removeConnection(command.getUsername());
+        //send notification to other players
+        String message = username + " left the game";
+        sendNotification(message, gameID, username);
+        //close ws connection?
+        //client moves to logged in state
         System.out.printf("leave message received from %s%n", command.getUsername());
     }
 
@@ -74,6 +88,14 @@ public class WebSocketHandler {
 
 
     /// HELPER FUNCTIONS /////
+
+    private void sendNotification(String message, int gameID, String excludePlayerName) throws IOException {
+        NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
+        String jsonMessage = new Gson().toJson(notification);
+        ConnectionManager connectionManager = connectionMap.get(gameID);
+        connectionManager.broadcast(excludePlayerName, jsonMessage);
+    }
+
 
     private void saveSession(UserGameCommand command, Session session){
         int gameID = command.getGameID();
