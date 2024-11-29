@@ -86,7 +86,7 @@ public class WebSocketFacade extends Endpoint {
 
     /// CALLABLE FUNCTIONS
 
-    public void connect(UserGameCommand connectCommand) throws ResponseException{
+    public void connect(UserGameCommand connectCommand) {
         try{
             this.session.getBasicRemote().sendText(new Gson().toJson(connectCommand));
         } catch (IOException ex){

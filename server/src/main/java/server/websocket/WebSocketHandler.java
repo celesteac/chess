@@ -13,6 +13,7 @@ import dataaccess.GameDAOSQL;
 import model.GameData;
 import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.UnauthorizedWebSocketException;
@@ -66,6 +67,11 @@ public class WebSocketHandler {
         } catch (IOException | DataAccessException | UnauthorizedWebSocketException | InvalidMoveException ex){
             sendErrorMessage(session, ex.getMessage());
         }
+    }
+
+    @OnWebSocketError
+    public void onError(Session session, Throwable ex){
+        sendErrorMessage(session, ex.getMessage());
     }
 
     public void connect(Session session, UserGameCommand command) throws IOException, DataAccessException {
@@ -153,7 +159,8 @@ public class WebSocketHandler {
 
     /// HELPER FUNCTIONS /////
 
-    private void checkGameState(Session session, String activeUsername,  String otherUsername, int gameID, ChessGame game) throws DataAccessException, IOException{
+    private void checkGameState(Session session, String activeUsername,  String otherUsername, int gameID, ChessGame game)
+            throws DataAccessException, IOException{
         ChessGame.TeamColor playerColor = getPlayerColor(gameID, activeUsername);
         ChessGame.TeamColor otherPlayerColor = playerColor == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
         if(game.isInCheckmate(playerColor)){
