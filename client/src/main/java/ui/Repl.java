@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import client.*;
 import websocket.messages.ServerMessage;
@@ -72,7 +73,7 @@ public class Repl implements ServerMessageObserver {
         };
     }
 
-    private void printPrompt(PrintStream out) {
+    public void printPrompt(PrintStream out) {
         out.print(EscapeSequences.SET_TEXT_COLOR_YELLOW);
         out.printf("[%s]>>> ", state.toString());
         setDefault(out);

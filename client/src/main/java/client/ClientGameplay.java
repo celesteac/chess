@@ -20,6 +20,7 @@ public class ClientGameplay implements Client{
     ChessGame.TeamColor playerColor;
     int gameID;
     WebSocketFacade wsFacade;
+    ChessBoard board = new ChessBoard();
 
     public ClientGameplay(Repl repl, String serverUrl, String authtoken, String username, int gameID, ChessGame.TeamColor playerColor){
         this.ui = repl;
@@ -29,11 +30,10 @@ public class ClientGameplay implements Client{
         this.username = username;
         this.gameID = gameID;
         this.playerColor = playerColor;
-        this.wsFacade = new WebSocketFacade(serverUrl, repl);
+        this.wsFacade = new WebSocketFacade(serverUrl, repl, this);
 
         UserGameCommand connectCommand = new UserGameCommand(type(CONNECT), authtoken, username,ClientGameplay.this.gameID);
         wsFacade.connect(connectCommand);
-        drawBoard();
     }
 
     public String eval(String input){
@@ -52,10 +52,12 @@ public class ClientGameplay implements Client{
         };
     }
 
-    private String drawBoard(){
-        ChessBoard board = new ChessBoard();
-        board.resetBoard();
+    public void setBoard(ChessBoard board){
+        this.board = board;
+    }
 
+    public String drawBoard(){
+        System.out.println();
         if(playerColor == null){
             new ChessBoardPrint(board, ChessGame.TeamColor.WHITE).drawBoard();
         } else {

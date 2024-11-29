@@ -1,5 +1,7 @@
 package client;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ui.EscapeSequences;
@@ -21,12 +23,15 @@ import static websocket.messages.ServerMessage.ServerMessageType.*;
 public class WebSocketFacade extends Endpoint {
     ServerMessageObserver messageObserver;
     Session session;
+    ClientGameplay client;
 
-    public WebSocketFacade(String url, ServerMessageObserver messageObserver){
+    public WebSocketFacade(String url, ServerMessageObserver messageObserver, ClientGameplay client){
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
             this.messageObserver = messageObserver;
+
+            this.client = client;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
@@ -72,8 +77,10 @@ public class WebSocketFacade extends Endpoint {
         messageObserver.notify(EscapeSequences.SET_TEXT_COLOR_RED + errorMessage.getMessage());
     }
 
-    private void onLoadGame(LoadGameMessage serverMessage){
-
+    private void onLoadGame(LoadGameMessage loadGameMessage){
+        ChessBoard newBoard = loadGameMessage.getBoard();
+        client.setBoard(newBoard);
+        client.drawBoard();
     }
 
     /// CALLABLE FUNCTIONS

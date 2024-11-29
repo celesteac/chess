@@ -1,5 +1,6 @@
 package server.websocket;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.AuthDAOSQL;
@@ -14,6 +15,7 @@ import websocket.UnauthorizedWebSocketException;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorServerMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationServerMessage;
 import websocket.messages.ServerMessage;
 
@@ -52,7 +54,10 @@ public class WebSocketHandler {
 
         System.out.printf("connect message received from %s%n", username);
         saveSession(command, session);
-        //send load game to recently connected session
+
+        ChessBoard board = getGameBoard(command.getGameID());
+        sendLoadBoardSingle(session, board);
+        sendNotificationSingle(session, "Current board");
 
         String message = createConnectMessage(getPlayerColor(gameID, username), username);
         sendNotification(message, gameID, username);
@@ -86,6 +91,18 @@ public class WebSocketHandler {
 
 
     /// HELPER FUNCTIONS /////
+
+    private void sendLoadBoardSingle(Session session, ChessBoard board) throws IOException {
+        LoadGameMessage loadGameMessage = new LoadGameMessage(type(LOAD_GAME), board);
+        String jsonMessage = new Gson().toJson(loadGameMessage, LoadGameMessage.class);
+        session.getRemote().sendString(jsonMessage);
+    }
+
+    private void sendNotificationSingle(Session session, String message) throws IOException {
+        NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
+        String jsonMessage = new Gson().toJson(notification);
+        session.getRemote().sendString(jsonMessage);
+    }
 
     private void sendNotification(String message, int gameID, String excludePlayerName) throws IOException {
         NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
@@ -126,6 +143,12 @@ public class WebSocketHandler {
         GameData game = gameDAO.getGame(gameID);
         GameData updatedGame = game.updateGamePlayer(getPlayerColor(gameID, username), null);
         gameDAO.updateGame(updatedGame);
+    }
+
+    private ChessBoard getGameBoard(int gameID) throws DataAccessException {
+        GameDAOSQL gameDAO = new GameDAOSQL();
+        GameData gameData = gameDAO.getGame(gameID);
+        return gameData.game().getBoard();
     }
 
     private void saveSession(UserGameCommand command, Session session){
