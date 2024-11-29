@@ -64,10 +64,25 @@ public class ChessPosition implements Cloneable {
     public String toString() {
 
         int colPrint = convertColToChessIndices(this.col);
+        String colLetter = getColLetter(colPrint);
         int rowPrint = convertRowIndices(this.row);
 
-        return rowPrint + "," + colPrint;
-//        return "[" + rowPrint + "," + colPrint + "]";
+        return colLetter + rowPrint;
+//        return rowPrint + "," + colPrint;
+    }
+
+    private String getColLetter(int col){
+        return switch (col) {
+            case 1 -> "a";
+            case 2 -> "b";
+            case 3 -> "c";
+            case 4 -> "d";
+            case 5 -> "e";
+            case 6 -> "f";
+            case 7 -> "g";
+            case 8 -> "h";
+            default -> "z";
+        };
     }
 
     @Override

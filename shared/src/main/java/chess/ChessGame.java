@@ -119,7 +119,7 @@ public class ChessGame {
             executeMove(move, board);
             changeTeamColor();
         } else {
-            throw new InvalidMoveException("invalid move"); //WHY DOES THIS WORK?? Where is the exception handled?
+            throw new InvalidMoveException("invalid move");
         }
 
     }
