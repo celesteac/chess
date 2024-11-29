@@ -14,15 +14,25 @@ public class ConnectionManager {
         this.gameID = gameID;
     }
 
-    public void addConnection(Session session, String username){ // , ChessGame.TeamColor playerColor
-        connections.put(username, new Connection(session, username)); // , playerColor
+    public void addConnection(Session session, String username){
+        if(username == null){
+            username = "null";
+        }
+        connections.put(username, new Connection(session, username));
     }
 
     public void removeConnection(String username){
+        if(username == null){
+            username = "null";
+        }
         connections.remove(username);
     }
 
     public void broadcast(String excludePlayerName, String message) throws IOException {
+        if(excludePlayerName == null){
+            excludePlayerName = "null";
+        }
+
         var removeList = new ArrayList<Connection>();
 
         for (var conn : connections.values()) {

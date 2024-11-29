@@ -71,6 +71,8 @@ public class WebSocketHandler {
 
     @OnWebSocketError
     public void onError(Session session, Throwable ex){
+        String message = ex.getMessage();
+        System.out.println(ex.getMessage());
         sendErrorMessage(session, ex.getMessage());
     }
 
@@ -83,7 +85,7 @@ public class WebSocketHandler {
 
         ChessBoard board = getGameBoard(command.getGameID());
         sendLoadBoardSingle(session, board);
-        sendNotificationSingle(session, "Current board");
+//        sendNotificationSingle(session, "Current board");
 
         String message = createConnectMessage(getPlayerColor(gameID, username), username);
         sendNotification(message, gameID, username);
@@ -203,7 +205,7 @@ public class WebSocketHandler {
 
     private void sendLoadBoardSingle(Session session, ChessBoard board) throws IOException {
         LoadGameMessage loadGameMessage = new LoadGameMessage(type(LOAD_GAME), board);
-        String jsonMessage = new Gson().toJson(loadGameMessage, LoadGameMessage.class);
+        String jsonMessage = new Gson().toJson(loadGameMessage);
         session.getRemote().sendString(jsonMessage);
     }
 
