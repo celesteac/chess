@@ -74,7 +74,9 @@ public class ClientGameplay implements Client{
             throw new ResponseException(400, "Error: you are observing");
         }
         if(params.length == 2){
-            ChessMove move = new ChessMove(new ChessPosition(2,1), new ChessPosition(3,1), null);
+            //format letter[a-h]-num[1-8] x2
+            //hacer un move
+            ChessMove move = getValidMove(params);
             MakeMoveCommand moveCommand = new MakeMoveCommand(type(MAKE_MOVE), authtoken, username,gameID, move);
             wsFacade.makeMove(moveCommand);
             return "moving";
@@ -85,6 +87,47 @@ public class ClientGameplay implements Client{
         else {
             throw new ResponseException(400, "Error: missing start or end position");
         }
+    }
+
+    public boolean isValidFormat(String str) {
+        return str.matches("[a-h][1-8]");
+    }
+
+    private ChessMove getValidMove(String[] params){
+        for(String param : params){
+            if(!isValidFormat(param)){
+                throw new ResponseException(400, "please provide moves in the format [a-h][1-8]");
+            }
+        }
+        String start = params[0];
+        String end = params[1];
+        String startCol = start.substring(0,1);
+        String startRow = start.substring(1,2);
+        String endCol = end.substring(0,1);
+        String endRow = end.substring(1,2);
+        int startRowInt = Integer.parseInt(startRow);
+        int startColInt = getColNum(startCol);
+        int endRowInt = Integer.parseInt(endRow);
+        int endColInt = getColNum(endCol);
+
+        ChessPosition startPos = new ChessPosition(startRowInt, startColInt);
+        ChessPosition endPos = new ChessPosition(endRowInt, endColInt);
+
+        return new ChessMove(startPos, endPos, null);
+    }
+
+    private int getColNum(String colLetter){
+        return switch (colLetter){
+            case "a" -> 1;
+            case "b" -> 2;
+            case "c" -> 3;
+            case "d" -> 4;
+            case "e" -> 5;
+            case "f" -> 6;
+            case "g" -> 7;
+            case "h" -> 8;
+            default -> -10; //error
+        };
     }
 
     private String resign(){
