@@ -5,11 +5,14 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import ui.ChessBoardPrint;
+import ui.EscapeSequences;
 import ui.Repl;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Scanner;
 
 import static websocket.commands.UserGameCommand.CommandType.*;
 
@@ -79,7 +82,7 @@ public class ClientGameplay implements Client{
             ChessMove move = getValidMove(params);
             MakeMoveCommand moveCommand = new MakeMoveCommand(type(MAKE_MOVE), authtoken, username,gameID, move);
             wsFacade.makeMove(moveCommand);
-            return "moving";
+            return "moving...";
         }
         else if (params.length > 2) {
             throw new ResponseException(400, "Error: too may inputs");
@@ -134,12 +137,20 @@ public class ClientGameplay implements Client{
         if(playerColor == null){
             throw new ResponseException(400, "Error: you are observing");
         }
-        try {
-            UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, gameID);
-            wsFacade.resign(resignCommand);
-            return "resigning";
-        } catch (ResponseException ex){
-            return "Error: " + ex.getMessage();
+        ui.notify(EscapeSequences.SET_TEXT_COLOR_BLUE + "Confirm you want to resign <yes | no> :");
+        Scanner scanner = new Scanner(System.in);
+        String response = scanner.nextLine();
+        if(Objects.equals(response, "yes")) {
+            try {
+                UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, gameID);
+                wsFacade.resign(resignCommand);
+                return EscapeSequences.SET_TEXT_COLOR_BLUE + "resigning";
+            } catch (ResponseException ex) {
+                return "Error: " + ex.getMessage();
+            }
+        }
+        else{
+            return EscapeSequences.SET_TEXT_COLOR_BLUE + "Continuing game";
         }
     }
 

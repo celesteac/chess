@@ -141,12 +141,11 @@ public class WebSocketHandler {
         System.out.printf("resign message received from %s%n", command.getUsername());
         int gameID = command.getGameID();
         String username = command.getUsername();
-        GameDAOSQL gameDAO = new GameDAOSQL();
-        GameData gameData = gameDAO.getGame(gameID);
-        ChessGame game = gameData.game();
+
+        ChessGame game = getGame(gameID);
         game.setResigned(true);
-        GameData updatedGame = gameData.updateGame(game);
-        gameDAO.updateGame(updatedGame);
+        storeUpdatedGame(gameID, game);
+
         sendNotificationSingle(session, "You resigned");
         sendNotification(username + " resigned", gameID, username);
     }
@@ -159,11 +158,13 @@ public class WebSocketHandler {
         ChessGame.TeamColor otherPlayerColor = playerColor == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
         if(game.isInCheckmate(playerColor)){
             game.setResigned(true);
+            storeUpdatedGame(gameID, game);
             sendNotificationSingle(session, "You are in checkmate. Game is finished");
             sendNotification(activeUsername + " is in checkmate. Game is finished", gameID, activeUsername);
         }
         else if(game.isInCheckmate(otherPlayerColor)){
             game.setResigned(true);
+            storeUpdatedGame(gameID, game);
             sendNotification(otherUsername + " is in checkmate. Game is finished", gameID, null);
         }
         else if(game.isInCheck(playerColor)){
@@ -175,11 +176,13 @@ public class WebSocketHandler {
         }
         else if(game.isInStalemate(playerColor)){
             game.setResigned(true);
+            storeUpdatedGame(gameID, game);
             sendNotificationSingle(session, "You are in stalemate. Game is finished");
             sendNotification(activeUsername + " is in stalemate. Game is finished", gameID, activeUsername);
         }
         else if(game.isInStalemate(otherPlayerColor)){
             game.setResigned(true);
+            storeUpdatedGame(gameID, game);
             sendNotification(otherUsername + " is in stalemate. Game is finished", gameID, null);
         }
     }
@@ -248,6 +251,20 @@ public class WebSocketHandler {
         GameDAOSQL gameDAO = new GameDAOSQL();
         GameData gameData = gameDAO.getGame(gameID);
         return gameData.game().getBoard();
+    }
+
+    private ChessGame getGame(int gameID) throws DataAccessException {
+        GameDAOSQL gameDAO = new GameDAOSQL();
+        GameData gameData = gameDAO.getGame(gameID);
+        return gameData.game();
+    }
+
+    private void storeUpdatedGame(int gameID, ChessGame game) throws DataAccessException{
+        GameDAOSQL gameDAO = new GameDAOSQL();
+        GameData gameData = gameDAO.getGame(gameID);
+
+        GameData updatedGame = gameData.updateGame(game);
+        gameDAO.updateGame(updatedGame);
     }
 
     private void saveSession(UserGameCommand command, Session session){
