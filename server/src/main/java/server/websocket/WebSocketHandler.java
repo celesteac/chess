@@ -93,6 +93,9 @@ public class WebSocketHandler {
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
         //todo //checks game not resigned
+        if(game.getIsResigned()){
+            throw new UnauthorizedWebSocketException("Error: game is finished");
+        }
         //checks legal player (not observer)
         ChessGame.TeamColor playerColor = getPlayerColor(gameID, username);
         if(playerColor == null){
@@ -134,12 +137,18 @@ public class WebSocketHandler {
         System.out.printf("leave message received from %s%n", command.getUsername());
     }
 
-    public void resign(Session session, UserGameCommand command) throws IOException {
+    public void resign(Session session, UserGameCommand command) throws IOException, DataAccessException {
         System.out.printf("resign message received from %s%n", command.getUsername());
-        String message = "From server: You resigned!";
-        NotificationServerMessage notification = new NotificationServerMessage(type(NOTIFICATION), message);
-        String jsonMessage = new Gson().toJson(notification);
-        session.getRemote().sendString(jsonMessage);
+        int gameID = command.getGameID();
+        String username = command.getUsername();
+        GameDAOSQL gameDAO = new GameDAOSQL();
+        GameData gameData = gameDAO.getGame(gameID);
+        ChessGame game = gameData.game();
+        game.setResigned(true);
+        GameData updatedGame = gameData.updateGame(game);
+        gameDAO.updateGame(updatedGame);
+        sendNotificationSingle(session, "You resigned");
+        sendNotification(username + " resigned", gameID, username);
     }
 
 
@@ -149,15 +158,13 @@ public class WebSocketHandler {
         ChessGame.TeamColor playerColor = getPlayerColor(gameID, activeUsername);
         ChessGame.TeamColor otherPlayerColor = playerColor == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
         if(game.isInCheckmate(playerColor)){
-            sendNotificationSingle(session, "You are in checkmate");
-            sendNotification(activeUsername + " is in checkmate", gameID, activeUsername);
-            //todo
-            // set game completed
+            game.setResigned(true);
+            sendNotificationSingle(session, "You are in checkmate. Game is finished");
+            sendNotification(activeUsername + " is in checkmate. Game is finished", gameID, activeUsername);
         }
         else if(game.isInCheckmate(otherPlayerColor)){
-            sendNotification(otherUsername + " is in checkmate", gameID, null);
-            //todo
-            // set game completed
+            game.setResigned(true);
+            sendNotification(otherUsername + " is in checkmate. Game is finished", gameID, null);
         }
         else if(game.isInCheck(playerColor)){
             sendNotificationSingle(session, "You are in check");
@@ -167,15 +174,13 @@ public class WebSocketHandler {
             sendNotification(otherUsername + " is in check", gameID, null);
         }
         else if(game.isInStalemate(playerColor)){
-            sendNotificationSingle(session, "You are in stalemate");
-            sendNotification(activeUsername + " is in stalemate", gameID, activeUsername);
-            //todo
-            // set game completed
+            game.setResigned(true);
+            sendNotificationSingle(session, "You are in stalemate. Game is finished");
+            sendNotification(activeUsername + " is in stalemate. Game is finished", gameID, activeUsername);
         }
         else if(game.isInStalemate(otherPlayerColor)){
-            sendNotification(otherUsername + " is in stalemate", gameID, null);
-            //todo
-            // set game completed
+            game.setResigned(true);
+            sendNotification(otherUsername + " is in stalemate. Game is finished", gameID, null);
         }
     }
 

@@ -13,11 +13,13 @@ import java.util.Objects;
 public class ChessGame {
     private ChessBoard board;
     private TeamColor teamTurn;
+    private boolean isResigned;
 
     public ChessGame() {
         this.board = new ChessBoard();
         board.resetBoard();
         teamTurn = TeamColor.WHITE;
+        this.isResigned = false;
 
     }
 
@@ -35,6 +37,14 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         this.teamTurn = team;
+    }
+
+    public void setResigned(boolean isResigned){
+        this.isResigned = isResigned;
+    }
+
+    public boolean getIsResigned(){
+        return isResigned;
     }
 
     /**
