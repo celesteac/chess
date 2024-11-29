@@ -113,13 +113,13 @@ public class ChessGame {
 
             ChessPiece movingPiece = board.getPiece(move.getStartPosition());
             if(movingPiece.getTeamColor() != teamTurn){
-                throw new InvalidMoveException( movingPiece.getTeamColor().toString() + movingPiece + "tried to move out of turn");
+                throw new InvalidMoveException("Error: " + movingPiece.getTeamColor().toString() + movingPiece + "tried to move out of turn");
             }
 
             executeMove(move, board);
             changeTeamColor();
         } else {
-            throw new InvalidMoveException("invalid move");
+            throw new InvalidMoveException("Error: invalid move");
         }
 
     }

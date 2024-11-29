@@ -15,6 +15,10 @@ public record GameData(ChessGame game, String whiteUsername, String blackUsernam
         }
     }
 
+    public GameData updateGame(ChessGame newGame){
+        return new GameData(newGame, whiteUsername, blackUsername, gameName, gameID);
+    }
+
     public ChessGame.TeamColor getPlayerColor(String username){
         if(Objects.equals(username, whiteUsername)){
             return ChessGame.TeamColor.WHITE;

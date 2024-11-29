@@ -3,6 +3,7 @@ package server.websocket;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dataaccess.AuthDAOSQL;
@@ -61,7 +62,7 @@ public class WebSocketHandler {
                     resign(session, command);
                 }
             }
-        } catch (IOException | DataAccessException | UnauthorizedWebSocketException ex){
+        } catch (IOException | DataAccessException | UnauthorizedWebSocketException | InvalidMoveException ex){
             sendErrorMessage(session, ex.getMessage());
         }
     }
@@ -81,11 +82,32 @@ public class WebSocketHandler {
         sendNotification(message, gameID, username);
     }
 
-    public void move(Session session, MakeMoveCommand command) throws IOException {
+    public void move(Session session, MakeMoveCommand command) throws IOException, DataAccessException, InvalidMoveException {
         System.out.printf("move message received from %s%n", command.getUsername());
+
+        //Access game from database
+        int gameID = command.getGameID();
+        GameDAOSQL gameDAO = new GameDAOSQL();
+        GameData gameData = gameDAO.getGame(gameID);
+        ChessGame game = gameData.game();
+        //checks game not resigned
+        //checks legal player (not observer)
+        //make move
         ChessMove move = command.getMove();
-        String message = "Moving from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
-        sendNotificationSingle(session, message);
+        game.makeMove(move);
+            //game checks legal turn and legal move?
+        //store game in database
+        GameData updatedGame = gameData.updateGame(game);
+        gameDAO.updateGame(updatedGame);
+        //send load game to all clients
+        sendLoadBoardAll(game.getBoard(), gameID);
+        //send notification to all other clients
+        String username = command.getUsername();
+        String message = username + " moved from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
+        sendNotification(message, gameID, username);
+
+//        String message = "Moving from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
+//        sendNotificationSingle(session, message);
     }
 
     public void leave(Session session, UserGameCommand command) throws IOException, DataAccessException {
@@ -112,6 +134,13 @@ public class WebSocketHandler {
 
 
     /// HELPER FUNCTIONS /////
+
+    private void sendLoadBoardAll(ChessBoard board, int gameID) throws IOException {
+        LoadGameMessage loadGameMessage = new LoadGameMessage(type(LOAD_GAME), board);
+        String jsonMessage = new Gson().toJson(loadGameMessage, LoadGameMessage.class);
+        ConnectionManager connectionManager = connectionMap.get(gameID);
+        connectionManager.broadcast(null, jsonMessage);
+    }
 
     private void sendLoadBoardSingle(Session session, ChessBoard board) throws IOException {
         LoadGameMessage loadGameMessage = new LoadGameMessage(type(LOAD_GAME), board);
