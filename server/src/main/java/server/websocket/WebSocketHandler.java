@@ -11,6 +11,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.GameDAOSQL;
 import model.GameData;
+import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -87,27 +88,37 @@ public class WebSocketHandler {
 
         //Access game from database
         int gameID = command.getGameID();
+        String username = command.getUsername();
         GameDAOSQL gameDAO = new GameDAOSQL();
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
-        //checks game not resigned
+        //todo //checks game not resigned
         //checks legal player (not observer)
+        ChessGame.TeamColor playerColor = getPlayerColor(gameID, username);
+        if(playerColor == null){
+            throw new UnauthorizedWebSocketException("Error: you are not a player");
+        }
+        //check if player turn
+        if(playerColor != game.getTeamTurn()){
+            throw new UnauthorizedWebSocketException("Error: it is not your turn");
+        }
         //make move
         ChessMove move = command.getMove();
         game.makeMove(move);
-            //game checks legal turn and legal move?
+        //game checks legal move
         //store game in database
         GameData updatedGame = gameData.updateGame(game);
         gameDAO.updateGame(updatedGame);
         //send load game to all clients
         sendLoadBoardAll(game.getBoard(), gameID);
         //send notification to all other clients
-        String username = command.getUsername();
         String message = username + " moved from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
+        sendNotificationSingle(session, "");
         sendNotification(message, gameID, username);
+        //send check or checkmate notifications
+        String otherUsername = playerColor == ChessGame.TeamColor.WHITE ? gameData.blackUsername() : gameData.whiteUsername();
+        checkGameState(session, username, otherUsername, gameID, game);
 
-//        String message = "Moving from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
-//        sendNotificationSingle(session, message);
     }
 
     public void leave(Session session, UserGameCommand command) throws IOException, DataAccessException {
@@ -132,8 +143,41 @@ public class WebSocketHandler {
     }
 
 
-
     /// HELPER FUNCTIONS /////
+
+    private void checkGameState(Session session, String activeUsername,  String otherUsername, int gameID, ChessGame game) throws DataAccessException, IOException{
+        ChessGame.TeamColor playerColor = getPlayerColor(gameID, activeUsername);
+        ChessGame.TeamColor otherPlayerColor = playerColor == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+        if(game.isInCheckmate(playerColor)){
+            sendNotificationSingle(session, "You are in checkmate");
+            sendNotification(activeUsername + " is in checkmate", gameID, activeUsername);
+            //todo
+            // set game completed
+        }
+        else if(game.isInCheckmate(otherPlayerColor)){
+            sendNotification(otherUsername + " is in checkmate", gameID, null);
+            //todo
+            // set game completed
+        }
+        else if(game.isInCheck(playerColor)){
+            sendNotificationSingle(session, "You are in check");
+            sendNotification(activeUsername + " is in check", gameID, activeUsername);
+        }
+        else if (game.isInCheck(otherPlayerColor)) {
+            sendNotification(otherUsername + " is in check", gameID, null);
+        }
+        else if(game.isInStalemate(playerColor)){
+            sendNotificationSingle(session, "You are in stalemate");
+            sendNotification(activeUsername + " is in stalemate", gameID, activeUsername);
+            //todo
+            // set game completed
+        }
+        else if(game.isInStalemate(otherPlayerColor)){
+            sendNotification(otherUsername + " is in stalemate", gameID, null);
+            //todo
+            // set game completed
+        }
+    }
 
     private void sendLoadBoardAll(ChessBoard board, int gameID) throws IOException {
         LoadGameMessage loadGameMessage = new LoadGameMessage(type(LOAD_GAME), board);

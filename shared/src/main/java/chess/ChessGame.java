@@ -107,13 +107,11 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         Collection<ChessMove> valids = validMoves(move.getStartPosition());
-
-
         if (valids != null && valids.contains(move)) {
 
             ChessPiece movingPiece = board.getPiece(move.getStartPosition());
             if(movingPiece.getTeamColor() != teamTurn){
-                throw new InvalidMoveException("Error: " + movingPiece.getTeamColor().toString() + movingPiece + "tried to move out of turn");
+                throw new InvalidMoveException("Error: not your piece");
             }
 
             executeMove(move, board);
@@ -142,7 +140,6 @@ public class ChessGame {
     }
 
     private void changeTeamColor(){
-
         TeamColor nextTeam = teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
         setTeamTurn(nextTeam);
     }
