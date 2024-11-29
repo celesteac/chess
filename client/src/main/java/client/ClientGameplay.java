@@ -68,6 +68,9 @@ public class ClientGameplay implements Client{
     }
 
     private String move(String[] params){
+        if(playerColor == null){
+            throw new ResponseException(400, "Error: you are observing");
+        }
         if(params.length == 2){
             UserGameCommand moveCommand = new UserGameCommand(type(MAKE_MOVE), authtoken, username,gameID);
             wsFacade.makeMove(moveCommand);
@@ -77,11 +80,14 @@ public class ClientGameplay implements Client{
             throw new ResponseException(400, "Error: too may inputs");
         }
         else {
-            throw new ResponseException(400, "Error: start or end position");
+            throw new ResponseException(400, "Error: missing start or end position");
         }
     }
 
     private String resign(){
+        if(playerColor == null){
+            throw new ResponseException(400, "Error: you are observing");
+        }
         try {
             UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, gameID);
             wsFacade.resign(resignCommand);
@@ -111,6 +117,15 @@ public class ClientGameplay implements Client{
     }
 
     public String help(){
+        if(playerColor == null){
+            return """
+                Options:
+                - help
+                - redraw
+                - highlight <position>
+                - leave""";
+
+        }
         return """
                 Options:
                 - help
