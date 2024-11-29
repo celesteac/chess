@@ -2,7 +2,9 @@ package server.websocket;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import dataaccess.AuthDAOSQL;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
@@ -33,15 +35,31 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message){
         try {
-            UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
-            validateAuth(command.getAuthToken());
-            //add session to connection map
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+            UserGameCommand command;
 
-            switch (command.getCommandType()) {
-                case CONNECT -> connect(session, command);
-                case MAKE_MOVE -> move(session, (MakeMoveCommand) command);
-                case LEAVE -> leave(session, command);
-                case RESIGN -> resign(session, command);
+            switch (UserGameCommand.CommandType.valueOf(jsonObject.get("commandType").getAsString())) {
+                case CONNECT -> {
+                    command = gson.fromJson(message, UserGameCommand.class);
+                    validateAuth(command.getAuthToken());
+                    connect(session, command);
+                }
+                case MAKE_MOVE -> {
+                    command = gson.fromJson(message, MakeMoveCommand.class);
+                    validateAuth(command.getAuthToken());
+                    move(session, (MakeMoveCommand) command);
+                }
+                case LEAVE -> {
+                    command = gson.fromJson(message, UserGameCommand.class);
+                    validateAuth(command.getAuthToken());
+                    leave(session, command);
+                }
+                case RESIGN -> {
+                    command = gson.fromJson(message, UserGameCommand.class);
+                    validateAuth(command.getAuthToken());
+                    resign(session, command);
+                }
             }
         } catch (IOException | DataAccessException | UnauthorizedWebSocketException ex){
             sendErrorMessage(session, ex.getMessage());
@@ -65,6 +83,9 @@ public class WebSocketHandler {
 
     public void move(Session session, MakeMoveCommand command) throws IOException {
         System.out.printf("move message received from %s%n", command.getUsername());
+        ChessMove move = command.getMove();
+        String message = "Moving from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
+        sendNotificationSingle(session, message);
     }
 
     public void leave(Session session, UserGameCommand command) throws IOException, DataAccessException {

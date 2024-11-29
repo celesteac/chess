@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ui.EscapeSequences;
 import ui.ServerMessageObserver;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorServerMessage;
 import websocket.messages.LoadGameMessage;
@@ -89,7 +90,7 @@ public class WebSocketFacade extends Endpoint {
         try{
             this.session.getBasicRemote().sendText(new Gson().toJson(connectCommand));
         } catch (IOException ex){
-            throw new ResponseException(500, ex.getMessage()); //is this the right error code?
+            throw new ResponseException(500, ex.getMessage());
         }
     }
 
@@ -97,15 +98,15 @@ public class WebSocketFacade extends Endpoint {
         try{
             this.session.getBasicRemote().sendText(new Gson().toJson(leaveCommand));
         } catch (IOException ex){
-            throw new ResponseException(500, ex.getMessage()); //is this the right error code?
+            throw new ResponseException(500, ex.getMessage());
         }
     }
 
-    public void makeMove(UserGameCommand moveCommand){
+    public void makeMove(MakeMoveCommand moveCommand){
         try{
             this.session.getBasicRemote().sendText(new Gson().toJson(moveCommand));
         } catch (IOException ex){
-            throw new ResponseException(500, ex.getMessage()); //is this the right error code?
+            throw new ResponseException(500, ex.getMessage());
         }
     }
 
@@ -113,7 +114,7 @@ public class WebSocketFacade extends Endpoint {
         try{
             this.session.getBasicRemote().sendText(new Gson().toJson(resignCommand));
         } catch (IOException ex){
-            throw new ResponseException(500, ex.getMessage()); //is this the right error code?
+            throw new ResponseException(500, ex.getMessage());
         }
     }
 

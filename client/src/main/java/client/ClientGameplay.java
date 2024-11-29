@@ -2,6 +2,8 @@ package client;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import ui.ChessBoardPrint;
 import ui.Repl;
 import websocket.commands.MakeMoveCommand;
@@ -72,7 +74,8 @@ public class ClientGameplay implements Client{
             throw new ResponseException(400, "Error: you are observing");
         }
         if(params.length == 2){
-            UserGameCommand moveCommand = new UserGameCommand(type(MAKE_MOVE), authtoken, username,gameID);
+            ChessMove move = new ChessMove(new ChessPosition(2,1), new ChessPosition(3,1), null);
+            MakeMoveCommand moveCommand = new MakeMoveCommand(type(MAKE_MOVE), authtoken, username,gameID, move);
             wsFacade.makeMove(moveCommand);
             return "moving";
         }
