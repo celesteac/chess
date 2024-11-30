@@ -84,14 +84,11 @@ public class AssessCheck {
 
 
             if (checkBounds(tempRow, tempCol)){
-                System.out.println(tempPosition);
                 ChessPiece tempPiece = board.getPiece(tempPosition);
                 if(tempPiece != null){
-                    System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
                     contLoop = false;
                     if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == bishopOrRook
                             || tempPiece.getPieceType() == ChessPiece.PieceType.QUEEN)){
-                        System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
                         return true;
                     }
                 }
@@ -126,12 +123,9 @@ public class AssessCheck {
             ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
 
             if (checkBounds(tempRow, tempCol)){
-                System.out.println(tempPosition);
                 ChessPiece tempPiece = board.getPiece(tempPosition);
                 if(tempPiece != null){
-                    System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
                     if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.KING)){
-                        System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
                         return true;
                     }
                 }
@@ -160,12 +154,9 @@ public class AssessCheck {
                 ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
 
                 if (checkBounds(tempRow, tempCol)){
-                    System.out.println(tempPosition);
                     ChessPiece tempPiece = board.getPiece(tempPosition);
                     if(tempPiece != null){
-                        System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
                         if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.KNIGHT)){
-                            System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
                             return true;
                         }
                     }
@@ -197,12 +188,9 @@ public class AssessCheck {
             ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
 
             if (checkBounds(tempRow, tempCol)){
-                System.out.println(tempPosition);
                 ChessPiece tempPiece = board.getPiece(tempPosition);
                 if(tempPiece != null){
-                    System.out.println("piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType());
                     if((tempPiece.getTeamColor() != kingColor) && (tempPiece.getPieceType() == ChessPiece.PieceType.PAWN)){
-                        System.out.println("attacking piece: " + tempPiece.getTeamColor() + tempPiece.getPieceType() + " at " + tempPosition);
                         return true;
                     }
                 }

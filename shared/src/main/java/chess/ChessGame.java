@@ -76,14 +76,12 @@ public class ChessGame {
         TeamColor movingTeam = piece.getTeamColor();
 
         for(ChessMove move: valids){
-            System.out.println("checking move: " + move);
             //examine whether there would be check after the move
             ChessBoard hypotheticalBoard = getHypotheticalBoard(board, move);
             ChessPosition kingPosition = findTeamKing(movingTeam, hypotheticalBoard);
 
             if(kingPosition != null) {
                 if (new AssessCheck(kingPosition, hypotheticalBoard).assessCheckAll()) {
-                    System.out.println("adding to toRemove: " + move);
                     toRemove.add(move);
                 }
             }
@@ -99,12 +97,8 @@ public class ChessGame {
     }
 
     private ChessBoard getHypotheticalBoard(ChessBoard startingBoard, ChessMove move){
-
         ChessBoard hypotheticalBoard = startingBoard.clone();
         executeMove(move, hypotheticalBoard);
-
-        System.out.println("old board: " + board);
-        System.out.println("hypothetical w/ move: " + hypotheticalBoard);
 
         return hypotheticalBoard;
     }
@@ -156,13 +150,11 @@ public class ChessGame {
 
 
     private ChessPosition findTeamKing(TeamColor color, ChessBoard board){
-        System.out.println("finding king " + color.toString());
         for(int i = 1; i<9 ; i++){
             for(int j = 1; j<9; j++){
                 ChessPosition tempPosition = new ChessPosition(i, j);
                 ChessPiece tempPiece = board.getPiece(tempPosition);
                 if((tempPiece != null) && (tempPiece.getTeamColor() == color) && (tempPiece.getPieceType() == ChessPiece.PieceType.KING)){
-                    System.out.println("king at: " + tempPosition);
                     return tempPosition;
                 }
             }
@@ -183,7 +175,6 @@ public class ChessGame {
                 }
             }
         }
-        System.out.println("all pieces: " + allPieces);
         return allPieces;
     }
 
@@ -207,8 +198,6 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        System.out.println(board);
-        System.out.println("checking status " + teamColor.toString());
         ChessPosition kingPosition = findTeamKing(teamColor, board);
         return new AssessCheck(kingPosition, board).assessCheckAll();
     }

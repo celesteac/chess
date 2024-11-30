@@ -50,8 +50,6 @@ public abstract class PieceMovesCalculator {
         int tempCol = position.convertColToChessIndices(col + colMod);
         ChessPosition tempPosition = new ChessPosition(tempRow, tempCol);
 
-//        System.out.println(tempPosition);
-
         if(checkBounds(tempRow,tempCol)){
             if(checkEmpty(tempPosition)){
                 addMove(tempPosition);
