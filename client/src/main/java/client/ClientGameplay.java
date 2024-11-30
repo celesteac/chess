@@ -108,9 +108,32 @@ public class ClientGameplay implements Client{
     }
 
     private ChessPiece.PieceType askPawnPromotion(){
-        System.out.println("Choose a promotion piece <QUEEN | KNIGHT | ROOK | BISHOP>");
+        String message = "nope";
+        String response = "";
+        String prompt = "Choose a promotion piece <QUEEN | KNIGHT | ROOK | BISHOP>";
 
-        return ChessPiece.PieceType.QUEEN;
+        while(message.equals("nope")){
+
+            System.out.println(prompt);
+            Scanner scanner = new Scanner(System.in);
+            response = scanner.nextLine().toLowerCase();
+
+            message = switch (response){
+                case "queen" -> "yay";
+                case "knight" -> "yay";
+                case "rook" -> "yay";
+                case "bishop" -> "yay";
+                default -> "nope";
+            };
+        }
+
+        return switch (response) {
+            case "queen" -> ChessPiece.PieceType.QUEEN;
+            case "knight" -> ChessPiece.PieceType.KNIGHT;
+            case "rook" -> ChessPiece.PieceType.ROOK;
+            case "bishop" -> ChessPiece.PieceType.BISHOP;
+            default -> ChessPiece.PieceType.QUEEN;
+        };
     }
 
 
