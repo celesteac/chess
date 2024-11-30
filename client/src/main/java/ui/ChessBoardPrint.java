@@ -7,19 +7,23 @@ import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class ChessBoardPrint {
     private final PrintStream out = System.out;
     private final ChessBoard board;
     private final int boardSizeInSquares = 8;
     private final ChessGame.TeamColor playerColor;
+    Set<ChessPosition> highlightPositions;
 
-    public ChessBoardPrint(ChessBoard board, ChessGame.TeamColor playerColor, ArrayList<ChessPosition> highlightPositions){
+    public ChessBoardPrint(ChessBoard board, ChessGame.TeamColor playerColor, Set<ChessPosition> highlightPositions){
         this.board = board;
         this.playerColor = playerColor;
+        this.highlightPositions = highlightPositions;
     }
 
     public void drawBoard(){
+//        System.out.println(highlightPositions);
         drawBoarder();
         drawRows();
         drawBoarder();
@@ -76,17 +80,27 @@ public class ChessBoardPrint {
         }
 
         for(int i = 0; i < boardSizeInSquares; i++){
-            switch (squareColor){
-                case 0 -> setLightSquare();
-                case 1 -> setDarkSquare();
-            }
-
             int boardColumn = i;
             if(playerColor == ChessGame.TeamColor.BLACK){
                 boardColumn = reverseIndex(boardColumn);
             }
 
-            out.print(getPieceAsString(getPieceAtPosition(boardRow,boardColumn)));
+            ChessPosition position = getPosition(boardRow, boardColumn);
+
+            if(highlightPositions != null && highlightPositions.contains(position)){
+                switch (squareColor){
+                    case 0 -> setLightSquareHighlighted();
+                    case 1 -> setDarkSquareHighlighted();
+                }
+            }
+            else {
+                switch (squareColor){
+                    case 0 -> setLightSquare();
+                    case 1 -> setDarkSquare();
+                }
+            }
+
+            out.print(getPieceAsString(board.getPiece(position)));
             squareColor = squareColor == 0 ? 1 : 0;
         }
     }
@@ -133,10 +147,14 @@ public class ChessBoardPrint {
     }
 
     private ChessPiece getPieceAtPosition(int boardRow, int boardColumn){
+        ChessPosition position = getPosition(boardRow, boardColumn);
+        return board.getPiece(position);
+    }
+
+    private ChessPosition getPosition(int boardRow, int boardColumn){
         int row = ChessPosition.convertRowIndices(boardRow);
         int col = ChessPosition.convertColToChessIndices(boardColumn);
-        ChessPosition position = new ChessPosition(row,col);
-        return board.getPiece(position);
+        return new ChessPosition(row,col);
     }
 
     /// PRIVATE FORMATTING FUNCTIONS //////
@@ -159,6 +177,14 @@ public class ChessBoardPrint {
 
     private void setDarkSquare(){
         out.print(EscapeSequences.SET_BG_COLOR_BLUE);
+    }
+
+    private void setLightSquareHighlighted(){
+        out.print(EscapeSequences.SET_BG_COLOR_GREEN);
+    }
+
+    private void setDarkSquareHighlighted(){
+        out.print(EscapeSequences.SET_BG_COLOR_DARK_GREEN);
     }
 
     private void setPlayerWhite(){

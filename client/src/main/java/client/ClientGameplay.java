@@ -60,7 +60,7 @@ public class ClientGameplay implements Client{
         };
     }
 
-    public String drawBoard(ArrayList<ChessPosition> highlightPositions){
+    public String drawBoard(Set<ChessPosition> highlightPositions){
         System.out.println();
         if(playerColor == null){
             new ChessBoardPrint(board, ChessGame.TeamColor.WHITE, highlightPositions).drawBoard();
@@ -125,9 +125,14 @@ public class ClientGameplay implements Client{
                 throw new ResponseException(400, "Error: There is no piece at square " + position);
             }
 
-            ArrayList<ChessPosition> validPositions = getValidPositions(position);
+            Set<ChessPosition> validPositions = getValidPositions(position);
             drawBoard(validPositions);
-            return "highlighting " + piece;
+
+            if(validPositions.isEmpty()){
+                return "No valid moves at " + position;
+            } else {
+                return "Showing valid moves at " + position;
+            }
         }
         else if (params.length > 1) {
             throw new ResponseException(400, "Error: too may inputs");
@@ -209,9 +214,9 @@ public class ClientGameplay implements Client{
         };
     }
 
-    private ArrayList<ChessPosition> getValidPositions(ChessPosition position){
+    private Set<ChessPosition> getValidPositions(ChessPosition position){
         Collection<ChessMove> validMoves = game.validMoves(position);
-        ArrayList<ChessPosition> validPositions = new ArrayList<>();
+        Set<ChessPosition> validPositions = new HashSet<>();
 
         for (ChessMove move : validMoves){
             validPositions.add(move.getEndPosition());

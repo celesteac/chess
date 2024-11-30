@@ -92,7 +92,7 @@ public class ChessGame {
             }
         }
 
-        System.out.println("valid moves: " + valids);
+//        System.out.println("valid moves: " + valids);
         return valids;
     }
 
