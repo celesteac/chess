@@ -36,7 +36,7 @@ public class ClientGameplay implements Client{
         this.board = game.getBoard();
 
         UserGameCommand connectCommand = new UserGameCommand(type(CONNECT), authtoken, username,ClientGameplay.this.gameID);
-        wsFacade.connect(connectCommand);
+        wsFacade.connectLeaveResign(connectCommand);
     }
 
     public void setGame(ChessGame game){
@@ -147,7 +147,7 @@ public class ClientGameplay implements Client{
         if(Objects.equals(response, "yes")) {
             try {
                 UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, gameID);
-                wsFacade.resign(resignCommand);
+                wsFacade.connectLeaveResign(resignCommand);
                 return EscapeSequences.SET_TEXT_COLOR_BLUE + "resigning";
             } catch (ResponseException ex) {
                 return "Error: " + ex.getMessage();
@@ -189,7 +189,7 @@ public class ClientGameplay implements Client{
 
     private String leave(){
         UserGameCommand leaveCommand = new UserGameCommand(type(LEAVE), authtoken, username,gameID);
-        wsFacade.leave(leaveCommand);
+        wsFacade.connectLeaveResign(leaveCommand);
         ui.setState(Repl.State.LOGGED_IN, authtoken, username, null, null);
         return "leaving game";
     }

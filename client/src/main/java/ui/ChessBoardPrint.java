@@ -146,11 +146,6 @@ public class ChessBoardPrint {
         }
     }
 
-    private ChessPiece getPieceAtPosition(int boardRow, int boardColumn){
-        ChessPosition position = getPosition(boardRow, boardColumn);
-        return board.getPiece(position);
-    }
-
     private ChessPosition getPosition(int boardRow, int boardColumn){
         int row = ChessPosition.convertRowIndices(boardRow);
         int col = ChessPosition.convertColToChessIndices(boardColumn);

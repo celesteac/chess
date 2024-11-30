@@ -86,18 +86,9 @@ public class WebSocketFacade extends Endpoint {
 
     /// CALLABLE FUNCTIONS
 
-    public void connect(UserGameCommand connectCommand) {
+    public void connectLeaveResign(UserGameCommand connectCommand) {
         try{
             this.session.getBasicRemote().sendText(new Gson().toJson(connectCommand));
-        } catch (IOException ex){
-            throw new ResponseException(500, ex.getMessage());
-        }
-    }
-
-    public void leave(UserGameCommand leaveCommand){
-        try{
-            this.session.getBasicRemote().sendText(new Gson().toJson(leaveCommand));
-            session.close();
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage());
         }
@@ -106,14 +97,6 @@ public class WebSocketFacade extends Endpoint {
     public void makeMove(MakeMoveCommand moveCommand){
         try{
             this.session.getBasicRemote().sendText(new Gson().toJson(moveCommand));
-        } catch (IOException ex){
-            throw new ResponseException(500, ex.getMessage());
-        }
-    }
-
-    public void resign(UserGameCommand resignCommand){
-        try{
-            this.session.getBasicRemote().sendText(new Gson().toJson(resignCommand));
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage());
         }
