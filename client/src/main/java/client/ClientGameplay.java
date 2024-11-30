@@ -79,7 +79,9 @@ public class ClientGameplay implements Client{
             //format letter[a-h]-num[1-8] x2
             //hacer un move
             ChessMove move = getValidMove(params);
-            MakeMoveCommand moveCommand = new MakeMoveCommand(type(MAKE_MOVE), authtoken, username,gameID, move);
+            ChessPiece.PieceType promotionPiece = checkPawnPromotion(move);
+            ChessMove moveWithPromotion = new ChessMove(move.getStartPosition(), move.getEndPosition(), promotionPiece);
+            MakeMoveCommand moveCommand = new MakeMoveCommand(type(MAKE_MOVE), authtoken, username,gameID, moveWithPromotion);
             wsFacade.makeMove(moveCommand);
             return "moving...";
         }
@@ -89,6 +91,26 @@ public class ClientGameplay implements Client{
         else {
             throw new ResponseException(400, "Error: missing start or end position");
         }
+    }
+
+    private ChessPiece.PieceType checkPawnPromotion(ChessMove move){
+        ChessPosition endPos = move.getEndPosition();
+        int row = endPos.getRow();
+        if(row == 0 || row == 7){
+            ChessPosition startPos = move.getStartPosition();
+            ChessMove hypotheticalMove = new ChessMove(startPos, endPos, ChessPiece.PieceType.QUEEN);
+            Collection<ChessMove> validMoves = game.validMoves(startPos);
+            if(validMoves.contains(hypotheticalMove)){
+                return askPawnPromotion();
+            }
+        }
+        return null;
+    }
+
+    private ChessPiece.PieceType askPawnPromotion(){
+        System.out.println("Choose a promotion piece <QUEEN | KNIGHT | ROOK | BISHOP>");
+
+        return ChessPiece.PieceType.QUEEN;
     }
 
 

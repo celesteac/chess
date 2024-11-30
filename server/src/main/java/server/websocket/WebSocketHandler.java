@@ -99,7 +99,7 @@ public class WebSocketHandler {
         GameDAOSQL gameDAO = new GameDAOSQL();
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
-        //todo //checks game not resigned
+        //checks game not resigned
         if(game.getIsResigned()){
             throw new UnauthorizedWebSocketException("Error: game is finished");
         }
