@@ -79,7 +79,8 @@ public class WebSocketFacade extends Endpoint {
     }
 
     private void onLoadGame(LoadGameMessage loadGameMessage){
-        ChessBoard newBoard = loadGameMessage.getBoard();
+        ChessGame newGame = loadGameMessage.getBoard();
+        ChessBoard newBoard = newGame.getBoard();
         client.setBoard(newBoard);
         client.drawBoard();
     }
@@ -97,6 +98,7 @@ public class WebSocketFacade extends Endpoint {
     public void leave(UserGameCommand leaveCommand){
         try{
             this.session.getBasicRemote().sendText(new Gson().toJson(leaveCommand));
+            session.close();
         } catch (IOException ex){
             throw new ResponseException(500, ex.getMessage());
         }

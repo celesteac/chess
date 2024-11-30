@@ -10,6 +10,7 @@ import dataaccess.AuthDAOSQL;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.GameDAOSQL;
+import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.Session;
@@ -45,23 +46,23 @@ public class WebSocketHandler {
             switch (UserGameCommand.CommandType.valueOf(jsonObject.get("commandType").getAsString())) {
                 case CONNECT -> {
                     command = gson.fromJson(message, UserGameCommand.class);
-                    validateAuth(command.getAuthToken());
-                    connect(session, command);
+                    String username = validateAuth(command.getAuthToken());
+                    connect(session, command, username);
                 }
                 case MAKE_MOVE -> {
                     command = gson.fromJson(message, MakeMoveCommand.class);
-                    validateAuth(command.getAuthToken());
-                    move(session, (MakeMoveCommand) command);
+                    String username = validateAuth(command.getAuthToken());
+                    move(session, (MakeMoveCommand) command, username);
                 }
                 case LEAVE -> {
                     command = gson.fromJson(message, UserGameCommand.class);
-                    validateAuth(command.getAuthToken());
-                    leave(session, command);
+                    String username = validateAuth(command.getAuthToken());
+                    leave(session, command, username);
                 }
                 case RESIGN -> {
                     command = gson.fromJson(message, UserGameCommand.class);
-                    validateAuth(command.getAuthToken());
-                    resign(session, command);
+                    String username = validateAuth(command.getAuthToken());
+                    resign(session, command, username);
                 }
             }
         } catch (IOException | DataAccessException | UnauthorizedWebSocketException | InvalidMoveException ex){
@@ -71,32 +72,30 @@ public class WebSocketHandler {
 
     @OnWebSocketError
     public void onError(Session session, Throwable ex){
-        String message = ex.getMessage();
-        System.out.println(ex.getMessage());
         sendErrorMessage(session, ex.getMessage());
     }
 
-    public void connect(Session session, UserGameCommand command) throws IOException, DataAccessException {
-        String username = command.getUsername();
+    public void connect(Session session, UserGameCommand command, String username) throws IOException, DataAccessException {
+//        String username = command.getUsername();
         int gameID = command.getGameID();
 
         System.out.printf("connect message received from %s%n", username);
-        saveSession(command, session);
+        saveSession(command, session, username);
 
-        ChessBoard board = getGameBoard(command.getGameID());
-        sendLoadBoardSingle(session, board);
+        ChessGame game = getGame(command.getGameID());
+        sendLoadBoardSingle(session, game);
 //        sendNotificationSingle(session, "Current board");
 
         String message = createConnectMessage(getPlayerColor(gameID, username), username);
         sendNotification(message, gameID, username);
     }
 
-    public void move(Session session, MakeMoveCommand command) throws IOException, DataAccessException, InvalidMoveException {
+    public void move(Session session, MakeMoveCommand command, String username) throws IOException, DataAccessException, InvalidMoveException {
         System.out.printf("move message received from %s%n", command.getUsername());
 
         //Access game from database
         int gameID = command.getGameID();
-        String username = command.getUsername();
+//        String username = command.getUsername();
         GameDAOSQL gameDAO = new GameDAOSQL();
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
@@ -121,7 +120,7 @@ public class WebSocketHandler {
         GameData updatedGame = gameData.updateGame(game);
         gameDAO.updateGame(updatedGame);
         //send load game to all clients
-        sendLoadBoardAll(game.getBoard(), gameID);
+        sendLoadBoardAll(game, gameID);
         //send notification to all other clients
         String message = username + " moved from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
         sendNotificationSingle(session, "");
@@ -132,8 +131,8 @@ public class WebSocketHandler {
 
     }
 
-    public void leave(Session session, UserGameCommand command) throws IOException, DataAccessException {
-        String username = command.getUsername();
+    public void leave(Session session, UserGameCommand command, String username) throws IOException, DataAccessException {
+//        String username = command.getUsername();
         int gameID = command.getGameID();
 
         removePlayerFromGameDB(username, gameID);
@@ -143,12 +142,14 @@ public class WebSocketHandler {
 
         sendNotification(username + " left the game", gameID, username);
         System.out.printf("leave message received from %s%n", command.getUsername());
+
+        session.close();
     }
 
-    public void resign(Session session, UserGameCommand command) throws IOException, DataAccessException {
+    public void resign(Session session, UserGameCommand command, String username) throws IOException, DataAccessException {
         System.out.printf("resign message received from %s%n", command.getUsername());
         int gameID = command.getGameID();
-        String username = command.getUsername();
+//        String username = command.getUsername();
 
         ChessGame game = getGame(gameID);
         game.setResigned(true);
@@ -196,15 +197,15 @@ public class WebSocketHandler {
         }
     }
 
-    private void sendLoadBoardAll(ChessBoard board, int gameID) throws IOException {
-        LoadGameMessage loadGameMessage = new LoadGameMessage(type(LOAD_GAME), board);
+    private void sendLoadBoardAll(ChessGame game, int gameID) throws IOException {
+        LoadGameMessage loadGameMessage = new LoadGameMessage(type(LOAD_GAME), game);
         String jsonMessage = new Gson().toJson(loadGameMessage, LoadGameMessage.class);
         ConnectionManager connectionManager = connectionMap.get(gameID);
         connectionManager.broadcast(null, jsonMessage);
     }
 
-    private void sendLoadBoardSingle(Session session, ChessBoard board) throws IOException {
-        LoadGameMessage loadGameMessage = new LoadGameMessage(type(LOAD_GAME), board);
+    private void sendLoadBoardSingle(Session session, ChessGame game) throws IOException {
+        LoadGameMessage loadGameMessage = new LoadGameMessage(type(LOAD_GAME), game);
         String jsonMessage = new Gson().toJson(loadGameMessage);
         session.getRemote().sendString(jsonMessage);
     }
@@ -229,7 +230,7 @@ public class WebSocketHandler {
             session.getRemote().sendString(jsonMessage);
         } catch (IOException ex){
             System.out.println("IO Exception when sending error message");
-            System.out.println("Error: " + ex.getMessage());
+            System.out.println("Original Error: " + message);
         }
     }
 
@@ -256,15 +257,12 @@ public class WebSocketHandler {
         gameDAO.updateGame(updatedGame);
     }
 
-    private ChessBoard getGameBoard(int gameID) throws DataAccessException {
-        GameDAOSQL gameDAO = new GameDAOSQL();
-        GameData gameData = gameDAO.getGame(gameID);
-        return gameData.game().getBoard();
-    }
-
     private ChessGame getGame(int gameID) throws DataAccessException {
         GameDAOSQL gameDAO = new GameDAOSQL();
         GameData gameData = gameDAO.getGame(gameID);
+        if(gameData == null){
+            throw new DataAccessException("Error: no game with game ID " + gameID);
+        }
         return gameData.game();
     }
 
@@ -276,21 +274,23 @@ public class WebSocketHandler {
         gameDAO.updateGame(updatedGame);
     }
 
-    private void saveSession(UserGameCommand command, Session session){
+    private void saveSession(UserGameCommand command, Session session, String username){
         int gameID = command.getGameID();
         if(connectionMap.get(gameID) == null){
             connectionMap.put(gameID, new ConnectionManager(gameID));
         }
         ConnectionManager connectionManager = connectionMap.get(gameID);
-        connectionManager.addConnection(session, command.getUsername());
+        connectionManager.addConnection(session, username);
     }
 
 
-    private void validateAuth(String authtoken) throws UnauthorizedWebSocketException, DataAccessException{
+    private String validateAuth(String authtoken) throws UnauthorizedWebSocketException, DataAccessException{
             AuthDAOSQL authDAO = new AuthDAOSQL();
-            if(authDAO.getAuthData(authtoken) == null){
+            AuthData foundAuth = authDAO.getAuthData(authtoken);
+            if(foundAuth == null){
                 throw new UnauthorizedWebSocketException("Error: unauthorized");
             }
+            return foundAuth.username();
     }
 
     private ServerMessage.ServerMessageType type(ServerMessage.ServerMessageType type) {
