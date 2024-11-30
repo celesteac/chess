@@ -123,7 +123,7 @@ public class WebSocketHandler {
         sendLoadBoardAll(game, gameID);
         //send notification to all other clients
         String message = username + " moved from " + move.getStartPosition().toString() + " to " + move.getEndPosition().toString();
-        sendNotificationSingle(session, "");
+//        sendNotificationSingle(session, "");
         sendNotification(message, gameID, username);
         //send check or checkmate notifications
         String otherUsername = playerColor == ChessGame.TeamColor.WHITE ? gameData.blackUsername() : gameData.whiteUsername();
@@ -224,6 +224,11 @@ public class WebSocketHandler {
     }
 
     private void sendErrorMessage(Session session, String message) {
+        if (!session.isOpen()) {
+            System.out.println("Cannot send error message - session is closed");
+            return;
+        }
+
         try {
             ErrorServerMessage errorMessage = new ErrorServerMessage(type(ERROR), message);
             String jsonMessage = new Gson().toJson(errorMessage);

@@ -6,6 +6,7 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 public class ChessBoardPrint {
     private final PrintStream out = System.out;
@@ -13,7 +14,7 @@ public class ChessBoardPrint {
     private final int boardSizeInSquares = 8;
     private final ChessGame.TeamColor playerColor;
 
-    public ChessBoardPrint(ChessBoard board, ChessGame.TeamColor playerColor){
+    public ChessBoardPrint(ChessBoard board, ChessGame.TeamColor playerColor, ArrayList<ChessPosition> highlightPositions){
         this.board = board;
         this.playerColor = playerColor;
     }

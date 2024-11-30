@@ -80,9 +80,8 @@ public class WebSocketFacade extends Endpoint {
 
     private void onLoadGame(LoadGameMessage loadGameMessage){
         ChessGame newGame = loadGameMessage.getBoard();
-        ChessBoard newBoard = newGame.getBoard();
-        client.setBoard(newBoard);
-        client.drawBoard();
+        client.setGame(newGame);
+        client.drawBoard(null);
     }
 
     /// CALLABLE FUNCTIONS

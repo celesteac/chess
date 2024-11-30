@@ -1,18 +1,13 @@
 package client;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPosition;
+import chess.*;
 import ui.ChessBoardPrint;
 import ui.EscapeSequences;
 import ui.Repl;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 import static websocket.commands.UserGameCommand.CommandType.*;
 
@@ -25,7 +20,8 @@ public class ClientGameplay implements Client{
     ChessGame.TeamColor playerColor;
     int gameID;
     WebSocketFacade wsFacade;
-    ChessBoard board = new ChessBoard();
+    ChessGame game;
+    ChessBoard board;
 
     public ClientGameplay(Repl repl, String serverUrl, String authtoken, String username, int gameID, ChessGame.TeamColor playerColor){
         this.ui = repl;
@@ -36,9 +32,16 @@ public class ClientGameplay implements Client{
         this.gameID = gameID;
         this.playerColor = playerColor;
         this.wsFacade = new WebSocketFacade(serverUrl, repl, this);
+        this.game = new ChessGame();
+        this.board = game.getBoard();
 
         UserGameCommand connectCommand = new UserGameCommand(type(CONNECT), authtoken, username,ClientGameplay.this.gameID);
         wsFacade.connect(connectCommand);
+    }
+
+    public void setGame(ChessGame game){
+        this.game = game;
+        this.board = game.getBoard();
     }
 
     public String eval(String input){
@@ -52,21 +55,17 @@ public class ClientGameplay implements Client{
             case "resign" -> resign();
             case "move" -> move(params);
             case "highlight" -> highlight(params);
-            case "redraw" -> drawBoard();
+            case "redraw" -> drawBoard(null);
             default -> help();
         };
     }
 
-    public void setBoard(ChessBoard board){
-        this.board = board;
-    }
-
-    public String drawBoard(){
+    public String drawBoard(ArrayList<ChessPosition> highlightPositions){
         System.out.println();
         if(playerColor == null){
-            new ChessBoardPrint(board, ChessGame.TeamColor.WHITE).drawBoard();
+            new ChessBoardPrint(board, ChessGame.TeamColor.WHITE, highlightPositions).drawBoard();
         } else {
-            new ChessBoardPrint(board, playerColor).drawBoard();
+            new ChessBoardPrint(board, playerColor, highlightPositions).drawBoard();
         }
 
         return "Drawing board";
@@ -92,52 +91,12 @@ public class ClientGameplay implements Client{
         }
     }
 
-    public boolean isValidFormat(String str) {
-        return str.matches("[a-h][1-8]");
-    }
-
-    private ChessMove getValidMove(String[] params){
-        for(String param : params){
-            if(!isValidFormat(param)){
-                throw new ResponseException(400, "please provide moves in the format [a-h][1-8]");
-            }
-        }
-        String start = params[0];
-        String end = params[1];
-        String startCol = start.substring(0,1);
-        String startRow = start.substring(1,2);
-        String endCol = end.substring(0,1);
-        String endRow = end.substring(1,2);
-        int startRowInt = Integer.parseInt(startRow);
-        int startColInt = getColNum(startCol);
-        int endRowInt = Integer.parseInt(endRow);
-        int endColInt = getColNum(endCol);
-
-        ChessPosition startPos = new ChessPosition(startRowInt, startColInt);
-        ChessPosition endPos = new ChessPosition(endRowInt, endColInt);
-
-        return new ChessMove(startPos, endPos, null);
-    }
-
-    private int getColNum(String colLetter){
-        return switch (colLetter){
-            case "a" -> 1;
-            case "b" -> 2;
-            case "c" -> 3;
-            case "d" -> 4;
-            case "e" -> 5;
-            case "f" -> 6;
-            case "g" -> 7;
-            case "h" -> 8;
-            default -> -10; //error
-        };
-    }
 
     private String resign(){
         if(playerColor == null){
             throw new ResponseException(400, "Error: you are observing");
         }
-        ui.notify(EscapeSequences.SET_TEXT_COLOR_BLUE + "Confirm you want to resign <yes | no> :");
+        ui.notify(EscapeSequences.SET_TEXT_COLOR_BLUE + "Confirm you want to resign <yes | no>:");
         Scanner scanner = new Scanner(System.in);
         String response = scanner.nextLine();
         if(Objects.equals(response, "yes")) {
@@ -156,7 +115,19 @@ public class ClientGameplay implements Client{
 
     private String highlight(String[] params){
         if(params.length == 1){
-            return "highlighting";
+            String input = params[0];
+            if(!isValidFormat(input)){
+                throw new ResponseException(400, "Error: Please provide input of the form [a-h][1-8]");
+            }
+            ChessPosition position = getPosition(input);
+            ChessPiece piece = board.getPiece(position);
+            if(piece == null){
+                throw new ResponseException(400, "Error: There is no piece at square " + position);
+            }
+
+            ArrayList<ChessPosition> validPositions = getValidPositions(position);
+            drawBoard(validPositions);
+            return "highlighting " + piece;
         }
         else if (params.length > 1) {
             throw new ResponseException(400, "Error: too may inputs");
@@ -192,6 +163,63 @@ public class ClientGameplay implements Client{
                 - resign
                 - leave""";
     }
+
+
+
+    /// HELPER FUNCTIONS /////
+
+
+    public boolean isValidFormat(String str) {
+        return str.matches("[a-h][1-8]");
+    }
+
+    private ChessMove getValidMove(String[] params){
+        for(String param : params){
+            if(!isValidFormat(param)){
+                throw new ResponseException(400, "please provide moves in the format [a-h][1-8]");
+            }
+        }
+
+        ChessPosition startPos = getPosition(params[0]);
+        ChessPosition endPos = getPosition(params[1]);
+
+        return new ChessMove(startPos, endPos, null);
+    }
+
+    private ChessPosition getPosition(String userInputPosition){
+        String col = userInputPosition.substring(0,1);
+        String row = userInputPosition.substring(1,2);
+        int rowInt = Integer.parseInt(row);
+        int colInt = getColNum(col);
+
+        return new ChessPosition(rowInt, colInt);
+    }
+
+    private int getColNum(String colLetter){
+        return switch (colLetter){
+            case "a" -> 1;
+            case "b" -> 2;
+            case "c" -> 3;
+            case "d" -> 4;
+            case "e" -> 5;
+            case "f" -> 6;
+            case "g" -> 7;
+            case "h" -> 8;
+            default -> -10; //error
+        };
+    }
+
+    private ArrayList<ChessPosition> getValidPositions(ChessPosition position){
+        Collection<ChessMove> validMoves = game.validMoves(position);
+        ArrayList<ChessPosition> validPositions = new ArrayList<>();
+
+        for (ChessMove move : validMoves){
+            validPositions.add(move.getEndPosition());
+        }
+
+        return validPositions;
+    }
+
 
     private UserGameCommand.CommandType type(UserGameCommand.CommandType type) {
         return type;
