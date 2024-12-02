@@ -1,6 +1,5 @@
 package client;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -17,9 +16,6 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import static websocket.commands.UserGameCommand.CommandType.*;
-import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 public class WebSocketFacade extends Endpoint {
     ServerMessageObserver messageObserver;
@@ -75,7 +71,7 @@ public class WebSocketFacade extends Endpoint {
     }
 
     private void onError(ErrorServerMessage errorMessage){
-        messageObserver.notify(EscapeSequences.SET_TEXT_COLOR_RED + errorMessage.getMessage());
+        messageObserver.notify(EscapeSequences.SET_TEXT_COLOR_RED + errorMessage.getErrorMessage());
     }
 
     private void onLoadGame(LoadGameMessage loadGameMessage){

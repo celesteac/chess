@@ -149,14 +149,17 @@ public class WebSocketHandler {
     public void resign(Session session, UserGameCommand command, String username) throws IOException, DataAccessException {
         System.out.printf("resign message received from %s%n", command.getUsername());
         int gameID = command.getGameID();
-//        String username = command.getUsername();
+        if(getPlayerColor(gameID, username) == null){
+            sendErrorMessage(session, "Error: you are observing");
+        }
+        else {
+            ChessGame game = getGame(gameID);
+            game.setResigned(true);
+            storeUpdatedGame(gameID, game);
 
-        ChessGame game = getGame(gameID);
-        game.setResigned(true);
-        storeUpdatedGame(gameID, game);
-
-        sendNotificationSingle(session, "You resigned");
-        sendNotification(username + " resigned", gameID, username);
+            sendNotificationSingle(session, "You resigned");
+            sendNotification(username + " resigned", gameID, username);
+        }
     }
 
 
@@ -224,12 +227,9 @@ public class WebSocketHandler {
     }
 
     private void sendErrorMessage(Session session, String message) {
-        if (!session.isOpen()) {
-            System.out.println("Cannot send error message - session is closed");
-            return;
-        }
 
         try {
+            System.out.println("error message: " + message);
             ErrorServerMessage errorMessage = new ErrorServerMessage(type(ERROR), message);
             String jsonMessage = new Gson().toJson(errorMessage);
             session.getRemote().sendString(jsonMessage);
