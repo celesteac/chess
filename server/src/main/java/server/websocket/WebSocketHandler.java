@@ -76,7 +76,6 @@ public class WebSocketHandler {
     }
 
     public void connect(Session session, UserGameCommand command, String username) throws IOException, DataAccessException {
-//        String username = command.getUsername();
         int gameID = command.getGameID();
 
         System.out.printf("connect message received from %s%n", username);
@@ -95,7 +94,6 @@ public class WebSocketHandler {
 
         //Access game from database
         int gameID = command.getGameID();
-//        String username = command.getUsername();
         GameDAOSQL gameDAO = new GameDAOSQL();
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
@@ -132,7 +130,6 @@ public class WebSocketHandler {
     }
 
     public void leave(Session session, UserGameCommand command, String username) throws IOException, DataAccessException {
-//        String username = command.getUsername();
         int gameID = command.getGameID();
 
         removePlayerFromGameDB(username, gameID);
