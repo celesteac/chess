@@ -141,7 +141,7 @@ public class ClientGameplay implements Client{
         if(playerColor == null){
             UserGameCommand resignCommand = new UserGameCommand(type(RESIGN), authtoken, username, gameID);
             wsFacade.connectLeaveResign(resignCommand);
-//            throw new ResponseException(400, "Error: you are observing");
+            throw new ResponseException(400, "Error: you are observing");
         }
         ui.notify(EscapeSequences.SET_TEXT_COLOR_BLUE + "Confirm you want to resign <yes | no>:");
         Scanner scanner = new Scanner(System.in);

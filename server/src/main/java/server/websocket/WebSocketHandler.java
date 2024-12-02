@@ -149,11 +149,14 @@ public class WebSocketHandler {
     public void resign(Session session, UserGameCommand command, String username) throws IOException, DataAccessException {
         System.out.printf("resign message received from %s%n", command.getUsername());
         int gameID = command.getGameID();
+            ChessGame game = getGame(gameID);
         if(getPlayerColor(gameID, username) == null){
             sendErrorMessage(session, "Error: you are observing");
         }
+        else if(game.getIsResigned()){
+            sendErrorMessage(session, "Error: game is already finished");
+        }
         else {
-            ChessGame game = getGame(gameID);
             game.setResigned(true);
             storeUpdatedGame(gameID, game);
 
