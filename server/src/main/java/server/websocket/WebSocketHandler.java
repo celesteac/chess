@@ -138,7 +138,7 @@ public class WebSocketHandler {
         removePlayerFromGameDB(username, gameID);
 
         ConnectionManager connectionManager = connectionMap.get(command.getGameID());
-        connectionManager.removeConnection(command.getUsername());
+        connectionManager.removeConnection(username);
 
         sendNotification(username + " left the game", gameID, username);
         System.out.printf("leave message received from %s%n", command.getUsername());
