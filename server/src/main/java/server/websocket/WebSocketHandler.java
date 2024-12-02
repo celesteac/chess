@@ -132,7 +132,9 @@ public class WebSocketHandler {
     public void leave(Session session, UserGameCommand command, String username) throws IOException, DataAccessException {
         int gameID = command.getGameID();
 
-        removePlayerFromGameDB(username, gameID);
+        if(getPlayerColor(gameID, username) != null){
+            removePlayerFromGameDB(username, gameID);
+        }
 
         ConnectionManager connectionManager = connectionMap.get(command.getGameID());
         connectionManager.removeConnection(username);
@@ -258,6 +260,9 @@ public class WebSocketHandler {
     private void removePlayerFromGameDB(String username, int gameID) throws DataAccessException{
         GameDAOSQL gameDAO = new GameDAOSQL();
         GameData game = gameDAO.getGame(gameID);
+        if(getPlayerColor(gameID, username) == null){
+            throw new DataAccessException("Server Error: trying to remove a observer from the database");
+        }
         GameData updatedGame = game.updateGamePlayer(getPlayerColor(gameID, username), null);
         gameDAO.updateGame(updatedGame);
     }
